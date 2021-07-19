@@ -534,7 +534,7 @@ class OvercookedGridworld(object):
 
     def get_valid_joint_player_positions(self):
         """Returns all valid tuples of the form (p0_pos, p1_pos, p2_pos, ...)"""
-        valid_positions = self.get_valid_player_positions() 
+        valid_positions = self.get_valid_player_positions()
         all_joint_positions = list(itertools.product(valid_positions, repeat=self.num_players))
         valid_joint_positions = [j_pos for j_pos in all_joint_positions if not self.is_joint_position_collision(j_pos)]
         return valid_joint_positions

@@ -33,6 +33,29 @@ def get_trajs_from_data(data_path, train_mdps, ordered_trajs, human_ai_trajs):
     
     return trajs
 
+
+def get_trajs_from_data_selective(data_path, train_mdps, ordered_trajs, human_ai_trajs):
+    """
+    Converts and returns trajectories from dataframe at `data_path` to overcooked trajectories.
+    """
+    print("Loading data from {}".format(data_path))
+
+    main_trials = pd.read_pickle(data_path)
+    print('main_trials', main_trials.keys())
+    all_workers = list(main_trials['workerid_num'].unique())
+    all_workers = [4, 15, 17, 22]
+    # print('all_workers', all_workers)
+
+    trajs = convert_joint_df_trajs_to_overcooked_single(
+        main_trials,
+        all_workers,
+        train_mdps,
+        ordered_pairs=ordered_trajs,
+        human_ai_trajs=human_ai_trajs
+    )
+
+    return trajs
+
 def get_overcooked_traj_for_worker_layout(main_trials, worker_id, layout_name, complete_traj=True):
     """
     Extract trajectory for specific worker-layout pair and then return trajectory data 

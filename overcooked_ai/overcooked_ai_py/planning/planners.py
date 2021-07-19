@@ -196,6 +196,12 @@ class MotionPlanner(object):
 
     def _graph_from_grid(self):
         """Creates a graph adjacency matrix from an Overcooked MDP class."""
+        # State decoder is a dictionary.
+        # For all valid player positions and orientations, insert into the state decoder.
+        # State decoder takes form -- Counter ID: player ( position, orientation )
+        # Position encoder takes form -- player ( position, orientation ): Counter ID
+        # Max counter ID = num of graph nodes
+
         state_decoder = {}
         for state_index, motion_state in enumerate(self.mdp.get_valid_player_positions_and_orientations()):
             state_decoder[state_index] = motion_state
@@ -205,9 +211,12 @@ class MotionPlanner(object):
 
         adjacency_matrix = np.zeros((num_graph_nodes, num_graph_nodes))
         for state_index, start_motion_state in state_decoder.items():
+            # For each possible next state that the player can be in given an action.
+            # action = id, successor_motion_state = (new_pos, new_orientation)
             for action, successor_motion_state in self._get_valid_successor_motion_states(start_motion_state):
                 adj_pos_index = pos_encoder[successor_motion_state]
                 adjacency_matrix[state_index][adj_pos_index] = self._graph_action_cost(action)
+                # An action can take you from one state to the next, given the cost of the action.
 
         return Graph(adjacency_matrix, pos_encoder, state_decoder)
 
@@ -219,6 +228,7 @@ class MotionPlanner(object):
     def _get_valid_successor_motion_states(self, start_motion_state):
         """Get valid motion states one action away from the starting motion state."""
         start_position, start_orientation = start_motion_state
+        # For all actions in the input start state, return list of (new_pos, new_orientation) values in the action was taken.
         return [(action, self.mdp._move_if_direction(start_position, start_orientation, action)) for action in Action.ALL_ACTIONS]
 
     def min_cost_between_features(self, pos_list1, pos_list2, manhattan_if_fail=False):
@@ -735,6 +745,7 @@ class MediumLevelActionManager(object):
 
     def joint_ml_actions(self, state):
         """Determine all possible joint medium level actions for a certain state"""
+        # Get the list of possible medium level actions for each player.
         agent1_actions, agent2_actions = tuple(self.get_medium_level_actions(state, player) for player in state.players)
         joint_ml_actions = list(itertools.product(agent1_actions, agent2_actions))
         
@@ -767,8 +778,28 @@ class MediumLevelActionManager(object):
         Returns:
             player_actions (list): possible motion goals (pairs of goal positions and orientations)
         """
+        # Get a list of possible medium actions for the player passed as input.
         player_actions = []
+        # Get the list of objects on the counters that the player could pick up.
         counter_pickup_objects = self.mdp.get_counter_objects_dict(state, self.counter_pickup)
+
+        # List of possible medium level actions
+        # 1. onion pickup (K dispensers)
+        # 2. tomato pickup (K dispensers)
+        # 3. dish pickup (K dispensers)
+        # 4. soup pickup (K number of soups)
+        # 5. place (any) object down on counter (K number of empty counters)
+        # 6. deliver soup (K serving locations)
+        # 7. Put onion in pot (K number of fillable pots)
+        # 8. Put tomato in pot (K number of fillable pots)
+        # 9. (K) Take dish to pick up soup in locations where the soup is ready or cooking.
+        # 10. Wait, don't move, position stays the same.
+        # 11. Go to the closest pot or dispenser.
+
+
+
+        # If the player is not carrying an object, possible actions include onion pickup, tomato pickup,
+        # dish pickup, soup pickup. Add all of these to the list of actions.
         if not player.has_object():
             onion_pickup = self.pickup_onion_actions(state, counter_pickup_objects)
             tomato_pickup = self.pickup_tomato_actions(state, counter_pickup_objects)
@@ -776,18 +807,23 @@ class MediumLevelActionManager(object):
             soup_pickup = self.pickup_counter_soup_actions(state, counter_pickup_objects)
             player_actions.extend(onion_pickup + tomato_pickup + dish_pickup + soup_pickup)
 
+        # Otherwise, the player is carrying an object. Check the states of the pots.
         else:
             player_object = player.get_object()
             pot_states_dict = self.mdp.get_pot_states(state)
 
             # No matter the object, we can place it on a counter
+            # Place the object on a counter, regardless of object type. Add placing an object down on counter to list.
             if len(self.counter_drop) > 0:
                 player_actions.extend(self.place_obj_on_counter_actions(state))
 
+            # If the player is carrying soup, another option is to deliver the soup.
             if player_object.name == 'soup':
                 player_actions.extend(self.deliver_soup_actions())
+            # If player is carrying an onion, they can put it in the pot.
             elif player_object.name == 'onion':
                 player_actions.extend(self.put_onion_in_pot_actions(pot_states_dict))
+            # If player is carrying a tomato, they can put it in the pot.
             elif player_object.name == 'tomato':
                 player_actions.extend(self.put_tomato_in_pot_actions(pot_states_dict))
             elif player_object.name == 'dish':
@@ -807,6 +843,7 @@ class MediumLevelActionManager(object):
             # are not considered valid
             player_actions.extend(self.go_to_closest_feature_actions(player))
 
+        # Filter the list by checking if doing a certain medium level is a value goal given the start and actual high level goal.
         is_valid_goal_given_start = lambda goal: self.motion_planner.is_valid_motion_start_goal_pair(player.pos_and_or, goal)    
         player_actions = list(filter(is_valid_goal_given_start, player_actions))
         return player_actions
@@ -1007,6 +1044,7 @@ class MediumLevelPlanner(object):
             cost (int): A* Search cost
         """
         start_state = start_state.deepcopy()
+        # If start state has no orders, you make the same (any) orders repeatedly until you're done.
         if start_state.order_list is None:
             start_state.order_list = ["any"] * delivery_horizon
         else:
@@ -1040,7 +1078,10 @@ class MediumLevelPlanner(object):
 
         start_jm_state = start_state.players_pos_and_or
         successor_states = []
+        # For (goal_jm_state) a state (both players pos and orientation) in which a subgoal was satisfied
+        # I think the action manager will find the goal states that the players should be in when at the start state.
         for goal_jm_state in self.ml_action_manager.joint_ml_actions(start_state):
+            # Get the action plan to get to the joint goal state
             joint_motion_action_plans, end_pos_and_ors, plan_costs = self.jmp.get_low_level_action_plan(start_jm_state, goal_jm_state)
             end_state = self.jmp.derive_state(start_state, end_pos_and_ors, joint_motion_action_plans)
 

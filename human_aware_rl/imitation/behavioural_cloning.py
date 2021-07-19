@@ -15,7 +15,7 @@ from overcooked_ai_py.planning.planners import MediumLevelPlanner, NO_COUNTERS_P
 from overcooked_ai_py.utils import save_pickle, load_pickle
 
 from human_aware_rl.baselines_utils import create_dir_if_not_exists
-from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data
+from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective
 
 BC_SAVE_DIR = "../data/bc_runs/"
 
@@ -23,7 +23,7 @@ DEFAULT_DATA_PARAMS = {
     "train_mdps": ["simple"],
     "ordered_trajs": True,
     "human_ai_trajs": False,
-    "data_path": "data/human/anonymized/clean_train_trials.pkl"
+    "data_path": "../data/human/anonymized/clean_train_trials.pkl"
 }
 
 DEFAULT_BC_PARAMS = {
@@ -46,8 +46,7 @@ def init_gym_env(bc_params):
 
 def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
     # Extract necessary expert data and save in right format
-    expert_trajs = get_trajs_from_data(**bc_params["data_params"])
-    
+    expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp.npz")
     dataset = ExpertDataset(expert_path="temp.npz", verbose=1, train_fraction=0.85)
@@ -87,17 +86,27 @@ def get_bc_agent_from_model(model, bc_params, no_waits=False):
     mlp = MediumLevelPlanner.from_pickle_or_compute(mdp, NO_COUNTERS_PARAMS, force_compute=False)
     
     def encoded_state_policy(observations, include_waits=True, stochastic=False):
+        # Input observations are a list of featurized states.
+        # Pass the observations of each state into the action probability function of the model.
+        # Returns a list of action probabilities for each observation at every timestep.
         action_probs_n = model.action_probability(observations)
 
+        # If include_waits is False, remove the indices and renormalize. Probably mix maximum action.
         if not include_waits:
             action_probs = ImitationAgentFromPolicy.remove_indices_and_renormalize(action_probs_n, [Action.ACTION_TO_INDEX[Direction.STAY]])
-        
+
+        # If include_waits is True, choose stochastically, could be suboptimal decisions made. Sample based on action probs.
         if stochastic:
             return [np.random.choice(len(action_probs[i]), p=action_probs[i]) for i in range(len(action_probs))]
         return action_probs_n
 
     def state_policy(mdp_states, agent_indices, include_waits, stochastic=False):
         # encode_fn = lambda s: mdp.preprocess_observation(s)
+
+        # Take the set of mdp states. Featurize every mdp state, so that every state is a feature vector (observation).
+        # Add it to a list of observations, turn to numpy array.
+        # Pass set of featurized states to the encoded state policy function.
+
         encode_fn = lambda s: mdp.featurize_state(s, mlp)
 
         obs = []
@@ -141,10 +150,19 @@ def plot_bc_run(run_info, num_epochs):
     plt.legend()
     plt.show()
 
+def plot_bc_run_modified(run_info, num_epochs, seed_idx, seed):
+    xs = range(0, num_epochs, max(int(num_epochs / 10), 1))
+    plt.plot(xs, run_info['train_losses'], label="train loss")
+    plt.plot(xs, run_info['val_losses'], label="val loss")
+    plt.plot(xs, run_info['val_accuracies'], label="val accuracy")
+    plt.legend()
+    plt.savefig('../../exploration_images/bc_run_seedidx'+str(seed_idx)+'_seed'+str(seed)+'.png')
+    plt.close()
+
 
 class ImitationAgentFromPolicy(AgentFromPolicy):
     """Behavior cloning agent interface"""
-
+    #
     def __init__(self, state_policy, direct_policy, mlp=None, stochastic=True, no_waits=False, stuck_time=3):
         super().__init__(state_policy, direct_policy)
         # How many turns in same position to be considered 'stuck'
@@ -240,6 +258,10 @@ class ImitationAgentFromPolicy(AgentFromPolicy):
 
     @staticmethod
     def remove_indices_and_renormalize(probs, indices):
+        # This will induce random lack of movement
+        # If include_waits = False, run this function.
+        # If probs is more than 1 dimensional: more than 1 action, or more than 1 timestep
+        #
         if len(np.array(probs).shape) > 1:
             probs = np.array(probs)
             for row_idx, row in enumerate(indices):

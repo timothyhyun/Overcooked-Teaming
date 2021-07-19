@@ -12,6 +12,10 @@ def load_pickle(filename):
     with open(fix_filetype(filename, ".pickle"), "rb") as f:
         return pickle.load(f)
 
+def load_pkl(filename):
+    with open(fix_filetype(filename, ".pkl"), "rb") as f:
+        return pickle.load(f)
+
 def load_dict_from_file(filepath):
     with open(filepath, "r") as f:
         return eval(f.read())

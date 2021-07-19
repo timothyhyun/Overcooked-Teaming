@@ -1,12 +1,16 @@
 import copy
 import numpy as np
 
+import sys, os
+sys.path.insert(0, "../../")
+# print('path', os.path.dirname(os.path.abspath(__file__)))
+
 from overcooked_ai_py.utils import save_pickle, mean_and_std_err
 from overcooked_ai_py.agents.benchmarking import AgentEvaluator
 from overcooked_ai_py.agents.agent import AgentPair
 
 from human_aware_rl.utils import reset_tf, set_global_seed, common_keys_equal
-from human_aware_rl.imitation.behavioural_cloning import train_bc_agent, eval_with_benchmarking_from_saved, BC_SAVE_DIR, plot_bc_run, DEFAULT_BC_PARAMS, get_bc_agent_from_saved
+from human_aware_rl.imitation.behavioural_cloning import train_bc_agent, eval_with_benchmarking_from_saved,BC_SAVE_DIR, plot_bc_run, DEFAULT_BC_PARAMS, get_bc_agent_from_saved, plot_bc_run_modified
 
 
 # Path for dict containing the best bc models paths
@@ -19,7 +23,7 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
 
     bc_params = copy.deepcopy(DEFAULT_BC_PARAMS)
     bc_params["data_params"]['train_mdps'] = [layout_name]
-    bc_params["data_params"]['data_path'] = "data/human/clean_{}_trials.pkl".format(model)
+    bc_params["data_params"]['data_path'] = "../data/human/anonymized/clean_{}_trials.pkl".format(model)
     bc_params["mdp_params"]['layout_name'] = layout_name
     bc_params["mdp_params"]['start_order_list'] = None
 
@@ -32,9 +36,11 @@ def train_bc_models(all_params, seeds):
         for seed_idx, seed in enumerate(seeds):
             set_global_seed(seed)
             model = train_bc_agent_from_hh_data(agent_name="bc_train_seed{}".format(seed_idx), model='train', **params)
-            plot_bc_run(model.bc_info, params['num_epochs'])
+            # plot_bc_run(model.bc_info, params['num_epochs'])
+            plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
             model = train_bc_agent_from_hh_data(agent_name="bc_test_seed{}".format(seed_idx), model='test', **params)
-            plot_bc_run(model.bc_info, params['num_epochs'])
+            # plot_bc_run(model.bc_info, params['num_epochs'])
+            plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
             reset_tf()
 
 def evaluate_all_bc_models(all_params, num_rounds, num_seeds):
@@ -128,6 +134,10 @@ def run_all_bc_experiments():
     best_bc_models_performance = evaluate_bc_models(final_bc_model_paths, num_rounds)
     save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance")
     
+
+if __name__ == "__main__":
+    run_all_bc_experiments()
+
 
 # Automatic selection of best BC models. Caused imbalances that made interpretation of results more difficult, 
 # better to select manually non-best ones.

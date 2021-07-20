@@ -3,11 +3,13 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from memory_profiler import profile
+import copy
 
 from sacred import Experiment
 from sacred.observers import FileStorageObserver
 from tensorflow.saved_model import simple_save
 
+# PPO_DATA_DIR = '../experiments/data/ppo_runs/'
 PPO_DATA_DIR = 'data/ppo_runs/'
 
 ex = Experiment('PPO')
@@ -461,6 +463,7 @@ def configure_other_agent(params, gym_env, mlp, mdp):
         else:
             raise ValueError("Other agent type must be bc train or bc test")
 
+        bc_model_path = 'random0_bc_train_seed0'
         print("LOADING BC MODEL FROM: {}".format(bc_model_path))
         agent, bc_params = get_bc_agent_from_saved(bc_model_path)
         gym_env.use_action_method = True
@@ -502,7 +505,7 @@ def load_training_data(run_name, seeds=None):
 
     return train_infos, config
 
-def get_ppo_agent(save_dir, seed=0, best=False):
+def get_ppo_agent(save_dir, seed=9456, best=False):
     save_dir = PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
     config = load_pickle(save_dir + '/config')
     if best:
@@ -668,7 +671,7 @@ def get_params_test_exp_1_config():
     ##############
 
     # Total environment timesteps for the PPO run
-    PPO_RUN_TOT_TIMESTEPS = 100000 if not LOCAL_TESTING else 10000
+    PPO_RUN_TOT_TIMESTEPS = 1e6 if not LOCAL_TESTING else 10000
     # PPO_RUN_TOT_TIMESTEPS = 8e6 if not LOCAL_TESTING else 10000
 
 
@@ -870,6 +873,81 @@ def dissect_ppo_run(params):
 # MAIN
 ################################################
 
+def get_rollouts_from_match_ppo_with_other_agent(save_dir, other_agent, params, n=1, display=False):
+    agent, agent_eval = get_ppo_agent(save_dir)
+
+    input_params = copy.deepcopy(params)
+    # del input_params["data_params"], input_params["mdp_fn_params"]
+    agent_eval = AgentEvaluator(input_params['mdp_params'], input_params['env_params'])
+    # ap = AgentPair(a0, a1)
+    # trajectories = a_eval.evaluate_agent_pair(ap, num_games=n_games, display=display)
+
+
+    ap0 = AgentPair(agent, other_agent)
+    rollouts1 = agent_eval.evaluate_agent_pair(ap0, display=display, num_games=n)
+
+    # Sketch switch
+    ap1 = AgentPair(other_agent, agent)
+    rollouts2 = agent_eval.evaluate_agent_pair(ap1, display=display, num_games=n)
+    return rollouts1, rollouts2
+
+def test_ppo_agent(params):
+
+    # save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    # save_dir = '2021_07_19-14_03_42_testing_ppo_bc_train_fc_1_random0'
+    save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    a_self_play, a_config = get_ppo_agent(save_dir, seed=9456, best=False)
+    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, params, n=3, display=False)
+    print('rollouts1', rollouts1)
+    print()
+    print('rollouts2', rollouts2)
+    return rollouts1, rollouts2
+
+
+def test_bc_ppo_agent():
+
+    # model_name = 'random0_bc_test_seed3'
+    model_name = 'random0_bc_train_seed0'
+    save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+
+    a_self_play, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
+    # a_self_play, a_config = get_ppo_agent(save_dir, seed=9456, best=False)
+    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, bc_params, n=3, display=False)
+    print('rollouts1', rollouts1)
+    print()
+    print('rollouts2', rollouts2)
+    return rollouts1, rollouts2
+
+
+def test_bc_bc_agent():
+    display = False
+    n=3
+
+    model_name = 'random0_bc_train_seed0'
+
+    agent_bc_0, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
+    agent_bc_1, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
+
+
+    input_params = copy.deepcopy(bc_params)
+
+    agent_eval = AgentEvaluator(input_params['mdp_params'], input_params['env_params'])
+    # ap = AgentPair(a0, a1)
+    # trajectories = a_eval.evaluate_agent_pair(ap, num_games=n_games, display=display)
+
+    ap0 = AgentPair(agent_bc_0, agent_bc_1)
+    rollouts1 = agent_eval.evaluate_agent_pair(ap0, display=display, num_games=n)
+
+    # Sketch switch
+    ap1 = AgentPair(agent_bc_0, agent_bc_1)
+    rollouts2 = agent_eval.evaluate_agent_pair(ap1, display=display, num_games=n)
+
+
+    print('rollouts1', rollouts1)
+    print()
+    print('rollouts2', rollouts2)
+    return rollouts1, rollouts2
+
 
 if __name__ == "__main__":
 
@@ -878,6 +956,10 @@ if __name__ == "__main__":
 
 
     dissect_ppo_run(test_exp_params)
+
+    # test_ppo_agent(test_exp_params)
+    # test_bc_ppo_agent()
+    # test_bc_bc_agent()
 
 
 

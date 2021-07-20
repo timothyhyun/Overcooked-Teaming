@@ -1,0 +1,67 @@
+Current reward shaping 0
+Current self-play randomization 0
+SP envs: 0/30
+Other agent actions took 3.0679328441619873 seconds
+Total simulation time for 400 steps: 5.193770170211792   Other agent action time: 0      77.01534470934989 steps/s
+Curr learning rate 0.0003923923923923924         Curr reward per step 0.13166666666666665
+0/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.39it/s]
+1/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.63it/s]
+2/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.85it/s]
+3/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.94it/s]
+4/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.88it/s]
+5/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.85it/s]
+6/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.94it/s]
+7/8: 100%|███████████████████████████████████████████████████████| 10/10 [00:01<00:00,  6.81it/s]
+--------------------------------------
+| approxkl           | 0.001676597   |
+| clipfrac           | 0.23317714    |
+| eplenmean          | 400           |
+| eprewmean          | 51.8          |
+| explained_variance | 0.763         |
+| fps                | 704           |
+| nupdates           | 608           |
+| policy_entropy     | 1.0801181     |
+| policy_loss        | -0.0036127914 |
+| serial_timesteps   | 243200        |
+| time_elapsed       | 1.13e+04      |
+| time_remaining     | 17.9          |
+| total_timesteps    | 7296000       |
+| true_eprew         | 51.8          |
+| value_loss         | 6.4204154     |
+--------------------------------------
+Current reward shaping 0
+BEST REW 51.8 overwriting previous model with 0
+
+
+ERROR 
+BEST REW 51.8 overwriting previous model with 0
+Traceback (most recent call last):
+  File "understand_ppo.py", line 954, in <module>
+    dissect_ppo_run(test_exp_params)
+  File "understand_ppo.py", line 860, in dissect_ppo_run
+    train_info = update_model(gym_env, model, **params)
+  File "/Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py", line 337, in update_model
+    network_kwargs=kwargs
+  File "/Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/ppo2/ppo2.py", line 287, in learn
+    additional_params["CURR_SEED"])
+KeyError: 'CURR_SEED'
+Exception ignored in: <function SubprocVecEnv.__del__ at 0x7fd5bff5ac20>
+Traceback (most recent call last):
+  File "/Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/vec_env/subproc_vec_env.py", line 107, in __del__
+    self.close()
+  File "/Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/vec_env/vec_env.py", line 98, in close
+    self.close_extras()
+  File "/Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/vec_env/subproc_vec_env.py", line 91, in close_extras
+    remote.send(('close', None))
+  File "/opt/anaconda3/envs/hr-team/lib/python3.7/multiprocessing/connection.py", line 206, in send
+    self._send_bytes(_ForkingPickler.dumps(obj))
+  File "/opt/anaconda3/envs/hr-team/lib/python3.7/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header + buf)
+  File "/opt/anaconda3/envs/hr-team/lib/python3.7/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+
+
+
+

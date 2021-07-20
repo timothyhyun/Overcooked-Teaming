@@ -1,0 +1,35 @@
+###############################################################################################
+rollouts1
+ROUND 1
+###############################################################################################
+
+'ep_returns': array([60., 20., 60.]), 'ep_returns_sparse': array([60, 20, 60]), 'ep_lengths': array([400, 400, 400]), 'mdp_params': array([{'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}},
+       {'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}},
+       {'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}}],
+      dtype=object), 'env_params': array([{'start_state_fn': None, 'horizon': 400},
+       {'start_state_fn': None, 'horizon': 400},
+       {'start_state_fn': None, 'horizon': 400}], dtype=object)}
+
+###############################################################################################
+rollouts2 
+ROUND 2
+###############################################################################################
+'ep_returns': array([20., 20., 60.]), 'ep_returns_sparse': array([20, 20, 60]), 'ep_lengths': array([400, 400, 400]), 'mdp_params': array([{'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}},
+       {'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}},
+       {'layout_name': 'random3', 'terrain': [['X', 'X', 'X', 'P', 'P', 'X', 'X', 'X'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['D', ' ', 'X', 'X', 'X', 'X', ' ', 'S'], ['X', ' ', ' ', ' ', ' ', ' ', ' ', 'X'], ['X', 'X', 'X', 'O', 'O', 'X', 'X', 'X']], 'start_player_positions': [(3, 3), (3, 1)], 'start_order_list': None, 'cook_time': 20, 'num_items_for_soup': 3, 'delivery_reward': 20, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 0, 'DISH_PICKUP_REWARD': 0, 'SOUP_PICKUP_REWARD': 0, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}}],
+      dtype=object), 'env_params': array([{'start_state_fn': None, 'horizon': 400},
+       {'start_state_fn': None, 'horizon': 400},
+       {'start_state_fn': None, 'horizon': 400}], dtype=object)}
+
+###############################################################################################
+BEST MODEL METADATA
+###############################################################################################
+
+best_model_metadata  =  {'bc_params': {'data_params': {'train_mdps': ['random3'], 'ordered_trajs': True, 'human_ai_trajs': False, 'data_path': '../data/human/anonymized/clean_train_trials.pkl'}, 'mdp_params': {'layout_name': 'random3', 'start_order_list': None}, 'env_params': {'horizon': 400}, 'mdp_fn_params': {}}, 'train_info': {'train_losses': [0.9563069893047214, 0.9091966866981238, 0.8827171449083835, 0.8609600840136409, 0.8424112172797322, 0.8266628412529826, 0.8077411854173988, 0.7942214778158814, 0.7790948115289211, 0.7682728595100343], 'val_losses': [0.9793294732985289, 0.9853175800779591, 1.0119509321192037, 1.0017740506192911, 1.0117006042729253, 1.0286944391934767, 1.0491297594878985, 1.072243279736975, 1.0781648573668108, 1.1017318005147188], 'val_accuracies': [0.32098765432098764, 0.35802469135802467, 0.4567901234567901, 0.24691358024691357, 0.35802469135802467, 0.345679012345679, 0.3950617283950617, 0.35802469135802467, 0.5185185185185185, 0.2962962962962963], 'training_dataset_size': 256, 'validation_dataset_size': 46}}
+
+
+
+
+
+
+

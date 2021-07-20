@@ -282,6 +282,194 @@ class BaseRLModel(ABC):
             "training_dataset_size": len(dataset.train_loader),
             "validation_dataset_size": len(dataset.val_loader)
         }
+        print("\n\n\n DONE WITH PRETRAINING\n\n\n")
+        return self
+
+    def pretrain_and_finetune(self, dataset, finetune_dataset, n_epochs=10, learning_rate=1e-4,
+                 adam_epsilon=1e-8, val_interval=None, save_dir=None):
+        """
+        Pretrain a model using behavior cloning:
+        supervised learning given an expert dataset.
+
+        NOTE: only Box and Discrete spaces are supported for now.
+
+        :param dataset: (ExpertDataset) Dataset manager
+        :param n_epochs: (int) Number of iterations on the training set
+        :param learning_rate: (float) Learning rate
+        :param adam_epsilon: (float) the epsilon value for the adam optimizer
+        :param val_interval: (int) Report training and validation losses every n epochs.
+            By default, every 10th of the maximum number of epochs.
+        :return: (BaseRLModel) the pretrained model
+        """
+        continuous_actions = isinstance(self.action_space, gym.spaces.Box)
+        discrete_actions = isinstance(self.action_space, gym.spaces.Discrete)
+
+        assert discrete_actions or continuous_actions, 'Only Discrete and Box action spaces are supported'
+
+        # Validate the model every 10% of the total number of iteration
+        if val_interval is None:
+            # Prevent modulo by zero
+            if n_epochs < 10:
+                val_interval = 1
+            else:
+                val_interval = int(n_epochs / 10)
+
+        with self.graph.as_default():
+            with tf.variable_scope('pretrain'):
+                if continuous_actions:
+                    obs_ph, actions_ph, deterministic_actions_ph = self._get_pretrain_placeholders()
+                    loss = tf.reduce_mean(tf.square(actions_ph - deterministic_actions_ph))
+                else:
+                    obs_ph, actions_ph, actions_logits_ph = self._get_pretrain_placeholders()
+                    # actions_ph has a shape if (n_batch,), we reshape it to (n_batch, 1)
+                    # so no additional changes is needed in the dataloader
+                    actions_ph = tf.expand_dims(actions_ph, axis=1)
+                    one_hot_actions = tf.one_hot(actions_ph, self.action_space.n)
+                    loss = tf.nn.softmax_cross_entropy_with_logits_v2(
+                        logits=actions_logits_ph,
+                        labels=tf.stop_gradient(one_hot_actions)
+                    )
+                    loss = tf.reduce_mean(loss)
+                optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, epsilon=adam_epsilon)
+                optim_op = optimizer.minimize(loss, var_list=self.params)
+
+            self.sess.run(tf.global_variables_initializer())
+
+        if self.verbose > 0:
+            print("Pretraining with Behavior Cloning...")
+
+        best_accuracy, best_loss = 0, np.inf
+        train_losses, val_losses, val_accuracies = [], [], []
+        for epoch_idx in range(int(n_epochs)):
+            train_loss = 0.0
+            # Full pass on the training set
+            for _ in range(len(dataset.train_loader)):
+                expert_obs, expert_actions = dataset.get_next_batch('train')
+                feed_dict = {
+                    obs_ph: expert_obs,
+                    actions_ph: expert_actions,
+                }
+                train_loss_, _ = self.sess.run([loss, optim_op], feed_dict)
+                train_loss += train_loss_
+
+            train_loss /= len(dataset.train_loader)
+
+            if self.verbose > 0 and (epoch_idx + 1) % val_interval == 0:
+                val_loss = 0.0
+                # Full pass on the validation set
+                for _ in range(len(dataset.val_loader)):
+                    expert_obs, expert_actions = dataset.get_next_batch('val')
+                    val_loss_, predicted_actions = self.sess.run([loss, actions_logits_ph], {obs_ph: expert_obs,
+                                                        actions_ph: expert_actions})
+                    # TODO: figure out why accuracy seems weird?
+                    # print(expert_actions.shape)
+                    val_accuracy = np.mean(np.equal(expert_actions, np.argmax(predicted_actions, axis=1)))
+                    val_loss += val_loss_
+                val_loss /= len(dataset.val_loader)
+
+                # TODO: Save highest accuracy and lowest loss models
+                if val_accuracy > best_accuracy and save_dir is not None:
+                    print("SAVING BEST ACC")
+                    best_accuracy = val_accuracy
+                    self.save(save_dir + "best_acc", include_data=False)
+
+                if val_loss < best_loss and save_dir is not None:
+                    print("SAVING BEST LOSS")
+                    best_loss = val_loss
+                    self.save(save_dir + "best_loss", include_data=False)
+
+                train_losses.append(train_loss)
+                val_losses.append(val_loss)
+                val_accuracies.append(val_accuracy)
+
+                if self.verbose > 0:
+                    print("==== Training progress {:.2f}% ====".format(100 * (epoch_idx + 1) / n_epochs))
+                    print('Epoch {}'.format(epoch_idx + 1))
+                    print("Training loss: {:.6f}, Validation loss: {:.6f}, Accuracy: {:.6f}".format(
+                        train_loss, val_loss, val_accuracy
+                    ))
+                    print()
+            # Free memory
+            del expert_obs, expert_actions
+        if self.verbose > 0:
+            print("Pretraining done.")
+        self.bc_info = {
+            "train_losses": train_losses,
+            "val_losses": val_losses,
+            "val_accuracies": val_accuracies,
+            "training_dataset_size": len(dataset.train_loader),
+            "validation_dataset_size": len(dataset.val_loader)
+        }
+
+
+        # BEGINNING FINETUNING
+        print(".............BEGIN FINETUNING...................")
+        best_accuracy, best_loss = 0, np.inf
+        train_losses, val_losses, val_accuracies = [], [], []
+        for epoch_idx in range(int(n_epochs)):
+            train_loss = 0.0
+            # Full pass on the training set
+            for _ in range(len(finetune_dataset.train_loader)):
+                expert_obs, expert_actions = finetune_dataset.get_next_batch('train')
+                feed_dict = {
+                    obs_ph: expert_obs,
+                    actions_ph: expert_actions,
+                }
+                train_loss_, _ = self.sess.run([loss, optim_op], feed_dict)
+                train_loss += train_loss_
+
+            train_loss /= len(finetune_dataset.train_loader)
+
+            if self.verbose > 0 and (epoch_idx + 1) % val_interval == 0:
+                val_loss = 0.0
+                # Full pass on the validation set
+                for _ in range(len(finetune_dataset.val_loader)):
+                    expert_obs, expert_actions = finetune_dataset.get_next_batch('val')
+                    val_loss_, predicted_actions = self.sess.run([loss, actions_logits_ph], {obs_ph: expert_obs,
+                                                        actions_ph: expert_actions})
+                    # TODO: figure out why accuracy seems weird?
+                    # print(expert_actions.shape)
+                    val_accuracy = np.mean(np.equal(expert_actions, np.argmax(predicted_actions, axis=1)))
+                    val_loss += val_loss_
+                val_loss /= len(finetune_dataset.val_loader)
+
+                # TODO: Save highest accuracy and lowest loss models
+                if val_accuracy > best_accuracy and save_dir is not None:
+                    print("SAVING BEST ACC")
+                    best_accuracy = val_accuracy
+                    self.save(save_dir + "best_acc", include_data=False)
+
+                if val_loss < best_loss and save_dir is not None:
+                    print("SAVING BEST LOSS")
+                    best_loss = val_loss
+                    self.save(save_dir + "best_loss", include_data=False)
+
+                train_losses.append(train_loss)
+                val_losses.append(val_loss)
+                val_accuracies.append(val_accuracy)
+
+                if self.verbose > 0:
+                    print("==== Training progress {:.2f}% ====".format(100 * (epoch_idx + 1) / n_epochs))
+                    print('Epoch {}'.format(epoch_idx + 1))
+                    print("Training loss: {:.6f}, Validation loss: {:.6f}, Accuracy: {:.6f}".format(
+                        train_loss, val_loss, val_accuracy
+                    ))
+                    print()
+            # Free memory
+            del expert_obs, expert_actions
+        if self.verbose > 0:
+            print("Finetuning done.")
+        self.bc_info = {
+            "train_losses": train_losses,
+            "val_losses": val_losses,
+            "val_accuracies": val_accuracies,
+            "training_dataset_size": len(dataset.train_loader),
+            "validation_dataset_size": len(dataset.val_loader)
+        }
+
+
+
+        print("\n\n\n DONE WITH PRETRAINING AND FINETUNING \n\n\n")
         return self
 
     @abstractmethod

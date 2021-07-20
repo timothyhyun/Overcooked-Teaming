@@ -159,6 +159,7 @@ def convert_joint_df_trajs_to_overcooked_single(main_trials, worker_ids, layout_
     }
 
     for worker_id, layout_name in itertools.product(worker_ids, layout_names):
+        print('WORKER ID = ', worker_id)
         # Get an single game
         one_traj_df = extract_df_for_worker_on_layout(main_trials, worker_id, layout_name)
 

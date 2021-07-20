@@ -7,6 +7,7 @@ from memory_profiler import profile
 from sacred import Experiment
 from sacred.observers import FileStorageObserver
 from tensorflow.saved_model import simple_save
+import copy
 
 PPO_DATA_DIR = 'data/ppo_runs/'
 
@@ -23,7 +24,7 @@ from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld
 from human_aware_rl.baselines_utils import get_vectorized_gym_env, create_model, update_model, save_baselines_model, \
     load_baselines_model, get_agent_from_saved_model
 from human_aware_rl.utils import create_dir_if_not_exists, reset_tf, delete_dir_if_exists, set_global_seed
-from human_aware_rl.imitation.behavioural_cloning import get_bc_agent_from_saved, DEFAULT_ENV_PARAMS, BC_SAVE_DIR
+from human_aware_rl.imitation.behavioural_cloning import get_bc_agent_from_saved, DEFAULT_ENV_PARAMS, BC_SAVE_DIR, plot_bc_run
 from human_aware_rl.experiments.bc_experiments import BEST_BC_MODELS_PATH, BC_MODELS_EVALUATION_PATH
 
 ### QUIET WARNINGS
@@ -488,6 +489,36 @@ def configure_other_agent(params, gym_env, mlp, mdp):
         agent.set_mdp(mdp)
         gym_env.other_agent = agent
 
+def test_bc_bc_agent(model_name):
+    display = False
+    n=3
+
+    # model_name = 'random0_bc_test_seed3'
+
+    agent_bc_0, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
+    agent_bc_1, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
+
+
+    input_params = copy.deepcopy(bc_params)
+
+    agent_eval = AgentEvaluator(input_params['mdp_params'], input_params['env_params'])
+    # ap = AgentPair(a0, a1)
+    # trajectories = a_eval.evaluate_agent_pair(ap, num_games=n_games, display=display)
+
+    ap0 = AgentPair(agent_bc_0, agent_bc_1)
+    rollouts1 = agent_eval.evaluate_agent_pair(ap0, display=display, num_games=n)
+
+    # Sketch switch
+    ap1 = AgentPair(agent_bc_0, agent_bc_1)
+    rollouts2 = agent_eval.evaluate_agent_pair(ap1, display=display, num_games=n)
+
+
+    print('rollouts1', rollouts1)
+    print()
+    print('rollouts2', rollouts2)
+    return rollouts1, rollouts2
+
+
 def evaluate_other_agent(params, gym_env, mlp, mdp):
     # The other agent is a greedy human-like agent but nothing is trained. Agent that at each step selects a medium level action corresponding
     #     to the most intuitively high-priority thing to do.
@@ -503,6 +534,8 @@ def evaluate_other_agent(params, gym_env, mlp, mdp):
         raise ValueError("Other agent type must be bc train or bc test")
 
     print("LOADING BC MODEL FROM: {}".format(bc_model_path))
+
+    test_bc_bc_agent(bc_model_path)
 
     # print('best_bc_model_paths', best_bc_model_paths)
 

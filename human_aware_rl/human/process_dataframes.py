@@ -43,7 +43,20 @@ def get_trajs_from_data_selective(data_path, train_mdps, ordered_trajs, human_ai
     main_trials = pd.read_pickle(data_path)
     print('main_trials', main_trials.keys())
     all_workers = list(main_trials['workerid_num'].unique())
-    all_workers = [4, 15, 17, 22]
+
+    # Train Worker ID to Team: {2: 14, 4: 24, 15: 79, 17: 89, 19: 99, 22: 114}
+    # Test Worker ID to Team: {1: 9, 3: 19, 10: 54, 11: 59, 12: 64, 13: 69}
+
+    # if 'train' in data_path:
+    #     print('TRAIN IN DATAPATH')
+    #     main_trials = main_trials[main_trials['workerid_num']==15]
+    #     all_workers = [15]
+
+    if 'train' in data_path:
+        print('TRAIN IN DATAPATH')
+        # main_trials = main_trials[main_trials['workerid_num']==15]
+        all_workers = [15, 22]
+    # all_workers = [4, 15, 17, 22]
     # print('all_workers', all_workers)
 
     trajs = convert_joint_df_trajs_to_overcooked_single(

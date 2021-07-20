@@ -19,8 +19,14 @@ from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_fro
 
 BC_SAVE_DIR = "../data/bc_runs/"
 
+# DEFAULT_DATA_PARAMS = {
+#     "train_mdps": ["simple"],
+#     "ordered_trajs": True,
+#     "human_ai_trajs": False,
+#     "data_path": "../data/human/anonymized/clean_train_trials.pkl"
+# }
 DEFAULT_DATA_PARAMS = {
-    "train_mdps": ["simple"],
+    "train_mdps": ["random0"],
     "ordered_trajs": True,
     "human_ai_trajs": False,
     "data_path": "../data/human/anonymized/clean_train_trials.pkl"
@@ -46,13 +52,28 @@ def init_gym_env(bc_params):
 
 def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
     # Extract necessary expert data and save in right format
-    expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])
+    expert_trajs = get_trajs_from_data(**bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp.npz")
+    # Create a stable-baselines ExpertDataset
     dataset = ExpertDataset(expert_path="temp.npz", verbose=1, train_fraction=0.85)
     assert dataset is not None
     assert dataset.train_loader is not None
-    return bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps)
+
+    ## GET DATASET FOR FINETUNING
+    # Extract necessary expert data and save in right format
+    expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])
+    # Load the expert dataset
+    save_npz_file(expert_trajs, "temp_finetune.npz")
+    # Create a stable-baselines ExpertDataset
+    finetune_dataset = ExpertDataset(expert_path="temp_finetune.npz", verbose=1, train_fraction=0.85)
+    assert finetune_dataset is not None
+    assert finetune_dataset.train_loader is not None
+
+
+    # Pass the ExpertDataset into BC model and params
+    # Return the BC model
+    return bc_w_finetune_from_dataset_and_params(dataset, finetune_dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps)
 
 def bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps):
     # Setup env
@@ -61,9 +82,28 @@ def bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, l
     # Train and save model
     create_dir_if_not_exists(BC_SAVE_DIR + model_save_dir)
 
+    # Create stable-baselines GAIL base model
     model = GAIL("MlpPolicy", gym_env, dataset, verbose=1)
+    # Only pretrain the GAIL model, which is just supervised BC on the ExpertDataset.
     model.pretrain(dataset, n_epochs=num_epochs, learning_rate=lr, adam_epsilon=adam_eps, save_dir=BC_SAVE_DIR + model_save_dir)
 
+    # Save BC Model
+    save_bc_model(model_save_dir, model, bc_params)
+    return model
+
+def bc_w_finetune_from_dataset_and_params(dataset, finetune_dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps):
+    # Setup env
+    gym_env = init_gym_env(bc_params)
+
+    # Train and save model
+    create_dir_if_not_exists(BC_SAVE_DIR + model_save_dir)
+
+    # Create stable-baselines GAIL base model
+    model = GAIL("MlpPolicy", gym_env, dataset, verbose=1)
+    # Only pretrain the GAIL model, which is just supervised BC on the ExpertDataset.
+    model.pretrain_and_finetune(dataset, finetune_dataset, n_epochs=num_epochs, learning_rate=lr, adam_epsilon=adam_eps, save_dir=BC_SAVE_DIR + model_save_dir)
+
+    # Save BC Model
     save_bc_model(model_save_dir, model, bc_params)
     return model
 
@@ -121,11 +161,13 @@ def get_bc_agent_from_model(model, bc_params, no_waits=False):
 
 def eval_with_benchmarking_from_model(n_games, model, bc_params, no_waits, display=False):
     bc_params = copy.deepcopy(bc_params)
+    # Both agents are the same model, same params
     a0 = get_bc_agent_from_model(model, bc_params, no_waits)
     a1 = get_bc_agent_from_model(model, bc_params, no_waits)
     del bc_params["data_params"], bc_params["mdp_fn_params"]
     a_eval = AgentEvaluator(**bc_params)
     ap = AgentPair(a0, a1)
+    # Get rollouts from playing both agents (identical agents) with each other.
     trajectories = a_eval.evaluate_agent_pair(ap, num_games=n_games, display=display)
     return trajectories
 

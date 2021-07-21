@@ -127,6 +127,13 @@ best_bc_models_performance =  {
 'BC_train+BC_test_0': (21.2, 1.8070971196922425), 
 'BC_train+BC_test_1': (20.4, 2.4491631223746615)}}
 
+WHEN YOU DO NOT FINETUNE TEST
+best_bc_models_performance =  {'random0': {'BC_train+BC_train': (20.6, 2.5211901951261035), 'BC_test+BC_test': (37.8, 2.85510069874952), 'BC_train+BC_test_0': (21.6, 2.540551121312067), 'BC_train+BC_test_1': (30.4, 3.0394736386420593)}}
+
+WHEN YOU FINETUNE TEST AS WELL
+best_bc_models_performance =  {'random0': {'BC_train+BC_train': (20.6, 2.5211901951261035), 'BC_test+BC_test': (36.2, 2.7231599291998996), 'BC_train+BC_test_0': (19.0, 2.4228082879171433), 'BC_train+BC_test_1': (31.0, 2.8478061731796283)}}
+
+
 Single + Single = Okay
 Dual + Dual = Good
 Dual + Single = Bad
@@ -139,6 +146,69 @@ Questions to Answer:
 2. Does the Single agent accomodate the dual?
 3. Or do both agents just run their own policies?
 4. Do they run into any problems?
+
+
+HORIZON = 400
+
+# Evaluate the BC test model playing with BC train. Get mean and stderr of the returns of rollouts. Swap the order. BC train is Player 1. This is "BC_train+BC_test_1".
+
+
+Regular PPO with BC train specific: 2021_07_20-11_45_59_testing_ppo_bc_train_fc_1_random0
+
+100%|███████████████████████████████████████████████████████| 100/100 [01:18<00:00,  1.28it/s]
+Avg reward 11.00 (std: 14.53, se: 1.45) over 100 games of avg length 400.0
+100%|███████████████████████████████████████████████████████| 100/100 [01:19<00:00,  1.25it/s]
+Avg reward 7.80 (std: 12.93, se: 1.29) over 100 games of avg length 400.0
+
+........................................................................................
+PLAY WITH TRAIN: SINGLE SPECIALIST
+
+# Player 1(Server) is PPO, Player 2(Dispenser) is HProxy
+Avg reward 29.60 (std: 22.89, se: 2.29) over 100 games of avg length 400.0
+
+
+# Player 1(Server) is HProxy, Player 2(Dispenser) is PPO
+Avg reward 16.20 (std: 14.88, se: 1.49) over 100 games of avg length 400.0
+
+........................................................................................
+PLAY WITH TEST: DUAL SPECIALIST
+# Player 1(Server) is PPO, Player 2(Dispenser) is HProxy
+Avg reward 15.20 (std: 16.52, se: 1.65) over 100 games of avg length 400.0
+
+# Player 1(Server) is HProxy, Player 2(Dispenser) is PPO
+Avg reward 15.40 (std: 15.71, se: 1.57) over 100 games of avg length 400.0
+
+ORIGINAL TEST HUMAN PROXY
+# Player 1(Server) is PPO, Player 2(Dispenser) is HProxy
+Avg reward 9.40 (std: 13.40, se: 1.34) over 100 games of avg length 400.0
+
+# Player 1(Server) is HProxy, Player 2(Dispenser) is PPO
+Avg reward 16.40 (std: 14.25, se: 1.42) over 100 games of avg length 400.0
+
+
+# EVALUATION
+# Player 1(Server) is PPO, Player 2(Dispenser) is HProxy
+Avg reward 11.00 (std: 14.25, se: 1.42) over 100 games of avg length 400.0
+
+# Player 1(Server) is HProxy, Player 2(Dispenser) is PPO
+Avg reward 17.00 (std: 15.59, se: 1.56) over 100 games of avg length 400.0
+
+
+
+
+
+........................................................................................
+PPO With CF: 2021_07_20-12_18_57_testing_ppo_bc_train_fc_1_random0
+
+
+# Player 1(Server) is PPO, Player 2(Dispenser) is HProxy
+Avg reward 9.20 (std: 13.39, se: 1.34) over 100 games of avg length 400.0
+
+# Player 1(Server) is HProxy, Player 2(Dispenser) is PPO
+Avg reward 9.40 (std: 11.47, se: 1.15) over 100 games of avg length 400.0
+
+
+
 
 
 

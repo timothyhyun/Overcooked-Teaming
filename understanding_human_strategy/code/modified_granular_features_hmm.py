@@ -537,7 +537,14 @@ def get_state_tuple(old_trials, p1_data, p2_data, objects_data, p1_actions,
                             len(top_soup_contents_dict['this_contents']), len(right_soup_contents_dict['this_contents']))
         state_tuples_list.append(state_tuples_add)
 
-    return state_tuples_list
+    final_state_tuples_list = []
+    # If either pot is full, has 3 in index 4 or 5
+    for i in range(len(state_tuples_list)):
+        element = state_tuples_list[i]
+        if element[4] == 3 or element[5] == 3:
+            final_state_tuples_list.append(element)
+    print('length of output = ', len(final_state_tuples_list))
+    return final_state_tuples_list
 
 def featurize_data_for_granular_hmm():
     team_state_data = {}

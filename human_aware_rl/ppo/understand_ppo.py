@@ -671,7 +671,7 @@ def get_params_test_exp_1_config():
     ##############
 
     # Total environment timesteps for the PPO run
-    PPO_RUN_TOT_TIMESTEPS = 1e6 if not LOCAL_TESTING else 10000
+    PPO_RUN_TOT_TIMESTEPS = 5e6 if not LOCAL_TESTING else 10000
     # PPO_RUN_TOT_TIMESTEPS = 8e6 if not LOCAL_TESTING else 10000
 
 
@@ -882,11 +882,12 @@ def get_rollouts_from_match_ppo_with_other_agent(save_dir, other_agent, params, 
     # ap = AgentPair(a0, a1)
     # trajectories = a_eval.evaluate_agent_pair(ap, num_games=n_games, display=display)
 
-
+    # Player 1 is PPO, Player 2 is HProxy
     ap0 = AgentPair(agent, other_agent)
     rollouts1 = agent_eval.evaluate_agent_pair(ap0, display=display, num_games=n)
 
     # Sketch switch
+    # Player 1 is HProxy, Player 2 is PPO
     ap1 = AgentPair(other_agent, agent)
     rollouts2 = agent_eval.evaluate_agent_pair(ap1, display=display, num_games=n)
     return rollouts1, rollouts2
@@ -895,27 +896,31 @@ def test_ppo_agent(params):
 
     # save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
     # save_dir = '2021_07_19-14_03_42_testing_ppo_bc_train_fc_1_random0'
-    save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    # save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    save_dir = '2021_07_20-11_45_59_testing_ppo_bc_train_fc_1_random0'
     a_self_play, a_config = get_ppo_agent(save_dir, seed=9456, best=False)
-    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, params, n=3, display=False)
-    print('rollouts1', rollouts1)
-    print()
-    print('rollouts2', rollouts2)
+    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, params, n=4, display=False)
+    # print('rollouts1', rollouts1)
+    # print()
+    # print('rollouts2', rollouts2)
     return rollouts1, rollouts2
 
 
 def test_bc_ppo_agent():
 
-    # model_name = 'random0_bc_test_seed3'
-    model_name = 'random0_bc_train_seed0'
-    save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    model_name = 'random0_bc_test_seed3'
+    # model_name = 'random0_bc_train_seed0'
+    # model_name = 'random0_bc_test_seed0'
+    # save_dir = '2021_07_18-16_39_19_testing_ppo_bc_train_fc_1_random0'
+    # save_dir = '2021_07_20-11_45_59_testing_ppo_bc_train_fc_1_random0'
+    save_dir = '2021_07_20-12_18_57_testing_ppo_bc_train_fc_1_random0'
 
     a_self_play, bc_params = get_bc_agent_from_saved(model_name, no_waits=False)
     # a_self_play, a_config = get_ppo_agent(save_dir, seed=9456, best=False)
-    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, bc_params, n=3, display=False)
-    print('rollouts1', rollouts1)
-    print()
-    print('rollouts2', rollouts2)
+    rollouts1, rollouts2 = get_rollouts_from_match_ppo_with_other_agent(save_dir, a_self_play, bc_params, n=100, display=False)
+    # print('rollouts1', rollouts1)
+    # print()
+    # print('rollouts2', rollouts2)
     return rollouts1, rollouts2
 
 
@@ -943,9 +948,9 @@ def test_bc_bc_agent():
     rollouts2 = agent_eval.evaluate_agent_pair(ap1, display=display, num_games=n)
 
 
-    print('rollouts1', rollouts1)
-    print()
-    print('rollouts2', rollouts2)
+    # print('rollouts1', rollouts1)
+    # print()
+    # print('rollouts2', rollouts2)
     return rollouts1, rollouts2
 
 
@@ -958,7 +963,7 @@ if __name__ == "__main__":
     dissect_ppo_run(test_exp_params)
 
     # test_ppo_agent(test_exp_params)
-    # test_bc_ppo_agent()
+    test_bc_ppo_agent()
     # test_bc_bc_agent()
 
 

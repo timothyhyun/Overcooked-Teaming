@@ -60,6 +60,21 @@ def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps
     assert dataset is not None
     assert dataset.train_loader is not None
 
+
+    # Pass the ExpertDataset into BC model and params
+    # Return the BC model
+    return bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps)
+
+def train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
+    # Extract necessary expert data and save in right format
+    expert_trajs = get_trajs_from_data(**bc_params["data_params"])
+    # Load the expert dataset
+    save_npz_file(expert_trajs, "temp.npz")
+    # Create a stable-baselines ExpertDataset
+    dataset = ExpertDataset(expert_path="temp.npz", verbose=1, train_fraction=0.85)
+    assert dataset is not None
+    assert dataset.train_loader is not None
+
     ## GET DATASET FOR FINETUNING
     # Extract necessary expert data and save in right format
     expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])

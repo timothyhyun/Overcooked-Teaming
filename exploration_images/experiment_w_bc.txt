@@ -212,7 +212,60 @@ Avg reward 9.40 (std: 11.47, se: 1.15) over 100 games of avg length 400.0
 
 
 
+........................................................................................
+Results: 7/23/21
+........................................................................................
+BERKELEY PERFORMANCE
+'random0': {
+'BC_train+BC_train': (23.0, 2.503996805109783), 
+'BC_test+BC_test': (30.6, 2.8064924728208345), 
+'BC_train+BC_test_0': (20.6, 2.537006109570885), 
+'BC_train+BC_test_1': (33.4, 2.757607658823132)}, 
 
+
+FINETUNE TO SINGLE POT: 50, 50
+best_bc_models_performance =  {
+'random0': {
+'BC_train+BC_train': (20.6, 2.5211901951261035), 
+'BC_test+BC_test': (37.8, 2.85510069874952), 
+'BC_train+BC_test_0': (21.6, 2.540551121312067), 
+'BC_train+BC_test_1': (30.4, 3.0394736386420593)}}
+
+FINETUNE TO SINGLE POT: 100 only on DP teams
+best_bc_models_performance =  {
+'random0': {
+'BC_train+BC_train': (8.6, 1.363964808930201), 
+'BC_test+BC_test': (28.8, 2.6880476186258315), 
+'BC_train+BC_test_0': (7.4, 1.1542963224406462), 
+'BC_train+BC_test_1': (9.4, 1.560897177907629)}}
+
+
+
+........................................................................................
+FINETUNE TO DUAL POT: 50, 50
+best_bc_models_performance =  {
+'random0': {
+'BC_train+BC_train': (22.8, 2.884718357136447), 
+'BC_test+BC_test': (40.2, 2.6607517734655364), 
+'BC_train+BC_test_0': (25.0, 2.471841418861655), 
+'BC_train+BC_test_1': (25.0, 2.6739483914241875)}}
+
+
+
+FINETUNE TO DUAL POT: 100 only on DP teams
+Avg reward 37.80 (std: 29.52, se: 2.95) over 100 games of avg length 400.0
+best_bc_models_performance =  {
+'random0': {
+'BC_train+BC_train': (22.8, 2.6536013264995177), 
+'BC_test+BC_test': (39.8, 2.9731464814233415), 
+'BC_train+BC_test_0': (22.4, 2.404662138430262), 
+'BC_train+BC_test_1': (37.8, 2.9515419698862493)}}
+
+
+
+
+FINETUNE TO DUAL POT: 40, 60
+best_bc_models_performance =  {'random0': {'BC_train+BC_train': (22.8, 2.884718357136447), 'BC_test+BC_test': (40.2, 2.6607517734655364), 'BC_train+BC_test_0': (25.0, 2.471841418861655), 'BC_train+BC_test_1': (25.0, 2.6739483914241875)}}
 
 
 

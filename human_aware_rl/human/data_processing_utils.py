@@ -135,6 +135,7 @@ def df_traj_to_python_joint_traj(traj_df, complete_traj=True):
         'round_num': datapoint['round_num'],
         'mdp': agent_evaluator.env.mdp
     }
+
     return trajectories, traj_metadata
 
 def convert_joint_df_trajs_to_overcooked_single(main_trials, worker_ids, layout_names, ordered_pairs=True, human_ai_trajs=False):

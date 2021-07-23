@@ -1,0 +1,103 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/home/mzhao2/implicit_communication/human_aware_rl/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.0.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.17.3",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "ppo.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "a1c70b2f44bbbdddc79b14678ceaf0367ee099f6",
+        "dirty": true,
+        "url": "https://github.com/HumanCompatibleAI/human_aware_rl.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo.py",
+        "_sources/ppo_f628470a3bd303e62d2651dcd2cd0599.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-07-23T14:15:37.582523",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "gpus": {
+      "driver_version": "465.19.01",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11019
+        },
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11016
+        }
+      ]
+    },
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=ppo_hm_random0",
+        "layout_name=random0",
+        "REW_SHAPING_HORIZON=4e6",
+        "PPO_RUN_TOT_TIMESTEPS=9e6",
+        "LR=1.5e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=hm",
+        "HM_PARAMS=[True, 2.2, True, 2]",
+        "SEEDS=[8355, 5748, 1352, 3325, 8611]",
+        "VF_COEF=0.1",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=2",
+        "SELF_PLAY_HORIZON=None",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-07-23T13:56:16.975348",
+  "status": "RUNNING"
+}

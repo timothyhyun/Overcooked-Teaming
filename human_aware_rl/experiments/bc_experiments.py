@@ -14,8 +14,8 @@ from human_aware_rl.imitation.behavioural_cloning import train_bc_agent, eval_wi
 
 
 # Path for dict containing the best bc models paths
-BEST_BC_MODELS_PATH = BC_SAVE_DIR + "best_bc_model_paths"
-BC_MODELS_EVALUATION_PATH = BC_SAVE_DIR + "bc_models_all_evaluations"
+BEST_BC_MODELS_PATH = BC_SAVE_DIR + "best_bc_model_paths_BERKREPLICATE"
+BC_MODELS_EVALUATION_PATH = BC_SAVE_DIR + "bc_models_all_evaluations_BERKREPLICATE"
 
 def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_eps, model):
     """Trains a BC agent from human human data (model can either be `train` or `test`, which is trained
@@ -131,8 +131,10 @@ def run_all_bc_experiments():
         final_bc_model_paths["train"][layout_name] = "{}_bc_train_seed{}".format(layout_name, train_idx)
         final_bc_model_paths["test"][layout_name] = "{}_bc_test_seed{}".format(layout_name, test_idx)
 
+    print('\n\nFINAL final_bc_model_paths: ', final_bc_model_paths)
     best_bc_models_performance = evaluate_bc_models(final_bc_model_paths, num_rounds)
-    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance")
+    print('\n\nFINAL best_bc_models_performance', best_bc_models_performance)
+    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance_REPLICATE")
     
 
 if __name__ == "__main__":

@@ -340,7 +340,7 @@ class BaseRLModel(ABC):
 
         best_accuracy, best_loss = 0, np.inf
         train_losses, val_losses, val_accuracies = [], [], []
-        for epoch_idx in range(int(n_epochs)):
+        for epoch_idx in range(int(int(n_epochs)*4/10)):
             train_loss = 0.0
             # Full pass on the training set
             for _ in range(len(dataset.train_loader)):
@@ -406,7 +406,7 @@ class BaseRLModel(ABC):
         print(".............BEGIN FINETUNING...................")
         best_accuracy, best_loss = 0, np.inf
         train_losses, val_losses, val_accuracies = [], [], []
-        for epoch_idx in range(int(n_epochs)):
+        for epoch_idx in range(int(int(n_epochs)*6/10)):
             train_loss = 0.0
             # Full pass on the training set
             for _ in range(len(finetune_dataset.train_loader)):

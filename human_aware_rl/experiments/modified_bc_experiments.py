@@ -62,7 +62,7 @@ def train_bc_models_w_finetuning_on_single_strat_train(all_params, seeds):
             plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
 
             # 2. Test BC model
-            model = train_bc_agent_from_hh_data(agent_name="bc_test_seed{}".format(seed_idx), model='test', **params, finetuning=True)
+            model = train_bc_agent_from_hh_data(agent_name="bc_test_seed{}".format(seed_idx), model='test', **params, finetuning=False)
             # plot_bc_run(model.bc_info, params['num_epochs'])
             plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
             reset_tf()
@@ -80,11 +80,11 @@ def evaluate_all_bc_models(all_params, num_rounds, num_seeds):
             # For all params and seeds, evaluate the model with a saved model. Pass in the BC model file name to evaluate.
             eval_trajs = eval_with_benchmarking_from_saved(num_rounds, layout_name + "_bc_train_seed{}".format(seed_idx))
             bc_models_evaluation[layout_name]["train"][seed_idx] = np.mean(eval_trajs['ep_returns'])
-            pickle.dump(eval_trajs, open('saved_eval_trajs/train_train_ex2.pkl', 'wb'))
+            pickle.dump(eval_trajs, open('saved_eval_trajs/train_train_ex3.pkl', 'wb'))
             
             eval_trajs = eval_with_benchmarking_from_saved(num_rounds, layout_name + "_bc_test_seed{}".format(seed_idx))
             bc_models_evaluation[layout_name]["test"][seed_idx] = np.mean(eval_trajs['ep_returns'])
-            pickle.dump(eval_trajs, open('saved_eval_trajs/test_test_ex2.pkl', 'wb'))
+            pickle.dump(eval_trajs, open('saved_eval_trajs/test_test_ex3.pkl', 'wb'))
 
     return bc_models_evaluation
 
@@ -103,12 +103,12 @@ def evaluate_bc_models(bc_model_paths, num_rounds):
         # Evaluate the BC train model playing with itself. Get mean and stderr of the returns of rollouts. This is "BC_train+BC_train".
         eval_trajs = eval_with_benchmarking_from_saved(num_rounds, bc_model_paths['train'][layout_name])
         best_bc_models_performance[layout_name]["BC_train+BC_train"] = mean_and_std_err(eval_trajs['ep_returns'])
-        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_train_ex2.pkl', 'wb'))
+        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_train_ex3.pkl', 'wb'))
 
         # Evaluate the BC test model playing with itself. Get mean and stderr of the returns of rollouts. This is "BC_test+BC_test".
         eval_trajs = eval_with_benchmarking_from_saved(num_rounds, bc_model_paths['test'][layout_name])
         best_bc_models_performance[layout_name]["BC_test+BC_test"] = mean_and_std_err(eval_trajs['ep_returns'])
-        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_test_and_bc_test_ex2.pkl', 'wb'))
+        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_test_and_bc_test_ex3.pkl', 'wb'))
 
         # Evaluate the BC test model playing with BC train. Get mean and stderr of the returns of rollouts. BC train
         # is Player 0. This is "BC_train+BC_test_0".
@@ -121,13 +121,13 @@ def evaluate_bc_models(bc_model_paths, num_rounds):
         
         train_and_test = ae.evaluate_agent_pair(AgentPair(bc_train, bc_test), num_games=num_rounds)
         best_bc_models_performance[layout_name]["BC_train+BC_test_0"] = mean_and_std_err(train_and_test['ep_returns'])
-        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_test_0_ex2.pkl', 'wb'))
+        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_test_0_ex3.pkl', 'wb'))
 
         # Evaluate the BC test model playing with BC train. Get mean and stderr of the returns of rollouts. Swap the order. BC train
         # is Player 1. This is "BC_train+BC_test_1".
         test_and_train = ae.evaluate_agent_pair(AgentPair(bc_test, bc_train), num_games=num_rounds)
         best_bc_models_performance[layout_name]["BC_train+BC_test_1"] = mean_and_std_err(test_and_train['ep_returns'])
-        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_test_1_ex2.pkl', 'wb'))
+        pickle.dump(eval_trajs, open('saved_eval_trajs/bc_train_and_bc_test_1_ex3.pkl', 'wb'))
     
     return best_bc_models_performance
 

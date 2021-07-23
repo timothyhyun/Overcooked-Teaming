@@ -564,14 +564,51 @@ def run_naive_hmm_on_p2():
     test_unsuper_hmm = unsupervised_HMM(X, n_states, N_iters)
 
     # print('emission', test_unsuper_hmm.generate_emission(10))
+    hidden_seqs = []
     for j in range(len(X)):
-        print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", test_unsuper_hmm.viterbi(X[j]))
+        viterbi_output = test_unsuper_hmm.viterbi(X[j])
+        hidden_seqs.append([int(x) for x in viterbi_output])
+        print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
 
-    return test_unsuper_hmm
+    return test_unsuper_hmm, hidden_seqs
 
+def pad_w_mode(hidden_seqs):
+    max_len = max(len(elem) for elem in hidden_seqs)
+    X = []
+    for i in range(len(hidden_seqs)):
+        team_hs = hidden_seqs[i]
+        team_hs_pad = []
+        team_hs_mode = max(set(team_hs), key=team_hs.count)
+        for j in range(max_len):
+            if j < len(team_hs):
+                team_hs_pad.append(team_hs[j])
+            else:
+                team_hs_pad.append(team_hs_mode)
+        X.append(team_hs_pad)
+    # print('X', X)
+    return np.array(X)
+
+
+
+def cluster_hidden_states(hidden_seqs, n_clusters=2):
+    X = pad_w_mode(hidden_seqs)
+    print('X=', X)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
+    cluster_labels = kmeans.labels_
+    cluster_centers = kmeans.cluster_centers_
+    return cluster_labels, cluster_centers
 
 if __name__ == '__main__':
-    run_naive_hmm_on_p2()
+    test_unsuper_hmm, hidden_seqs = run_naive_hmm_on_p2()
+
+    # Try N=2 Clusters
+    cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=2)
+    print(f'\nN=2: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+
+    # Try N=3 Clusters
+    cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=3)
+    print(f'\nN=3: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+
 
 
 

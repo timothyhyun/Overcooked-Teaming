@@ -1,0 +1,23 @@
+All BC models evaluation:  {'simple': {'train': {0: 100.2, 1: 77.8, 2: 112.0, 3: 106.2, 4: 102.4}, 'test': {0: 116.2, 1: 109.0, 2: 109.2, 3: 99.0, 4: 105.4}}, 'random1': {'train': {0: 67.4, 1: 87.2, 2: 83.2, 3: 79.4, 4: 82.6}, 'test': {0: 78.4, 1: 80.0, 2: 74.8, 3: 79.6, 4: 73.4}}, 'unident_s': {'train': {0: 137.2, 1: 129.0, 2: 115.0, 3: 138.6, 4: 136.4}, 'test': {0: 127.4, 1: 134.4, 2: 130.4, 3: 100.8, 4: 132.4}}, 'random0': {'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 'random3': {'train': {0: 42.6, 1: 47.0, 2: 43.6, 3: 42.4, 4: 45.8}, 'test': {0: 47.4, 1: 49.2, 2: 46.4, 3: 49.6, 4: 48.0}}}
+
+
+FINAL final_bc_model_paths:  {'train': {'simple': 'simple_bc_train_seed0', 'unident_s': 'unident_s_bc_train_seed0', 'random1': 'random1_bc_train_seed4', 'random0': 'random0_bc_train_seed2', 'random3': 'random3_bc_train_seed3'}, 'test': {'simple': 'simple_bc_test_seed1', 'unident_s': 'unident_s_bc_test_seed0', 'random1': 'random1_bc_test_seed2', 'random0': 'random0_bc_test_seed1', 'random3': 'random3_bc_test_seed3'}}
+
+
+
+FINAL best_bc_models_performance {'simple': {'BC_train+BC_train': (102.2, 2.621373685684664), 'BC_test+BC_test': (109.4, 2.50527443606484), 'BC_train+BC_test_0': (85.6, 3.047359512758546), 'BC_train+BC_test_1': (102.8, 2.9396598442677004)}, 'unident_s': {'BC_train+BC_train': (124.6, 5.534293089455959), 'BC_test+BC_test': (126.2, 5.445695547861632), 'BC_train+BC_test_0': (110.6, 5.9225332417809184), 'BC_train+BC_test_1': (126.6, 5.440992556510254)}, 'random1': {'BC_train+BC_train': (84.6, 2.1698847895683313), 'BC_test+BC_test': (75.4, 3.160443006921656), 'BC_train+BC_test_0': (75.2, 3.0740201690945357), 'BC_train+BC_test_1': (70.8, 2.820212757931571)}, 
+
+'random0': {
+'BC_train+BC_train': (23.0, 2.503996805109783), 
+'BC_test+BC_test': (30.6, 2.8064924728208345), 
+'BC_train+BC_test_0': (20.6, 2.537006109570885), 
+'BC_train+BC_test_1': (33.4, 2.757607658823132)}, 
+
+
+'random3': {'BC_train+BC_train': (46.2, 2.0336174664867532), 'BC_test+BC_test': (49.6, 2.0095770699328757), 'BC_train+BC_test_0': (43.0, 1.752141546793523), 'BC_train+BC_test_1': (41.2, 1.9963967541548453)}}
+
+
+
+
+
+

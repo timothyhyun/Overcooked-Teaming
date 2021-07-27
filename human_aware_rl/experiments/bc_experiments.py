@@ -105,6 +105,7 @@ def run_all_bc_experiments():
     params_random3 = {"layout_name": "random3", "num_epochs": 110, "lr": 1e-3, "adam_eps":1e-8}
 
     all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
+    # all_params = [params_random0]
     train_bc_models(all_params, seeds)
 
     # Evaluate BC models
@@ -134,7 +135,7 @@ def run_all_bc_experiments():
     print('\n\nFINAL final_bc_model_paths: ', final_bc_model_paths)
     best_bc_models_performance = evaluate_bc_models(final_bc_model_paths, num_rounds)
     print('\n\nFINAL best_bc_models_performance', best_bc_models_performance)
-    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance_REPLICATE")
+    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance_REPLICATE2")
     
 
 if __name__ == "__main__":

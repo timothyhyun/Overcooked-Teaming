@@ -14,6 +14,7 @@ from overcooked_ai_py.agents.agent import AgentFromPolicy, AgentPair
 from overcooked_ai_py.planning.planners import MediumLevelPlanner, NO_COUNTERS_PARAMS
 from overcooked_ai_py.utils import save_pickle, load_pickle
 
+from human_aware_rl.utils import reset_tf, set_global_seed, common_keys_equal
 from human_aware_rl.baselines_utils import create_dir_if_not_exists
 from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective
 
@@ -52,6 +53,7 @@ def init_gym_env(bc_params):
 
 def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
     # Extract necessary expert data and save in right format
+    set_global_seed(64)
     expert_trajs = get_trajs_from_data(**bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp.npz")
@@ -67,6 +69,7 @@ def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps
 
 def train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
     # Extract necessary expert data and save in right format
+    set_global_seed(64)
     expert_trajs = get_trajs_from_data(**bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp.npz")

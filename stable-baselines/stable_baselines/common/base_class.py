@@ -304,6 +304,11 @@ class BaseRLModel(ABC):
         continuous_actions = isinstance(self.action_space, gym.spaces.Box)
         discrete_actions = isinstance(self.action_space, gym.spaces.Discrete)
 
+        first_half_size = int(int(n_epochs)*3/10)
+        second_half_size = int(int(n_epochs)*7/10)
+        if first_half_size + second_half_size != int(n_epochs):
+            second_half_size += (int(n_epochs) - (first_half_size + second_half_size))
+
         assert discrete_actions or continuous_actions, 'Only Discrete and Box action spaces are supported'
 
         # Validate the model every 10% of the total number of iteration
@@ -340,7 +345,7 @@ class BaseRLModel(ABC):
 
         best_accuracy, best_loss = 0, np.inf
         train_losses, val_losses, val_accuracies = [], [], []
-        for epoch_idx in range(int(int(n_epochs)*4/10)):
+        for epoch_idx in range(first_half_size):
             train_loss = 0.0
             # Full pass on the training set
             for _ in range(len(dataset.train_loader)):
@@ -405,8 +410,8 @@ class BaseRLModel(ABC):
         # BEGINNING FINETUNING
         print(".............BEGIN FINETUNING...................")
         best_accuracy, best_loss = 0, np.inf
-        train_losses, val_losses, val_accuracies = [], [], []
-        for epoch_idx in range(int(int(n_epochs)*6/10)):
+        # train_losses, val_losses, val_accuracies = [], [], []
+        for epoch_idx in range(second_half_size):
             train_loss = 0.0
             # Full pass on the training set
             for _ in range(len(finetune_dataset.train_loader)):

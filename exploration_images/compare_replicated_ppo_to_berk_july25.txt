@@ -1,0 +1,281 @@
+........................................................................................
+
+TRUE BERK BC EVALS
+
+true_berk_best_bc_model_paths =  {'train': {'simple': 'simple_bc_train_seed3', 'random1': 'random1_bc_train_seed0', 'unident_s': 'unident_s_bc_train_seed0', 'random0': 'random0_bc_train_seed0', 'random3': 'random3_bc_train_seed2'}, 'test': {'simple': 'simple_bc_test_seed2', 'random1': 'random1_bc_test_seed2', 'unident_s': 'unident_s_bc_test_seed0', 'random0': 'random0_bc_test_seed2', 'random3': 'random3_bc_test_seed3'}}
+
+true_berk_bc_models_all_evaluations =  {'simple': {'train': {0: 100.2, 1: 77.8, 2: 112.0, 3: 106.2, 4: 102.4}, 'test': {0: 116.2, 1: 109.0, 2: 109.2, 3: 99.0, 4: 105.4}}, 'random1': {'train': {0: 67.4, 1: 87.2, 2: 83.2, 3: 79.4, 4: 82.6}, 'test': {0: 78.4, 1: 80.0, 2: 74.8, 3: 79.6, 4: 73.4}}, 'unident_s': {'train': {0: 137.2, 1: 129.0, 2: 115.0, 3: 138.6, 4: 136.4}, 'test': {0: 127.4, 1: 134.4, 2: 130.4, 3: 100.8, 4: 132.4}}, 'random0': {'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 'random3': {'train': {0: 42.6, 1: 47.0, 2: 43.6, 3: 42.4, 4: 45.8}, 'test': {0: 47.4, 1: 49.2, 2: 46.4, 3: 49.6, 4: 48.0}}}
+
+true_berk_best_bc_models_performance =  {'simple': {'BC_train+BC_train': (109.5, 2.448213634469018), 'BC_test+BC_test': (115.0, 3.2977264895682294), 'BC_train+BC_test_0': (103.5, 3.382861215007201), 'BC_train+BC_test_1': (110.0, 3.3911649915626336)}, 'unident_s': {'BC_train+BC_train': (136.0, 5.300943312279428), 'BC_test+BC_test': (140.5, 7.499583321758616), 'BC_train+BC_test_0': (136.5, 6.9959809891108184), 'BC_train+BC_test_1': (137.5, 8.40200868840303)}, 'random1': {'BC_train+BC_train': (67.0, 5.12591455254572), 'BC_test+BC_test': (67.0, 4.719639816765682), 'BC_train+BC_test_0': (59.0, 5.382843114934708), 'BC_train+BC_test_1': (70.0, 4.0)}, 'random0': {'BC_train+BC_train': (25.5, 4.358181960405049), 'BC_test+BC_test': (30.0, 4.301162633521313), 'BC_train+BC_test_0': (20.5, 4.329405270935028), 'BC_train+BC_test_1': (31.0, 4.997499374687304)}, 'random3': {'BC_train+BC_train': (48.0, 3.2249030993194197), 'BC_test+BC_test': (47.5, 2.084166500066633), 'BC_train+BC_test_0': (38.0, 3.987480407475377), 'BC_train+BC_test_1': (44.0, 3.016620625799671)}}
+
+
+........................................................................................
+........................................................................................
+
+BERKELEY MODELS - BC Trained PPO
+
+ppo_bc_models_performance =  {
+'simple': {
+'PPO_BC_train+BC_test_0': [153.0, 157.0, 162.5, 155.0, 154.5], 
+'PPO_BC_train+BC_test_1': [161.5, 168.0, 167.5, 158.5, 164.0], 
+'PPO_BC_test+BC_test_0': [167.5, 159.0, 162.5, 163.5, 166.0], 
+'PPO_BC_test+BC_test_1': [174.5, 169.5, 168.0, 169.0, 168.5]}, 
+
+'unident_s': {
+'PPO_BC_train+BC_test_0': [36.0, 156.5, 49.5, 49.5, 71.5], 
+'PPO_BC_train+BC_test_1': [169.5, 186.5, 183.5, 178.5, 176.0], 
+'PPO_BC_test+BC_test_0': [179.5, 109.5, 132.0, 108.0, 106.0], 
+'PPO_BC_test+BC_test_1': [184.0, 191.0, 156.0, 198.5, 196.5]}, 
+
+'random1': {
+'PPO_BC_train+BC_test_0': [129.5, 113.5, 129.5, 124.5, 135.0], 
+'PPO_BC_train+BC_test_1': [124.0, 126.5, 120.0, 140.5, 138.0], 
+'PPO_BC_test+BC_test_0': [158.0, 137.0, 149.0, 147.5, 141.0], 
+'PPO_BC_test+BC_test_1': [148.0, 136.5, 142.5, 141.5, 141.5]}, 
+
+
+
+********************************************************************************
+THIS IS WHAT I WANT TO REPLICATE
+
+
+SEEDS: [9456, 1887, 5578, 5987,  516]
+
+'random0': {
+'PPO_BC_train+BC_test_0': [47.0, 57.0, 60.5, 64.5, 65.5], 
+'PPO_BC_train+BC_test_1': [82.0, 73.5, 70.0, 75.5, 83.5], 
+
+********************************************************************************
+
+
+'PPO_BC_test+BC_test_0': [86.5, 76.5, 97.0, 93.0, 101.5], 
+'PPO_BC_test+BC_test_1': [72.5, 83.0, 78.5, 78.5, 86.5]}, 
+
+
+key: PPO_BC_train+BC_test_0, mean reward = 58.9, std = 6.673829485385434
+key: PPO_BC_train+BC_test_1, mean reward = 76.9, std = 5.112729212465687
+key: PPO_BC_test+BC_test_0, mean reward = 90.9, std = 8.725823743349393
+key: PPO_BC_test+BC_test_1, mean reward = 79.8, std = 4.728636167014756
+
+
+
+'random3': {'PPO_BC_train+BC_test_0': [69.5, 70.5, 64.5, 65.0, 78.0], 'PPO_BC_train+BC_test_1': [62.0, 58.0, 53.5, 49.5, 65.0], 'PPO_BC_test+BC_test_0': [94.5, 64.5, 92.5, 79.5, 87.0], 'PPO_BC_test+BC_test_1': [89.5, 59.5, 102.0, 81.5, 77.5]}}
+
+
+
+........................................................................................
+
+best_bc_model_paths =  {'train': {'simple': 'simple_bc_train_seed3', 'random1': 'random1_bc_train_seed0', 'unident_s': 'unident_s_bc_train_seed0', 
+
+'random0': 'random0_bc_train_seed0', 
+
+'random3': 'random3_bc_train_seed2'}, 
+
+
+
+'test': {'simple': 'simple_bc_test_seed2', 'random1': 'random1_bc_test_seed2', 'unident_s': 'unident_s_bc_test_seed0', 
+
+'random0': 'random0_bc_test_seed2', 
+'random3': 'random3_bc_test_seed3'}}
+
+........................................................................................
+BERKELEY MODELS - HM Trained PPO
+
+ppo_hm_models_performance =  {
+'simple': {
+'PPO_HM+BC_test': [116.80000000000001, 85.0, 88.8, 105.6, 122.2]}, 
+
+'unident_s': {'PPO_HM+BC_test': [148.2, 129.6, 146.39999999999998, 127.8, 112.6]}, 
+'random1': {'PPO_HM+BC_test': [66.19999999999999, 94.6, 97.0, 78.0, 74.6]}, 
+'random3': {'PPO_HM+BC_test': [40.2, 33.8, 31.8, 36.0, 33.8]}}
+
+ppo_sp_models_performance =  {
+'simple': {
+'PPO_SP+PPO_SP': [199.0, 182.0, 208.0, 199.5, 205.5], 
+'PPO_SP+BC_test_0': [90.5, 106.5, 106.0, 76.5, 104.5], 
+'PPO_SP+BC_test_1': [118.0, 104.5, 120.5, 104.5, 108.5]}, 
+
+'unident_s': {'PPO_SP+PPO_SP': [176.0, 155.5, 168.5, 175.5, 160.5], 'PPO_SP+BC_test_0': [29.5, 51.0, 34.5, 48.0, 24.5], 'PPO_SP+BC_test_1': [98.5, 116.0, 100.0, 98.5, 103.0]}, 'random1': {'PPO_SP+PPO_SP': [196.5, 203.0, 193.5, 175.5, 185.5], 'PPO_SP+BC_test_0': [35.5, 108.5, 50.0, 64.5, 76.0], 'PPO_SP+BC_test_1': [46.0, 113.5, 59.5, 65.5, 79.5]}, 
+
+'random0': {
+'PPO_SP+PPO_SP': [153.5, 150.5, 140.5, 163.5, 151.5], 
+'PPO_SP+BC_test_0': [24.0, 26.5, 20.5, 31.5, 13.5], 
+'PPO_SP+BC_test_1': [38.0, 42.0, 35.5, 63.0, 11.0]}, 
+
+'random3': {'PPO_SP+PPO_SP': [110.0, 131.0, 131.0, 115.0, 124.5], 'PPO_SP+BC_test_0': [33.0, 32.0, 25.0, 29.5, 35.5], 'PPO_SP+BC_test_1': [31.5, 32.5, 25.0, 25.5, 45.5]}}
+........................................................................................
+
+ReRUn BC Experiments
+
+FINAL best_bc_models_performance {'random0': {'BC_train+BC_train': (27.2, 2.9191779664830304), 'BC_test+BC_test': (34.0, 3.0), 'BC_train+BC_test_0': (22.4, 2.5811625287842683), 'BC_train+BC_test_1': (30.4, 2.863284826907725)}}
+
+
+Is it the same as:
+TRUE BERK BC EVALS
+
+true_berk_best_bc_model_paths =  {
+'train': {
+'random0': 'random0_bc_train_seed0', 
+
+'test': {
+'random0': 'random0_bc_test_seed2', 
+
+true_berk_bc_models_all_evaluations =  
+'random0': {
+'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 
+'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 
+
+true_berk_best_bc_models_performance =  {
+
+'random0': {
+'BC_train+BC_train': (25.5, 4.358181960405049), 
+'BC_test+BC_test': (30.0, 4.301162633521313), 
+'BC_train+BC_test_0': (20.5, 4.329405270935028), 
+'BC_train+BC_test_1': (31.0, 4.997499374687304)}, 
+
+
+........................................................................................
+........................................................................................
+MY PPO MODELS - REPLICATED BERKELEY PPO
+
+
+
+WHAT I GET WITH: random0_bc_test_seed3
+
+ppo_bc_performance {
+'random0': defaultdict(<class 'list'>, {
+
+'PPO_BC_train+PPO_BC_train': [77.6, 78.8, 8.0, 60.4, 41.6], 
+
+'PPO_BC_train+BC_test_0': [47.2, 56.6, 34.4, 46.4, 55.2], 
+'PPO_BC_train+BC_test_1': [68.0, 82.0, 81.4, 84.6, 76.6]})}
+
+key: PPO_BC_train+PPO_BC_train, mean reward = 53.279999999999994, std = 26.382297094832357
+key: PPO_BC_train+BC_test_0, mean reward = 47.96, std = 7.924039373955686
+key: PPO_BC_train+BC_test_1, mean reward = 78.52000000000001, std = 5.8605119230319795
+
+
+........................................................................................
+
+WHAT I GET WITH: My random0_bc_test_seed2 (not the same as original possibly)
+
+ppo_bc_performance {'random0': defaultdict(<class 'list'>, {
+
+'PPO_BC_train+PPO_BC_train': [77.6, 78.8, 8.0, 60.4, 41.6], 
+'PPO_BC_train+BC_test_0': [53.2, 60.8, 33.4, 50.6, 66.4], 
+'PPO_BC_train+BC_test_1': [72.6, 89.8, 80.4, 87.4, 79.6]})}
+
+........................................................................................
+
+WHAT I GET WITH: BERKELEY random0_bc_test_seed2 (same as original)
+
+
+ppo_bc_performance {'random0': defaultdict(<class 'list'>, {
+'PPO_BC_train+PPO_BC_train': [77.6, 78.8, 8.0, 60.4, 41.6], 
+'PPO_BC_train+BC_test_0': [53.2, 60.8, 33.4, 50.6, 66.4], 
+'PPO_BC_train+BC_test_1': [72.6, 89.8, 80.4, 87.4, 79.6]})}
+
+key: PPO_BC_train+PPO_BC_train, mean reward = 53.279999999999994, std = 26.382297094832357
+key: PPO_BC_train+BC_test_0, mean reward = 52.879999999999995, std = 11.227537575087426
+key: PPO_BC_train+BC_test_1, mean reward = 81.96, std = 6.110188213140413
+
+
+I GUESS IT IS THE SAME AS THE ORIGINAL
+
+........................................................................................
+
+SHOULD BE
+'random0': {
+'PPO_BC_train+BC_test_0': [47.0, 57.0, 60.5, 64.5, 65.5], 
+'PPO_BC_train+BC_test_1': [82.0, 73.5, 70.0, 75.5, 83.5], 
+
+
+
+key: PPO_BC_train+BC_test_0, mean reward = 58.9, std = 6.673829485385434
+key: PPO_BC_train+BC_test_1, mean reward = 76.9, std = 5.112729212465687
+
+........................................................................................
+
+seed_no 9456
+
+Avg reward 59.20 (std: 22.79, se: 2.28) over 100 games of avg length 400.0
+Avg reward 74.80 (std: 23.43, se: 2.34) over 100 games of avg length 400.0
+
+seed_no 1887
+Avg reward 65.60 (std: 29.27, se: 2.93) over 100 games of avg length 400.0
+Avg reward 85.20 (std: 25.24, se: 2.52) over 100 games of avg length 400.0
+
+seed_no 5578
+Avg reward 63.20 (std: 28.81, se: 2.88) over 100 games of avg length 400.0
+Avg reward 76.80 (std: 24.61, se: 2.46) over 100 games of avg length 400.0
+
+seed_no 5987
+Avg reward 56.20 (std: 23.61, se: 2.36) over 100 games of avg length 400.0
+Avg reward 80.20 (std: 20.30, se: 2.03) over 100 games of avg length 400.0
+
+seed_no 516
+Avg reward 74.40 (std: 32.38, se: 3.24) over 100 games of avg length 400.0
+Avg reward 69.80 (std: 25.06, se: 2.51) over 100 games of avg length 400.0
+
+
+........................................................................................
+........................................................................................
+SELF PLAY COMPARISON
+Seeds: 2229, 7649, 7225, 9807,  386
+
+SHOULD BE:
+'random0': {
+'PPO_SP+PPO_SP': [153.5, 150.5, 140.5, 163.5, 151.5], 
+'PPO_SP+BC_test_0': [24.0, 26.5, 20.5, 31.5, 13.5], 
+'PPO_SP+BC_test_1': [38.0, 42.0, 35.5, 63.0, 11.0]}, 
+
+key: PPO_SP+PPO_SP, mean reward = 151.9, std = 7.337574531137657
+key: PPO_SP+BC_test_0, mean reward = 23.2, std = 6.029925372672534
+key: PPO_SP+BC_test_1, mean reward = 37.9, std = 16.590358645912392
+
+........................................................................................
+IS ACTUALLY
+ppo_sp_performance {'random0': {
+'PPO_SP+PPO_SP': [155.6, 164.4, 157.4, 141.4, 147.8], 
+'PPO_SP+BC_test_0': [26.0, 27.0, 23.4, 24.2, 54.0], 
+'PPO_SP+BC_test_1': [84.6, 14.6, 79.8, 36.8, 88.2]}}
+
+
+key: PPO_SP+PPO_SP, mean reward = 153.32, std = 7.9645213289939765
+key: PPO_SP+BC_test_0, mean reward = 30.920000000000005, std = 11.610064599303485
+key: PPO_SP+BC_test_1, mean reward = 60.8, std = 29.626474646842475
+
+........................................................................................
+
+Replicating Human performance, there is no comparison.
+ppo_hm_performance {'random0': defaultdict(<class 'list'>, {
+'PPO_BC_train+PPO_BC_train': [77.6, 78.8, 8.0, 60.4, 41.6], 
+'PPO_BC_train+BC_test_0': [53.2, 60.8, 33.4, 50.6, 66.4], 
+'PPO_BC_train+BC_test_1': [72.6, 89.8, 80.4, 87.4, 79.6]})}
+
+
+key: PPO_BC_train+PPO_BC_train, mean reward = 53.279999999999994, std = 26.382297094832357
+key: PPO_BC_train+BC_test_0, mean reward = 52.879999999999995, std = 11.227537575087426
+key: PPO_BC_train+BC_test_1, mean reward = 81.96, std = 6.110188213140413
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

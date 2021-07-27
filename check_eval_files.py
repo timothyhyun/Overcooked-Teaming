@@ -22,27 +22,62 @@ if __name__ == "__main__":
     # file.close()
     # print('ppo_training_info = ', ppo_training_info)
 
-    filename = 'human_aware_rl/data/ppo_runs/ppo_bc_models_performance.pickle'
+    # filename = 'human_aware_rl/data/bc_runs/true_berk_best_bc_model_paths.pickle'
+    # file = open(filename, 'rb')
+    # true_berk_best_bc_model_paths = pkl.load(file)
+    # file.close()
+    # print('true_berk_best_bc_model_paths = ', true_berk_best_bc_model_paths)
+    # print()
+    #
+    # filename = 'human_aware_rl/data/bc_runs/true_berk_bc_models_all_evaluations.pickle'
+    # file = open(filename, 'rb')
+    # true_berk_bc_models_all_evaluations = pkl.load(file)
+    # file.close()
+    # print('true_berk_bc_models_all_evaluations = ', true_berk_bc_models_all_evaluations)
+    # print()
+    #
+    # filename = 'human_aware_rl/data/bc_runs/true_berk_best_bc_models_performance.pickle'
+    # file = open(filename, 'rb')
+    # true_berk_best_bc_models_performance = pkl.load(file)
+    # file.close()
+    # print('true_berk_best_bc_models_performance = ', true_berk_best_bc_models_performance)
+    # print()
+
+    # filename = 'human_aware_rl/data/ppo_runs/ppo_hm_models_performance.pickle'
+    # file = open(filename, 'rb')
+    # ppo_hm_models_performance = pkl.load(file)
+    # file.close()
+    # print('ppo_hm_models_performance = ', ppo_hm_models_performance)
+    # print()
+
+    filename = 'human_aware_rl/data/bc_runs/bc_models_all_evaluations_BERKREPLICATE.pickle'
     file = open(filename, 'rb')
-    ppo_bc_models_performance = pkl.load(file)
+    best_bc_models_performance_REPLICATE = pkl.load(file)
     file.close()
-    print('ppo_bc_models_performance = ', ppo_bc_models_performance)
+    print('best_bc_models_performance_REPLICATE = ', best_bc_models_performance_REPLICATE)
     print()
 
-    filename = 'human_aware_rl/data/ppo_runs/ppo_hm_models_performance.pickle'
-    file = open(filename, 'rb')
-    ppo_hm_models_performance = pkl.load(file)
-    file.close()
-    print('ppo_hm_models_performance = ', ppo_hm_models_performance)
-    print()
-
-    filename = 'human_aware_rl/data/ppo_runs/ppo_sp_models_performance.pickle'
-    file = open(filename, 'rb')
-    ppo_sp_models_performance = pkl.load(file)
-    file.close()
-    print('ppo_sp_models_performance = ', ppo_sp_models_performance)
-    print()
-
+    # filename = 'human_aware_rl/data/ppo_runs/ppo_bc_models_performance.pickle'
+    # file = open(filename, 'rb')
+    # ppo_bc_models_performance = pkl.load(file)
+    # file.close()
+    # print('ppo_bc_models_performance = ', ppo_bc_models_performance)
+    # print()
+    #
+    # filename = 'human_aware_rl/data/ppo_runs/ppo_hm_models_performance.pickle'
+    # file = open(filename, 'rb')
+    # ppo_hm_models_performance = pkl.load(file)
+    # file.close()
+    # print('ppo_hm_models_performance = ', ppo_hm_models_performance)
+    # print()
+    #
+    # filename = 'human_aware_rl/data/ppo_runs/ppo_sp_models_performance.pickle'
+    # file = open(filename, 'rb')
+    # ppo_sp_models_performance = pkl.load(file)
+    # file.close()
+    # print('ppo_sp_models_performance = ', ppo_sp_models_performance)
+    # print()
+    #
 
 
 

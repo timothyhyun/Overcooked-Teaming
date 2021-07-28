@@ -258,14 +258,14 @@ def configure_other_agent(params, gym_env, mlp, mdp):
                 'simple': 'simple_bc_train_seed3',
                 'random1': 'random1_bc_train_seed0',
                 'unident_s': 'unident_s_bc_train_seed0',
-                'random0': 'dual_pot_agg_random0_bc_train_seed5415',
+                'random0': 'single_pot_finetune_random0_bc_train_seed5415',
                 'random3': 'random3_bc_train_seed2'
             },
              'test': {
                  'simple': 'simple_bc_test_seed2',
                  'random1': 'random1_bc_test_seed2',
                  'unident_s': 'unident_s_bc_test_seed0',
-                 'random0': 'dual_pot_agg_random0_bc_test_seed5415',
+                 'random0': 'single_pot_finetune_random0_bc_test_seed5415',
                  'random3': 'random3_bc_test_seed3'
              }
         }

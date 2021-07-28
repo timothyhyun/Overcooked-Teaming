@@ -1,0 +1,112 @@
+
+July 27, 2021
+
+........................................................................................
+........................................................................................
+
+MINE: THEY MATCH!
+........................................................................................
+
+All BC models evaluation:  {
+'simple': {
+'train': {0: 100.2, 1: 77.8, 2: 112.0, 3: 106.2, 4: 102.4}, 
+'test': {0: 116.2, 1: 109.0, 2: 109.2, 3: 99.0, 4: 105.4}}, 
+
+'random1': {
+'train': {0: 67.4, 1: 87.2, 2: 83.2, 3: 79.4, 4: 82.6}, 
+'test': {0: 78.4, 1: 80.0, 2: 74.8, 3: 79.6, 4: 73.4}}, 
+
+'unident_s': {
+'train': {0: 137.2, 1: 129.0, 2: 115.0, 3: 138.6, 4: 136.4}, 
+'test': {0: 127.4, 1: 134.4, 2: 130.4, 3: 100.8, 4: 132.4}}, 
+
+'random0': {
+'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 
+'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 
+
+'random3': {
+'train': {0: 42.6, 1: 47.0, 2: 43.6, 3: 42.4, 4: 45.8}, 
+'test': {0: 47.4, 1: 49.2, 2: 46.4, 3: 49.6, 4: 48.0}}}
+
+
+true_berk_best_bc_model_paths =  {
+'train': {
+'simple': 'simple_bc_train_seed3', 
+'random1': 'random1_bc_train_seed0', 
+'unident_s': 'unident_s_bc_train_seed0', 
+'random0': 'random0_bc_train_seed0', 
+'random3': 'random3_bc_train_seed2'}, 
+
+'test': {
+'simple': 'simple_bc_test_seed2', 
+'random1': 'random1_bc_test_seed2', 
+'unident_s': 'unident_s_bc_test_seed0', 
+'random0': 'random0_bc_test_seed2', 
+'random3': 'random3_bc_test_seed3'}}
+
+
+FINAL final_bc_model_paths:  {'train': {'simple': 'simple_bc_train_seed0', 
+
+'unident_s': 'unident_s_bc_train_seed0', 
+
+'random1': 'random1_bc_train_seed4', 'random0': 'random0_bc_train_seed2', 'random3': 'random3_bc_train_seed3'}, 
+
+'test': {'simple': 'simple_bc_test_seed1', 'unident_s': 'unident_s_bc_test_seed0', 'random1': 'random1_bc_test_seed2', 'random0': 'random0_bc_test_seed1', 'random3': 'random3_bc_test_seed3'}}
+
+
+
+FINAL best_bc_models_performance {'simple': {'BC_train+BC_train': (102.2, 2.621373685684664), 'BC_test+BC_test': (109.4, 2.50527443606484), 'BC_train+BC_test_0': (85.6, 3.047359512758546), 'BC_train+BC_test_1': (102.8, 2.9396598442677004)}, 'unident_s': {'BC_train+BC_train': (124.6, 5.534293089455959), 'BC_test+BC_test': (126.2, 5.445695547861632), 'BC_train+BC_test_0': (110.6, 5.9225332417809184), 'BC_train+BC_test_1': (126.6, 5.440992556510254)}, 'random1': {'BC_train+BC_train': (84.6, 2.1698847895683313), 'BC_test+BC_test': (75.4, 3.160443006921656), 'BC_train+BC_test_0': (75.2, 3.0740201690945357), 'BC_train+BC_test_1': (70.8, 2.820212757931571)}, 'random0': {'BC_train+BC_train': (23.0, 2.503996805109783), 'BC_test+BC_test': (30.6, 2.8064924728208345), 'BC_train+BC_test_0': (20.6, 2.537006109570885), 'BC_train+BC_test_1': (33.4, 2.757607658823132)}, 'random3': {'BC_train+BC_train': (46.2, 2.0336174664867532), 'BC_test+BC_test': (49.6, 2.0095770699328757), 'BC_train+BC_test_0': (43.0, 1.752141546793523), 'BC_train+BC_test_1': (41.2, 1.9963967541548453)}}
+
+FINAL best_bc_models_performance {'simple': {'BC_train+BC_train': (106.6, 1.9194790960049548), 'BC_test+BC_test': (105.6, 2.5310867231290204), 'BC_train+BC_test_0': (98.6, 2.3022597594537415), 'BC_train+BC_test_1': (105.8, 2.388221095292477)}, 'unident_s': {'BC_train+BC_train': (127.6, 5.026171505231393), 'BC_test+BC_test': (117.0, 6.009159675029446), 'BC_train+BC_test_0': (107.2, 5.751660629765982), 'BC_train+BC_test_1': (126.6, 5.796930222108939)}, 'random1': {'BC_train+BC_train': (75.2, 3.112812233334995), 'BC_test+BC_test': (81.8, 2.8013568141170455), 'BC_train+BC_test_0': (66.8, 3.3849076796864046), 'BC_train+BC_test_1': (71.4, 3.240432069956104)}, 'random0': {'BC_train+BC_train': (33.2, 3.1902351010544665), 'BC_test+BC_test': (35.4, 2.950999830565905), 'BC_train+BC_test_0': (32.6, 2.5243613053602294), 'BC_train+BC_test_1': (25.8, 2.642650184946922)}, 'random3': {'BC_train+BC_train': (44.4, 1.8238420984284798), 'BC_test+BC_test': (47.0, 1.7291616465790582), 'BC_train+BC_test_0': (32.0, 2.0396078054371136), 'BC_train+BC_test_1': (43.2, 1.9332873557751313)}}
+
+All BC models evaluation:  {'simple': {'train': {0: 100.2, 1: 77.8, 2: 112.0, 3: 106.2, 4: 102.4}, 'test': {0: 116.2, 1: 109.0, 2: 109.2, 3: 99.0, 4: 105.4}}, 'random1': {'train': {0: 67.4, 1: 87.2, 2: 83.2, 3: 79.4, 4: 82.6}, 'test': {0: 78.4, 1: 80.0, 2: 74.8, 3: 79.6, 4: 73.4}}, 'unident_s': {'train': {0: 137.2, 1: 129.0, 2: 115.0, 3: 138.6, 4: 136.4}, 'test': {0: 127.4, 1: 134.4, 2: 130.4, 3: 100.8, 4: 132.4}}, 'random0': {'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 'random3': {'train': {0: 42.6, 1: 47.0, 2: 43.6, 3: 42.4, 4: 45.8}, 'test': {0: 47.4, 1: 49.2, 2: 46.4, 3: 49.6, 4: 48.0}}}
+
+
+FINAL final_bc_model_paths:  {'train': {'simple': 'simple_bc_train_seed3', 'unident_s': 'unident_s_bc_train_seed0', 'random1': 'random1_bc_train_seed0', 'random0': 'random0_bc_train_seed0', 'random3': 'random3_bc_train_seed2'}, 'test': {'simple': 'simple_bc_test_seed2', 'unident_s': 'unident_s_bc_test_seed0', 'random1': 'random1_bc_test_seed2', 'random0': 'random0_bc_test_seed2', 'random3': 'random3_bc_test_seed3'}}
+
+
+FINAL best_bc_models_performance {'simple': {'BC_train+BC_train': (109.8, 1.9696700231257012), 'BC_test+BC_test': (104.0, 2.814249455894058), 'BC_train+BC_test_0': (102.0, 1.8220867158288598), 'BC_train+BC_test_1': (109.0, 1.9874606914351791)}, 'unident_s': {'BC_train+BC_train': (124.6, 5.534293089455959), 'BC_test+BC_test': (126.2, 5.445695547861632), 'BC_train+BC_test_0': (110.6, 5.9225332417809184), 'BC_train+BC_test_1': (126.6, 5.440992556510254)}, 'random1': {'BC_train+BC_train': (72.4, 2.7825168463101884), 'BC_test+BC_test': (75.4, 3.160443006921656), 'BC_train+BC_test_0': (64.2, 3.569817922527702), 'BC_train+BC_test_1': (69.8, 3.0132374616017232)},
+
+ 'random0': {'BC_train+BC_train': (35.0, 3.491418050019218), 
+ 'BC_test+BC_test': (40.4, 2.99305863624487), 
+ 'BC_train+BC_test_0': (33.8, 2.8241104794253356), 
+ 'BC_train+BC_test_1': (27.2, 2.8777769197767915)}, 
+
+ 'random3': {'BC_train+BC_train': (45.4, 1.8730723424363513), 'BC_test+BC_test': (49.6, 2.0095770699328757), 'BC_train+BC_test_0': (34.0, 2.1447610589527217), 'BC_train+BC_test_1': (40.4, 1.8757398540309367)}}
+
+
+........................................................................................
+........................................................................................
+
+BERKELEY
+........................................................................................
+
+
+true_berk_bc_models_all_evaluations =  {
+'simple': {
+'train': {0: 100.2, 1: 77.8, 2: 112.0, 3: 106.2, 4: 102.4}, 
+'test': {0: 116.2, 1: 109.0, 2: 109.2, 3: 99.0, 4: 105.4}}, 
+
+'random1': {
+'train': {0: 67.4, 1: 87.2, 2: 83.2, 3: 79.4, 4: 82.6}, 
+'test': {0: 78.4, 1: 80.0, 2: 74.8, 3: 79.6, 4: 73.4}}, 
+
+'unident_s': {
+'train': {0: 137.2, 1: 129.0, 2: 115.0, 3: 138.6, 4: 136.4}, 
+'test': {0: 127.4, 1: 134.4, 2: 130.4, 3: 100.8, 4: 132.4}}, 
+
+'random0': {
+'train': {0: 31.8, 1: 24.0, 2: 25.6, 3: 16.2, 4: 34.4}, 
+'test': {0: 40.0, 1: 35.8, 2: 42.6, 3: 36.6, 4: 32.8}}, 
+
+'random3': {
+'train': {0: 42.6, 1: 47.0, 2: 43.6, 3: 42.4, 4: 45.8}, 
+'test': {0: 47.4, 1: 49.2, 2: 46.4, 3: 49.6, 4: 48.0}}}
+
+true_berk_best_bc_model_paths =  {'train': {'simple': 'simple_bc_train_seed3', 'random1': 'random1_bc_train_seed0', 'unident_s': 'unident_s_bc_train_seed0', 'random0': 'random0_bc_train_seed0', 'random3': 'random3_bc_train_seed2'}, 'test': {'simple': 'simple_bc_test_seed2', 'random1': 'random1_bc_test_seed2', 'unident_s': 'unident_s_bc_test_seed0', 'random0': 'random0_bc_test_seed2', 'random3': 'random3_bc_test_seed3'}}
+
+
+
+true_berk_best_bc_models_performance =  {'simple': {'BC_train+BC_train': (109.5, 2.448213634469018), 'BC_test+BC_test': (115.0, 3.2977264895682294), 'BC_train+BC_test_0': (103.5, 3.382861215007201), 'BC_train+BC_test_1': (110.0, 3.3911649915626336)}, 'unident_s': {'BC_train+BC_train': (136.0, 5.300943312279428), 'BC_test+BC_test': (140.5, 7.499583321758616), 'BC_train+BC_test_0': (136.5, 6.9959809891108184), 'BC_train+BC_test_1': (137.5, 8.40200868840303)}, 'random1': {'BC_train+BC_train': (67.0, 5.12591455254572), 'BC_test+BC_test': (67.0, 4.719639816765682), 'BC_train+BC_test_0': (59.0, 5.382843114934708), 'BC_train+BC_test_1': (70.0, 4.0)}, 'random0': {'BC_train+BC_train': (25.5, 4.358181960405049), 'BC_test+BC_test': (30.0, 4.301162633521313), 'BC_train+BC_test_0': (20.5, 4.329405270935028), 'BC_train+BC_test_1': (31.0, 4.997499374687304)}, 'random3': {'BC_train+BC_train': (48.0, 3.2249030993194197), 'BC_test+BC_test': (47.5, 2.084166500066633), 'BC_train+BC_test_0': (38.0, 3.987480407475377), 'BC_train+BC_test_1': (44.0, 3.016620625799671)}}
+
+

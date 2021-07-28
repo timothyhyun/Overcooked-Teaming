@@ -16,7 +16,7 @@ from overcooked_ai_py.utils import save_pickle, load_pickle
 
 from human_aware_rl.utils import reset_tf, set_global_seed, common_keys_equal
 from human_aware_rl.baselines_utils import create_dir_if_not_exists
-from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective
+from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective, get_trajs_from_data_for_cross_validation
 
 BC_SAVE_DIR = "../data/bc_runs/"
 
@@ -66,6 +66,24 @@ def train_bc_agent(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps
     # Pass the ExpertDataset into BC model and params
     # Return the BC model
     return bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps)
+
+def train_bc_agent_cross_validation(is_train, train_workers, test_workers, model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
+    # Extract necessary expert data and save in right format
+    set_global_seed(64)
+    expert_trajs = get_trajs_from_data_for_cross_validation(is_train, train_workers, test_workers, **bc_params["data_params"])
+    # Load the expert dataset
+    save_npz_file(expert_trajs, "temp.npz")
+    # Create a stable-baselines ExpertDataset
+    dataset = ExpertDataset(expert_path="temp.npz", verbose=1, train_fraction=0.85)
+    assert dataset is not None
+    assert dataset.train_loader is not None
+
+
+    # Pass the ExpertDataset into BC model and params
+    # Return the BC model
+    return bc_from_dataset_and_params(dataset, bc_params, model_save_dir, num_epochs, lr, adam_eps)
+
+
 
 def train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
     # Extract necessary expert data and save in right format

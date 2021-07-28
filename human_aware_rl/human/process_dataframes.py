@@ -40,6 +40,37 @@ def get_trajs_from_data(data_path, train_mdps, ordered_trajs, human_ai_trajs):
     return trajs
 
 
+def get_trajs_from_data_for_cross_validation(is_train, train_workers, test_workers, data_path, train_mdps, ordered_trajs, human_ai_trajs):
+    """
+    Converts and returns trajectories from dataframe at `data_path` to overcooked trajectories.
+    """
+    print("Loading data from {}".format(data_path))
+
+    main_trials = pd.read_pickle(data_path)
+    all_workers = list(main_trials['workerid_num'].unique())
+
+    # if 'train' in data_path:
+    #     print('TRAIN IN DATAPATH')
+    # # #     # main_trials = main_trials[main_trials['workerid_num']==15]
+    #     all_workers = [15, 22]
+    #     all_workers = [2, 4, 17, 19]
+    if is_train == True:
+        all_workers = train_workers
+    else:
+        all_workers = test_workers
+
+
+    trajs = convert_joint_df_trajs_to_overcooked_single(
+        main_trials,
+        all_workers,
+        train_mdps,
+        ordered_pairs=ordered_trajs,
+        human_ai_trajs=human_ai_trajs
+    )
+
+    return trajs
+
+
 def get_trajs_from_data_selective(data_path, train_mdps, ordered_trajs, human_ai_trajs):
     """
     Converts and returns trajectories from dataframe at `data_path` to overcooked trajectories.

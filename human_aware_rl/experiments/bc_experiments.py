@@ -106,7 +106,7 @@ def run_all_bc_experiments():
 
     all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
     # all_params = [params_random0]
-    train_bc_models(all_params, seeds)
+    # train_bc_models(all_params, seeds)
 
     # Evaluate BC models
     set_global_seed(64)
@@ -118,12 +118,19 @@ def run_all_bc_experiments():
 
     # These models have been manually selected to more or less match in performance,
     # (test BC model should be a bit better than the train BC model)
+    # selected_models = {
+    #     "simple": [0, 1],
+    #     "unident_s": [0, 0],
+    #     "random1": [4, 2],
+    #     "random0": [2, 1],
+    #     "random3": [3, 3]
+    # }
     selected_models = {
-        "simple": [0, 1],
+        "simple": [3,2],
         "unident_s": [0, 0],
-        "random1": [4, 2],
-        "random0": [2, 1],
-        "random3": [3, 3]
+        "random1": [0,2],
+        "random0": [0,2],
+        "random3": [2, 3]
     }
 
     final_bc_model_paths = { "train": {}, "test": {} }
@@ -135,7 +142,7 @@ def run_all_bc_experiments():
     print('\n\nFINAL final_bc_model_paths: ', final_bc_model_paths)
     best_bc_models_performance = evaluate_bc_models(final_bc_model_paths, num_rounds)
     print('\n\nFINAL best_bc_models_performance', best_bc_models_performance)
-    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance_REPLICATE2")
+    save_pickle(best_bc_models_performance, BC_SAVE_DIR + "best_bc_models_performance_REPLICATE3")
     
 
 if __name__ == "__main__":

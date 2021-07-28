@@ -1581,28 +1581,26 @@ class OvercookedGridworld(object):
         cooking_pots = ready_pots + pot_states["tomato"]["cooking"] + pot_states["onion"]["cooking"]
         nearly_ready_pots = cooking_pots + pot_states["tomato"]["partially_full"] + pot_states["onion"][
             "partially_full"]
-        full_pots = cooking_pots + ready_pots
-        num_pots = len(pot_states)
 
         sparse_reward, shaped_reward = 0, 0
         player_idx = -1
         for player, action in zip(new_state.players, joint_action):
             player_idx += 1
-            # if action == Action.STAY:
-            #     # if player.position[0] == 1:
-            #     #     player_idx = 0
-            #     # else:
-            #     #     player_idx = 1
-            #     self.player_idle_time[player_idx] += 1
-            #
-            # if 'IDLE_DIFF_REWARD' in self.reward_shaping_params:
-            #     if np.var(self.player_idle_time) < 5:
-            #         shaped_reward += self.reward_shaping_params["IDLE_DIFF_REWARD"]
-            #     else:
-            #         shaped_reward -= self.reward_shaping_params["IDLE_DIFF_REWARD"]
-            #
-            # if action != Action.INTERACT:
-            #     continue
+            if action == Action.STAY:
+                # if player.position[0] == 1:
+                #     player_idx = 0
+                # else:
+                #     player_idx = 1
+                self.player_idle_time[player_idx] += 1
+
+            if 'IDLE_DIFF_REWARD' in self.reward_shaping_params:
+                if np.var(self.player_idle_time) < 5:
+                    shaped_reward += self.reward_shaping_params["IDLE_DIFF_REWARD"]
+                else:
+                    shaped_reward -= self.reward_shaping_params["IDLE_DIFF_REWARD"]
+
+            if action != Action.INTERACT:
+                continue
 
 
             pos, o = player.position, player.orientation
@@ -1612,20 +1610,11 @@ class OvercookedGridworld(object):
             if terrain_type == 'X':
                 if player.has_object() and not new_state.has_object(i_pos):
                     new_state.add_object(player.remove_object(), i_pos)
-                    # Player put an object down on the counter
-                    if full_pots == num_pots:
-                        shaped_reward += 0.1*self.reward_shaping_params["DISH_PICKUP_REWARD"]
-
                 elif not player.has_object() and new_state.has_object(i_pos):
                     player.set_object(new_state.remove_object(i_pos))
 
             elif terrain_type == 'O' and player.held_object is None:
                 player.set_object(ObjectState('onion', pos))
-                # Player picked up an onion
-                # If there were two full pots
-                if full_pots == num_pots:
-                    shaped_reward -= self.reward_shaping_params["DISH_PICKUP_REWARD"]
-
             elif terrain_type == 'T' and player.held_object is None:
                 player.set_object(ObjectState('tomato', pos))
             elif terrain_type == 'D' and player.held_object is None:

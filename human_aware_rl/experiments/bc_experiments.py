@@ -14,8 +14,8 @@ from human_aware_rl.imitation.behavioural_cloning import train_bc_agent, eval_wi
 
 
 # Path for dict containing the best bc models paths
-BEST_BC_MODELS_PATH = BC_SAVE_DIR + "best_bc_model_paths_BERKREPLICATE"
-BC_MODELS_EVALUATION_PATH = BC_SAVE_DIR + "bc_models_all_evaluations_BERKREPLICATE"
+BEST_BC_MODELS_PATH = BC_SAVE_DIR + "best_bc_model_paths"
+BC_MODELS_EVALUATION_PATH = BC_SAVE_DIR + "bc_models_all_evaluations"
 
 def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_eps, model):
     """Trains a BC agent from human human data (model can either be `train` or `test`, which is trained

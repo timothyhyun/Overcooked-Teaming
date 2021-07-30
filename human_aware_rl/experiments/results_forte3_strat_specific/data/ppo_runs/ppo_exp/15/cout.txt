@@ -1,0 +1,61 @@
+INFO - PPO - Running command 'ppo_run'
+INFO - PPO - Started run with ID "15"
+Creating env with params {'RUN_TYPE': 'ppo', 'SEEDS': [9456, 1887, 5578, 5987, 516], 'LOCAL_TESTING': False, 'EX_NAME': 'dual_strat_nft_ppo_bc_train_random0_test3', 'SAVE_DIR': 'data/ppo_runs/2021_07_28-16_45_37_dual_strat_nft_ppo_bc_train_random0_test3/', 'GPU_ID': 0, 'PPO_RUN_TOT_TIMESTEPS': 9000000.0, 'mdp_params': {'layout_name': 'random0', 'start_order_list': None, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 3, 'DISH_PICKUP_REWARD': 3, 'SOUP_PICKUP_REWARD': 5, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}}, 'env_params': {'horizon': 400}, 'mdp_generation_params': {'padded_mdp_shape': [11, 7], 'mdp_shape_fn': [[5, 11], [5, 7]], 'prop_empty_fn': [0.6, 1], 'prop_feats_fn': [0, 0.6]}, 'ENTROPY': 0.1, 'GAMMA': 0.99, 'sim_threads': 30, 'TOTAL_BATCH_SIZE': 12000, 'BATCH_SIZE': 400, 'MAX_GRAD_NORM': 0.1, 'LR': 0.0015, 'LR_ANNEALING': 2, 'VF_COEF': 0.1, 'STEPS_PER_UPDATE': 8, 'MINIBATCHES': 15, 'CLIPPING': 0.05, 'LAM': 0.98, 'SELF_PLAY_HORIZON': None, 'REW_SHAPING_HORIZON': 4000000.0, 'OTHER_AGENT_TYPE': 'bc_train', 'HM_PARAMS': [True, 0.3], 'NUM_HIDDEN_LAYERS': 3, 'SIZE_HIDDEN_LAYERS': 64, 'NUM_FILTERS': 25, 'NUM_CONV_LAYERS': 3, 'NETWORK_TYPE': 'conv_and_mlp', 'SAVE_BEST_THRESH': 50, 'TRAJECTORY_SELF_PLAY': True, 'VIZ_FREQUENCY': 50, 'grad_updates_per_agent': 90000.0}
+Computing MediumLevelPlanner to be saved in /Users/michellezhao/Documents/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/random0_am.pkl
+It took 0.04011988639831543 seconds to create mlp
+
+
+
+
+best_bc_model_paths {'train': {'simple': 'simple_bc_train_seed3', 'random1': 'random1_bc_train_seed0', 'unident_s': 'unident_s_bc_train_seed0', 'random0': 'dual_pot_agg_random0_bc_train_seed5415', 'random3': 'random3_bc_train_seed2'}, 'test': {'simple': 'simple_bc_test_seed2', 'random1': 'random1_bc_test_seed2', 'unident_s': 'unident_s_bc_test_seed0', 'random0': 'dual_pot_agg_random0_bc_test_seed5415', 'random3': 'random3_bc_test_seed3'}}
+LOADING BC MODEL FROM: dual_pot_agg_random0_bc_train_seed5415
+Loading a model without an environment, this model cannot be trained until it has a valid environment.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+Mlp with different params or mdp found, computing from scratch
+Computing MediumLevelPlanner to be saved in /Users/michellezhao/Documents/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/random0_am.pkl
+It took 0.03874683380126953 seconds to create mlp
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+(30, 5, 5, 20)
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+Last layer conv network output shape (30, 64)
+(800, 5, 5, 20)
+Last layer conv network output shape (800, 64)

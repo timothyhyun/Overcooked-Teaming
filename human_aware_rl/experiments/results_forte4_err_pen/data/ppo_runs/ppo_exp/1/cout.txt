@@ -1,0 +1,196 @@
+INFO - PPO - Running command 'ppo_run'
+INFO - PPO - Started run with ID "1"
+Creating env with params {'RUN_TYPE': 'ppo', 'SEEDS': [9456, 1887, 5578, 5987, 516], 'LOCAL_TESTING': False, 'EX_NAME': 'ppo_bc_train_simple', 'SAVE_DIR': 'data/ppo_runs/ppo_bc_train_simple/', 'GPU_ID': 0, 'PPO_RUN_TOT_TIMESTEPS': 8000000.0, 'mdp_params': {'layout_name': 'simple', 'start_order_list': None, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 3, 'DISH_PICKUP_REWARD': 3, 'SOUP_PICKUP_REWARD': 5, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}}, 'env_params': {'horizon': 400}, 'mdp_generation_params': {'padded_mdp_shape': [11, 7], 'mdp_shape_fn': [[5, 11], [5, 7]], 'prop_empty_fn': [0.6, 1], 'prop_feats_fn': [0, 0.6]}, 'ENTROPY': 0.1, 'GAMMA': 0.99, 'sim_threads': 30, 'TOTAL_BATCH_SIZE': 12000, 'BATCH_SIZE': 400, 'MAX_GRAD_NORM': 0.1, 'LR': 0.001, 'LR_ANNEALING': 3, 'VF_COEF': 0.5, 'STEPS_PER_UPDATE': 8, 'MINIBATCHES': 10, 'CLIPPING': 0.05, 'LAM': 0.98, 'SELF_PLAY_HORIZON': [500000.0, 3000000.0], 'REW_SHAPING_HORIZON': 1000000.0, 'OTHER_AGENT_TYPE': 'bc_train', 'HM_PARAMS': [True, 0.3], 'NUM_HIDDEN_LAYERS': 3, 'SIZE_HIDDEN_LAYERS': 64, 'NUM_FILTERS': 25, 'NUM_CONV_LAYERS': 3, 'NETWORK_TYPE': 'conv_and_mlp', 'SAVE_BEST_THRESH': 50, 'TRAJECTORY_SELF_PLAY': True, 'VIZ_FREQUENCY': 50, 'grad_updates_per_agent': 53280.0}
+Computing MediumLevelPlanner to be saved in /Users/michellezhao/Documents/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/simple_am.pkl
+It took 0.2345278263092041 seconds to create mlp
+LOADING BC MODEL FROM: simple_bc_train_seed3
+Loading a model without an environment, this model cannot be trained until it has a valid environment.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING:tensorflow:From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+WARNING - tensorflow - From /opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+Mlp with different params or mdp found, computing from scratch
+Computing MediumLevelPlanner to be saved in /Users/michellezhao/Documents/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/simple_am.pkl
+It took 0.1642301082611084 seconds to create mlp
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+(30, 5, 4, 20)
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING:tensorflow:From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+WARNING - tensorflow - From /Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+Last layer conv network output shape (30, 64)
+(1200, 5, 4, 20)
+Last layer conv network output shape (1200, 64)
+TOT NUM UPDATES 0
+TOT NUM UPDATES 666
+SP envs: 30/30
+Other agent actions took 0.6888933181762695 seconds
+Total simulation time for 400 steps: 2.6424179077148438 	 Other agent action time: 0 	 151.37650968537335 steps/s
+Curr learning rate 0.001 	 Curr reward per step 0.016583333333333335
+
+0/8:   0%|          | 0/10 [00:00<?, ?it/s]
+0/8:  10%|█         | 1/10 [00:00<00:01,  5.25it/s]
+0/8:  20%|██        | 2/10 [00:00<00:01,  6.08it/s]
+0/8:  30%|███       | 3/10 [00:00<00:01,  6.59it/s]
+0/8:  40%|████      | 4/10 [00:00<00:00,  6.72it/s]
+0/8:  50%|█████     | 5/10 [00:00<00:00,  6.97it/s]
+0/8:  60%|██████    | 6/10 [00:00<00:00,  7.26it/s]
+0/8:  70%|███████   | 7/10 [00:01<00:00,  7.35it/s]
+0/8:  80%|████████  | 8/10 [00:01<00:00,  7.35it/s]
+0/8:  90%|█████████ | 9/10 [00:01<00:00,  7.50it/s]
+0/8: 100%|██████████| 10/10 [00:01<00:00,  7.43it/s]
+0/8: 100%|██████████| 10/10 [00:01<00:00,  7.08it/s]
+
+1/8:   0%|          | 0/10 [00:00<?, ?it/s]
+1/8:  10%|█         | 1/10 [00:00<00:01,  7.02it/s]
+1/8:  20%|██        | 2/10 [00:00<00:01,  7.03it/s]
+1/8:  30%|███       | 3/10 [00:00<00:00,  7.09it/s]
+1/8:  40%|████      | 4/10 [00:00<00:00,  7.02it/s]
+1/8:  50%|█████     | 5/10 [00:00<00:00,  7.05it/s]
+1/8:  60%|██████    | 6/10 [00:00<00:00,  7.28it/s]
+1/8:  70%|███████   | 7/10 [00:00<00:00,  7.44it/s]
+1/8:  80%|████████  | 8/10 [00:01<00:00,  7.38it/s]
+1/8:  90%|█████████ | 9/10 [00:01<00:00,  7.32it/s]
+1/8: 100%|██████████| 10/10 [00:01<00:00,  7.47it/s]
+1/8: 100%|██████████| 10/10 [00:01<00:00,  7.29it/s]
+
+2/8:   0%|          | 0/10 [00:00<?, ?it/s]
+2/8:  10%|█         | 1/10 [00:00<00:01,  7.36it/s]
+2/8:  20%|██        | 2/10 [00:00<00:01,  7.51it/s]
+2/8:  30%|███       | 3/10 [00:00<00:00,  7.54it/s]
+2/8:  40%|████      | 4/10 [00:00<00:00,  7.54it/s]
+2/8:  50%|█████     | 5/10 [00:00<00:00,  7.35it/s]
+2/8:  60%|██████    | 6/10 [00:00<00:00,  7.24it/s]
+2/8:  70%|███████   | 7/10 [00:00<00:00,  7.12it/s]
+2/8:  80%|████████  | 8/10 [00:01<00:00,  7.07it/s]
+2/8:  90%|█████████ | 9/10 [00:01<00:00,  7.04it/s]
+2/8: 100%|██████████| 10/10 [00:01<00:00,  6.70it/s]
+2/8: 100%|██████████| 10/10 [00:01<00:00,  7.07it/s]
+
+3/8:   0%|          | 0/10 [00:00<?, ?it/s]
+3/8:  10%|█         | 1/10 [00:00<00:01,  7.30it/s]
+3/8:  20%|██        | 2/10 [00:00<00:01,  7.19it/s]
+3/8:  30%|███       | 3/10 [00:00<00:00,  7.16it/s]
+3/8:  40%|████      | 4/10 [00:00<00:00,  7.04it/s]
+3/8:  50%|█████     | 5/10 [00:00<00:00,  7.12it/s]
+3/8:  60%|██████    | 6/10 [00:00<00:00,  7.37it/s]
+3/8:  70%|███████   | 7/10 [00:00<00:00,  7.49it/s]
+3/8:  80%|████████  | 8/10 [00:01<00:00,  7.59it/s]
+3/8:  90%|█████████ | 9/10 [00:01<00:00,  7.49it/s]
+3/8: 100%|██████████| 10/10 [00:01<00:00,  7.39it/s]
+3/8: 100%|██████████| 10/10 [00:01<00:00,  7.34it/s]
+
+4/8:   0%|          | 0/10 [00:00<?, ?it/s]
+4/8:  10%|█         | 1/10 [00:00<00:01,  6.43it/s]
+4/8:  20%|██        | 2/10 [00:00<00:01,  6.59it/s]
+4/8:  30%|███       | 3/10 [00:00<00:01,  6.66it/s]
+4/8:  40%|████      | 4/10 [00:00<00:00,  6.86it/s]
+4/8:  50%|█████     | 5/10 [00:00<00:00,  6.99it/s]
+4/8:  60%|██████    | 6/10 [00:00<00:00,  7.12it/s]
+4/8:  70%|███████   | 7/10 [00:00<00:00,  7.30it/s]
+4/8:  80%|████████  | 8/10 [00:01<00:00,  7.31it/s]
+4/8:  90%|█████████ | 9/10 [00:01<00:00,  7.16it/s]
+4/8: 100%|██████████| 10/10 [00:01<00:00,  7.08it/s]
+4/8: 100%|██████████| 10/10 [00:01<00:00,  7.03it/s]
+
+5/8:   0%|          | 0/10 [00:00<?, ?it/s]
+5/8:  10%|█         | 1/10 [00:00<00:01,  6.92it/s]
+5/8:  20%|██        | 2/10 [00:00<00:01,  7.27it/s]
+5/8:  30%|███       | 3/10 [00:00<00:00,  7.45it/s]
+5/8:  40%|████      | 4/10 [00:00<00:00,  6.87it/s]
+5/8:  50%|█████     | 5/10 [00:00<00:00,  6.91it/s]
+5/8:  60%|██████    | 6/10 [00:00<00:00,  6.95it/s]
+5/8:  70%|███████   | 7/10 [00:00<00:00,  7.00it/s]
+5/8:  80%|████████  | 8/10 [00:01<00:00,  6.98it/s]
+5/8:  90%|█████████ | 9/10 [00:01<00:00,  7.06it/s]
+5/8: 100%|██████████| 10/10 [00:01<00:00,  7.23it/s]
+5/8: 100%|██████████| 10/10 [00:01<00:00,  7.09it/s]
+
+6/8:   0%|          | 0/10 [00:00<?, ?it/s]
+6/8:  10%|█         | 1/10 [00:00<00:01,  7.19it/s]
+6/8:  20%|██        | 2/10 [00:00<00:01,  7.23it/s]
+6/8:  30%|███       | 3/10 [00:00<00:00,  7.20it/s]
+6/8:  40%|████      | 4/10 [00:00<00:00,  7.55it/s]
+6/8:  50%|█████     | 5/10 [00:00<00:00,  7.60it/s]
+6/8:  60%|██████    | 6/10 [00:00<00:00,  7.50it/s]
+6/8:  70%|███████   | 7/10 [00:00<00:00,  7.57it/s]
+6/8:  80%|████████  | 8/10 [00:01<00:00,  7.56it/s]
+6/8:  90%|█████████ | 9/10 [00:01<00:00,  7.49it/s]
+6/8: 100%|██████████| 10/10 [00:01<00:00,  7.31it/s]
+6/8: 100%|██████████| 10/10 [00:01<00:00,  7.42it/s]
+
+7/8:   0%|          | 0/10 [00:00<?, ?it/s]
+7/8:  10%|█         | 1/10 [00:00<00:01,  7.10it/s]
+7/8:  20%|██        | 2/10 [00:00<00:01,  7.12it/s]
+7/8:  30%|███       | 3/10 [00:00<00:00,  7.11it/s]
+7/8:  40%|████      | 4/10 [00:00<00:00,  7.24it/s]
+7/8:  50%|█████     | 5/10 [00:00<00:00,  7.18it/s]
+7/8:  60%|██████    | 6/10 [00:00<00:00,  7.35it/s]
+7/8:  70%|███████   | 7/10 [00:00<00:00,  7.45it/s]
+7/8:  80%|████████  | 8/10 [00:01<00:00,  7.58it/s]
+7/8:  90%|█████████ | 9/10 [00:01<00:00,  7.68it/s]
+7/8: 100%|██████████| 10/10 [00:01<00:00,  7.69it/s]
+7/8: 100%|██████████| 10/10 [00:01<00:00,  7.46it/s]
+Logging to /var/folders/7w/8xcxnwts1h7gkyvzf8c36rph0000gn/T/openai-2021-07-16-15-55-48-021718
+--------------------------------------
+| approxkl           | 0.00025464187 |
+| clipfrac           | 0.0054479158  |
+| eplenmean          | 400           |
+| eprewmean          | 6.63          |
+| explained_variance | 5.07e-05      |
+| fps                | 870           |
+| nupdates           | 1             |
+| policy_entropy     | 1.7915064     |
+| policy_loss        | -0.0004568709 |
+| serial_timesteps   | 400           |
+| time_elapsed       | 13.8          |
+| time_remaining     | 153           |
+| total_timesteps    | 12000         |
+| true_eprew         | 0             |
+| value_loss         | 0.55208254    |
+--------------------------------------
+Current reward shaping 0.988
+Current self-play randomization 1
+SP envs: 30/30
+Other agent actions took 0.6939623355865479 seconds
+Total simulation time for 400 steps: 2.6509599685668945 	 Other agent action time: 0 	 150.8887364361973 steps/s
+Curr learning rate 0.000998998998998999 	 Curr reward per step 0.025398666666666667
+
+0/8:   0%|          | 0/10 [00:00<?, ?it/s]
+0/8:  10%|█         | 1/10 [00:00<00:01,  6.32it/s]
+0/8:  20%|██        | 2/10 [00:00<00:01,  6.87it/s]
+0/8:  30%|███       | 3/10 [00:00<00:01,  6.97it/s]
+0/8:  40%|████      | 4/10 [00:00<00:00,  7.04it/s]

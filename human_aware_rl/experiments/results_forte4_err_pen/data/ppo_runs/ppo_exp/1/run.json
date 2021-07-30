@@ -1,0 +1,88 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.3.2",
+      "memory-profiler==0.58.0",
+      "numpy==1.15.4",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow==1.13.1"
+    ],
+    "mainfile": "ppo.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "dc182d77a5201f4b76e28948405248382c1ee845",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo.py",
+        "_sources/ppo_f628470a3bd303e62d2651dcd2cd0599.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-07-16T19:55:52.666492",
+  "host": {
+    "ENV": {},
+    "cpu": "Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz",
+    "hostname": "michelles-mbp.wifi.local.cmu.edu",
+    "os": [
+      "Darwin",
+      "Darwin-20.5.0-x86_64-i386-64bit"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=ppo_bc_train_simple",
+        "layout_name=simple",
+        "REW_SHAPING_HORIZON=1e6",
+        "PPO_RUN_TOT_TIMESTEPS=8e6",
+        "LR=1e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=bc_train",
+        "SEEDS=[9456, 1887, 5578, 5987,  516]",
+        "VF_COEF=0.5",
+        "MINIBATCHES=10",
+        "LR_ANNEALING=3",
+        "SELF_PLAY_HORIZON=[5e5, 3e6]",
+        "TIMESTAMP_DIR=False"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-07-16T19:55:11.260198",
+  "status": "INTERRUPTED",
+  "stop_time": "2021-07-16T19:55:52.667843"
+}

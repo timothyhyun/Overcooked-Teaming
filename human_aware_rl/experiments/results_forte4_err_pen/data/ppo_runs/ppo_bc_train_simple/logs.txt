@@ -1,0 +1,1 @@
+{'eprewmean': [6.633333333333334], 'ep_dense_rew_mean': [6.633333333333334], 'ep_sparse_rew_mean': [0.0], 'eplenmean': [400.0], 'explained_variance': [5.072355270385742e-05], 'policy_loss': [-0.0004568709], 'value_loss': [0.55208254], 'policy_entropy': [1.7915064], 'approxkl': [0.00025464187], 'clipfrac': [0.0054479158]}

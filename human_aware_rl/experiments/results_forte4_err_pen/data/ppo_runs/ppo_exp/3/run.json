@@ -1,0 +1,95 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.3.2",
+      "memory-profiler==0.58.0",
+      "numpy==1.15.4",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow==1.13.1"
+    ],
+    "mainfile": "ppo.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "9e3d3df3aa05da7a9e05aeccefa9816fbc488e3f",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo.py",
+        "_sources/ppo_b6b0930a7e135a4fa0e2a9159b96bdc9.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/opt/anaconda3/envs/hr-team/lib/python3.7/site-packages/sacred-0.7.4-py3.7.egg/sacred/config/captured_function.py\", line 46, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"../ppo/ppo.py\", line 376, in ppo_run\n    env = OvercookedEnv(mdp, **params[\"env_params\"])\n",
+    "  File \"/Users/michellezhao/Documents/overcooked-teaming/overcooked_ai/overcooked_ai_py/mdp/overcooked_env.py\", line 33, in __init__\n    raise ValueError(\"Mdp should be either OvercookedGridworld instance or a generating function\")\n",
+    "ValueError: Mdp should be either OvercookedGridworld instance or a generating function\n"
+  ],
+  "heartbeat": "2021-07-28T17:51:48.703009",
+  "host": {
+    "ENV": {},
+    "cpu": "Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz",
+    "hostname": "michelles-mbp.wifi.local.cmu.edu",
+    "os": [
+      "Darwin",
+      "Darwin-20.5.0-x86_64-i386-64bit"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=ppo_bc_train_random0_test1",
+        "layout_name=random0",
+        "REW_SHAPING_HORIZON=4e6",
+        "PPO_RUN_TOT_TIMESTEPS=9e6",
+        "LR=1.5e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=bc_train",
+        "SEEDS=[9456, 1887, 5578, 5987,  516]",
+        "VF_COEF=0.1",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=2",
+        "SELF_PLAY_HORIZON=None",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-07-28T17:51:48.690583",
+  "status": "FAILED",
+  "stop_time": "2021-07-28T17:51:48.704294"
+}

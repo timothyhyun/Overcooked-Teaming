@@ -1,0 +1,85 @@
+{
+  "artifacts": [],
+  "command": "run_pbt",
+  "experiment": {
+    "base_dir": "/home/mzhao2/implicit_communication/human_aware_rl/human_aware_rl/pbt",
+    "dependencies": [
+      "gym==0.18.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.17.3",
+      "sacred==0.7.4",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "pbt.py",
+    "name": "PBT",
+    "repositories": [
+      {
+        "commit": "a1c70b2f44bbbdddc79b14678ceaf0367ee099f6",
+        "dirty": true,
+        "url": "https://github.com/HumanCompatibleAI/human_aware_rl.git"
+      }
+    ],
+    "sources": [
+      [
+        "pbt.py",
+        "_sources/pbt_c4c6be79f3829c2866bb7972b96850f4.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-07-22T02:36:22.019465",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-73-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "run_pbt",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "fixed_mdp",
+        "layout_name=unident_s",
+        "EX_NAME=pbt_unident_s",
+        "TOTAL_STEPS_PER_AGENT=1.1e7",
+        "REW_SHAPING_HORIZON=5e6",
+        "LR=8e-4",
+        "GPU_ID=3",
+        "POPULATION_SIZE=3",
+        "SEEDS=[8015, 3554,  581, 5608, 4221]",
+        "NUM_SELECTION_GAMES=6",
+        "VF_COEF=0.5",
+        "MINIBATCHES=10",
+        "TIMESTAMP_DIR=False"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-07-20T06:24:13.815121",
+  "status": "RUNNING"
+}

@@ -299,7 +299,11 @@ class Overcooked(gym.Env):
         have to deal with randomizing indices.
         """
         self.base_env.reset()
-        self.agent_idx = np.random.choice([0, 1])
+        # self.agent_idx = np.random.choice([0, 1])
+
+        # MZ: GET GOOD AT SERVER SIDE
+        self.agent_idx = 0
+
         ob_p0, ob_p1 = self.featurize_fn(self.base_env.state)
         if self.agent_idx == 0:
             both_agents_ob = (ob_p0, ob_p1)

@@ -1601,8 +1601,8 @@ class OvercookedGridworld(object):
             #     else:
             #         shaped_reward -= self.reward_shaping_params["IDLE_DIFF_REWARD"]
             #
-            # if action != Action.INTERACT:
-            #     continue
+            if action != Action.INTERACT:
+                continue
 
 
             pos, o = player.position, player.orientation
@@ -1612,19 +1612,19 @@ class OvercookedGridworld(object):
             if terrain_type == 'X':
                 if player.has_object() and not new_state.has_object(i_pos):
                     new_state.add_object(player.remove_object(), i_pos)
-                    # Player put an object down on the counter
-                    if full_pots == num_pots:
-                        shaped_reward += 0.1*self.reward_shaping_params["DISH_PICKUP_REWARD"]
+                    # **ADDED **** Player put an object down on the counter
+                    # if full_pots == num_pots:
+                    #     shaped_reward += 0.1*self.reward_shaping_params["DISH_PICKUP_REWARD"]
 
                 elif not player.has_object() and new_state.has_object(i_pos):
                     player.set_object(new_state.remove_object(i_pos))
 
             elif terrain_type == 'O' and player.held_object is None:
                 player.set_object(ObjectState('onion', pos))
-                # Player picked up an onion
+                # **ADDED **** Player picked up an onion
                 # If there were two full pots
-                if full_pots == num_pots:
-                    shaped_reward -= self.reward_shaping_params["DISH_PICKUP_REWARD"]
+                # if full_pots == num_pots:
+                #     shaped_reward -= self.reward_shaping_params["DISH_PICKUP_REWARD"]
 
             elif terrain_type == 'T' and player.held_object is None:
                 player.set_object(ObjectState('tomato', pos))

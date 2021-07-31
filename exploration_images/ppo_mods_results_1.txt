@@ -1,0 +1,32 @@
+
+
+Dual Pot Specific
+
+ppo_bc_performance {
+'random0': defaultdict(<class 'list'>, {
+'PPO_BC_train+PPO_BC_train': [14.8, 15.6, 11.6, 9.2, 7.2], 
+'PPO_BC_train+BC_test_0': [18.0, 18.2, 17.8, 26.8, 15.6], 
+'PPO_BC_train+BC_test_1': [17.6, 24.0, 21.6, 19.8, 23.4]})}
+
+
+SINGLE POT
+ppo_bc_performance {'random0': defaultdict(<class 'list'>, {'PPO_BC_train+PPO_BC_train': [0.4, 14.0, 0.8, 10.4, 0.4], 'PPO_BC_train+BC_test_0': [5.0, 9.8, 4.6, 13.6, 1.6], 'PPO_BC_train+BC_test_1': [4.0, 12.6, 0.4, 3.4, 7.8]})}
+
+
+True Berk, or it's the ERR PEn
+ppo_bc_performance {
+'random0': defaultdict(<class 'list'>, {
+'PPO_BC_train+PPO_BC_train': [20.0, 24.4, 11.2, 18.4, 19.2], 
+'PPO_BC_train+BC_test_0': [18.8, 22.6, 9.4, 21.4, 24.6], 
+'PPO_BC_train+BC_test_1': [21.0, 23.0, 21.6, 18.6, 15.0]})}
+
+
+ppo_bc_performance {'random0': defaultdict(<class 'list'>, {'PPO_BC_train+PPO_BC_train': [20.0, 24.4, 11.2, 18.4, 19.2], 'PPO_BC_train+BC_test_0': [18.8, 22.6, 9.4, 21.4, 24.6], 'PPO_BC_train+BC_test_1': [21.0, 23.0, 21.6, 18.6, 15.0]})}
+
+
+
+
+
+
+
+

@@ -283,7 +283,10 @@ def configure_other_agent(params, gym_env, mlp, mdp):
         gym_env.other_agent = agent
 
 def load_training_data(run_name, seeds=None):
-    run_dir = '../experiments/results_forte2/' + PPO_DATA_DIR + run_name + "/"
+    # run_dir = '../experiments/results_forte2/' + PPO_DATA_DIR + run_name + "/"
+    run_dir = '../experiments/results_forte3_strat_specific/' + PPO_DATA_DIR + run_name + "/"
+    # run_dir = '../experiments/results_forte4_err_pen/' + PPO_DATA_DIR + run_name + "/"
+    # run_dir = '../experiments/results_forte5_fix_test/' + PPO_DATA_DIR + run_name + "/"
     config = load_pickle(run_dir + "config")
 
     # To add backwards compatibility
@@ -302,7 +305,10 @@ def load_training_data(run_name, seeds=None):
 
 def get_ppo_agent(save_dir, seed=0, best=False):
     # save_dir = 'ppo/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
-    save_dir = '../experiments/results_forte2/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    # save_dir = '../experiments/results_forte2/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    save_dir = '../experiments/results_forte3_strat_specific/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    # save_dir = '../experiments/results_forte4_err_pen/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    # save_dir = '../experiments/results_forte5_fix_test/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
     config = load_pickle(save_dir + '/config')
     if best:
         agent = get_agent_from_saved_model(save_dir + "/best", config["sim_threads"])

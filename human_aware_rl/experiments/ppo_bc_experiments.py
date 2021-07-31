@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from overcooked_ai_py.agents.agent import AgentPair
 from overcooked_ai_py.agents.benchmarking import AgentEvaluator
-from overcooked_ai_py.utils import save_pickle
+from overcooked_ai_py.utils import save_pickle, load_pickle
 
 from human_aware_rl.utils import reset_tf, set_global_seed, prepare_nested_default_dict_for_pickle, common_keys_equal
 from human_aware_rl.imitation.behavioural_cloning import get_bc_agent_from_saved
@@ -22,7 +22,7 @@ def plot_runs_training_curves(ppo_bc_model_paths, seeds, single=False, show=Fals
             plot_ppo_run(layout_model_path, sparse=True, print_config=False, single=single, seeds=seeds[run_type])
             plt.xlabel("Environment timesteps")
             plt.ylabel("Mean episode reward")
-            if save: plt.savefig("rew_ppo_bc_{}_{}".format(run_type, layout), bbox_inches='tight')
+            if save: plt.savefig("orignal_berk_rew_ppo_bc_{}_{}".format(run_type, layout), bbox_inches='tight')
             if show: plt.show()
 
 def evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, bc_model_paths, ppo_bc_model_paths, seeds, best=False, display=False):
@@ -83,20 +83,36 @@ def run_all_ppo_bc_experiments(best_bc_model_paths):
         "bc_test": [2888, 7424, 7360, 4467,  184]
     }
 
+    # ppo_bc_model_paths = {
+    #     'bc_train': {
+    #         "simple": "ppo_bc_train_simple",
+    #         "unident_s": "ppo_bc_train_unident_s",
+    #         "random1": "ppo_bc_train_random1",
+    #         "random0": "ppo_bc_train_random0",
+    #         "random3": "ppo_bc_train_random3"
+    #     },
+    #     'bc_test':{
+    #         "simple": "ppo_bc_test_simple",
+    #         "unident_s": "ppo_bc_test_unident_s",
+    #         "random1": "ppo_bc_test_random1",
+    #         "random0": "ppo_bc_test_random0",
+    #         "random3": "ppo_bc_test_random3"
+    #     }
+    # }
     ppo_bc_model_paths = {
         'bc_train': {
-            "simple": "ppo_bc_train_simple",
-            "unident_s": "ppo_bc_train_unident_s",
-            "random1": "ppo_bc_train_random1",
-            "random0": "ppo_bc_train_random0",
-            "random3": "ppo_bc_train_random3"
+            # "simple": "ppo_bc_train_simple",
+            # "unident_s": "ppo_bc_train_unident_s",
+            # "random1": "ppo_bc_train_random1",
+            "random0": "2021_07_25-15_29_22_new_rep_ppo_bc_train_random0",
+            # "random3": "ppo_bc_train_random3"
         },
-        'bc_test':{
-            "simple": "ppo_bc_test_simple",
-            "unident_s": "ppo_bc_test_unident_s",
-            "random1": "ppo_bc_test_random1",
-            "random0": "ppo_bc_test_random0",
-            "random3": "ppo_bc_test_random3"
+        'bc_test': {
+            # "simple": "ppo_bc_test_simple",
+            # "unident_s": "ppo_bc_test_unident_s",
+            # "random1": "ppo_bc_test_random1",
+            "random0": "2021_07_27-09_39_03_new_rep_ppo_bc_test_random0",
+            # "random3": "ppo_bc_test_random3"
         }
     }
 
@@ -107,3 +123,9 @@ def run_all_ppo_bc_experiments(best_bc_model_paths):
     ppo_bc_performance = evaluate_all_ppo_bc_models(ppo_bc_model_paths, best_bc_model_paths, num_rounds, seeds, best=True)
     ppo_bc_performance = prepare_nested_default_dict_for_pickle(ppo_bc_performance)
     save_pickle(ppo_bc_performance, PPO_DATA_DIR + "ppo_bc_models_performance")
+
+
+
+if __name__ == "__main__":
+    best_bc_model_paths = load_pickle("../data/bc_runs/best_bc_model_paths")
+    run_all_ppo_bc_experiments(best_bc_model_paths)

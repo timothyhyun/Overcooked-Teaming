@@ -43,14 +43,14 @@ def evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, bc_model_paths, pp
         assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
 
         # For curiosity, how well does agent do with itself?
-        ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_train, allow_duplicate_agents=True), num_games=max(int(num_rounds/2), 1), display=display)
-        avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-        ppo_bc_performance[layout]["PPO_BC_train+PPO_BC_train"].append(avg_ppo_and_ppo)
+        # ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_train, allow_duplicate_agents=True), num_games=max(int(num_rounds/2), 1), display=display)
+        # avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
+        # ppo_bc_performance[layout]["PPO_BC_train+PPO_BC_train"].append(avg_ppo_and_ppo)
 
         # How well it generalizes to new agent in simulation?
-        ppo_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_bc_test), num_games=num_rounds, display=display)
-        avg_ppo_and_bc = np.mean(ppo_and_bc['ep_returns'])
-        ppo_bc_performance[layout]["PPO_BC_train+BC_test_0"].append(avg_ppo_and_bc)
+        # ppo_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_bc_test), num_games=num_rounds, display=display)
+        # avg_ppo_and_bc = np.mean(ppo_and_bc['ep_returns'])
+        # ppo_bc_performance[layout]["PPO_BC_train+BC_test_0"].append(avg_ppo_and_bc)
 
         bc_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_bc_test, agent_ppo_bc_train), num_games=num_rounds, display=display)
         avg_bc_and_ppo = np.mean(bc_and_ppo['ep_returns'])
@@ -121,19 +121,23 @@ def run_all_ppo_bc_experiments(best_bc_model_paths):
 def check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths):
     reset_tf()
 
+    # seeds = {
+    #     "bc_train": [9456, 1887, 5578, 5987,  516],
+    #     "bc_test": [2888, 7424, 7360, 4467,  184]
+    # }
     seeds = {
-        "bc_train": [9456, 1887, 5578, 5987,  516],
-        "bc_test": [2888, 7424, 7360, 4467,  184]
+        "bc_train": [9456, 1887, 5578, 5987, 516],
+        "bc_test": [2888, 7424, 7360, 4467, 184]
     }
 
-    # best_bc_model_paths = {
-    #     'train': {
-    #         "random0": "random0_bc_train_seed0",
-    #     },
-    #     'test': {
-    #         "random0": "orig_berk_random0_bc_test_seed2",
-    #     }
-    # }
+    best_bc_model_paths = {
+        'train': {
+            "random0": "random0_bc_train_seed0",
+        },
+        'test': {
+            "random0": "orig_berk_random0_bc_test_seed2",
+        }
+    }
 
     ppo_bc_model_paths = {
         'bc_train': {
@@ -147,7 +151,7 @@ def check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths):
     plot_runs_training_curves(ppo_bc_model_paths, seeds, save=True)
 
     set_global_seed(248)
-    num_rounds = 100
+    num_rounds = 10
     ppo_bc_performance = evaluate_all_ppo_bc_models(ppo_bc_model_paths, best_bc_model_paths, num_rounds, seeds, best=True)
     print('ppo_bc_performance', ppo_bc_performance)
     ppo_bc_performance = prepare_nested_default_dict_for_pickle(ppo_bc_performance)

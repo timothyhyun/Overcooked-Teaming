@@ -302,7 +302,7 @@ class Overcooked(gym.Env):
         # self.agent_idx = np.random.choice([0, 1])
 
         # MZ: GET GOOD AT SERVER SIDE
-        self.agent_idx = 0
+        self.agent_idx = 1
 
         ob_p0, ob_p1 = self.featurize_fn(self.base_env.state)
         if self.agent_idx == 0:

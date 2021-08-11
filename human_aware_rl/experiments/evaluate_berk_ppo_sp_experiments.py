@@ -61,11 +61,11 @@ def run_all_ppo_sp_experiments(best_bc_model_paths):
     seeds = [2229, 7649, 7225, 9807,  386]
 
     ppo_sp_model_paths = {
-        # "simple": "ppo_sp_simple",
-        # "unident_s": "ppo_sp_unident_s",
-        # "random1": "ppo_sp_random1",
-        "random0": "ppo_sp_random0",
-        # "random3": "ppo_sp_random3"
+        "simple": "2021_07_31-12_52_32_ppo_sp_simple_REPLICATE1",
+        "unident_s": "2021_07_31-20_31_58_ppo_sp_unident_s_REPLICATE1",
+        "random1": "2021_08_01-09_22_14_ppo_sp_random1_REPLICATE1",
+        "random0": "2021_08_01-23_27_04_ppo_sp_random0_REPLICATE1",
+        "random3": "2021_08_02-09_28_11_ppo_sp_random3_REPLICATE1"
     }
 
     plot_ppo_sp_training_curves(ppo_sp_model_paths, seeds, save=True)
@@ -74,7 +74,7 @@ def run_all_ppo_sp_experiments(best_bc_model_paths):
     num_rounds = 100
     ppo_sp_performance = evaluate_all_sp_ppo_models(ppo_sp_model_paths, best_bc_model_paths['test'], num_rounds, seeds, best=True)
     print('ppo_sp_performance', ppo_sp_performance)
-    save_pickle(ppo_sp_performance, PPO_DATA_DIR + "ppo_sp_models_performance")
+    save_pickle(ppo_sp_performance, PPO_DATA_DIR + "ppo_sp_models_performance_REPLICATE_8_6_2021")
 
 if __name__ == "__main__":
     best_bc_model_paths = load_pickle("../data/bc_runs/best_bc_model_paths")

@@ -216,9 +216,13 @@ def get_network_builder(name):
         return network_fn
 
     """
+    # print(f'\n\n\nGet Network Building: name {name} \n\n\n')
     if callable(name):
+        # print('is callable')
         return name
     elif name in mapping:
+        # print('is in mapping', mapping)
         return mapping[name]
     else:
+        # print('is other')
         raise ValueError('Unknown network type: {}'.format(name))

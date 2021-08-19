@@ -93,6 +93,8 @@ def learn(*, network, env, total_timesteps, early_stopping = False, eval_env = N
     total_timesteps = int(total_timesteps)
 
     policy = build_policy(env, network, **network_kwargs)
+
+    print(f'\n\n\nNetwork {network} \n\n\n')
     
     bestrew = 0
     # Get the nb of env

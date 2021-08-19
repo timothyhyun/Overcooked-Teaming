@@ -4,6 +4,7 @@ import pickle as pkl
 
 
 if __name__ == "__main__":
+    print("Running Check Eval Files....")
     # filename = 'human_aware_rl/data/bc_runs/best_bc_models_performance.pickle'
     # file = open(filename, 'rb')
     # best_models_perf = pkl.load(file)

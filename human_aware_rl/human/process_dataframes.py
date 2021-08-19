@@ -92,8 +92,8 @@ def get_trajs_from_data_selective(data_path, train_mdps, ordered_trajs, human_ai
     if 'train' in data_path:
         print('TRAIN IN DATAPATH')
         # main_trials = main_trials[main_trials['workerid_num']==15]
-        all_workers = [15, 22]
-        # all_workers = [2, 4, 17, 19]
+        # all_workers = [15, 22]
+        all_workers = [2, 4, 17, 19]
     # all_workers = [4, 15, 17, 22]
     # print('all_workers', all_workers)
 

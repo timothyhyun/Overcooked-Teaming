@@ -254,6 +254,7 @@ def create_model(env, agent_name, use_pretrained_weights=False, **kwargs):
     env: a dummy environment that is used to determine observation and action spaces
     agent_name: the scope under which the weights of the agent are saved
     """
+    print("NETWORK TYPE", kwargs["NETWORK_TYPE"])
     model, _ = learn(
         network=kwargs["NETWORK_TYPE"], 
         env=env, 

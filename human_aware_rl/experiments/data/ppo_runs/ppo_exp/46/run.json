@@ -1,0 +1,114 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/home/mzhao2/overcooked-teaming/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.0.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.20.3",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "ppo.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "ee9de410e44bd7c50c675f81bf22445bb4f237ce",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo.py",
+        "_sources/ppo_02a1ae619a128c04d6118c3d1f9c1a73.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/sacred-0.7.4-py3.7.egg/sacred/config/captured_function.py\", line 46, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"../ppo/ppo.py\", line 387, in ppo_run\n    env, 'Overcooked-v0', featurize_fn=lambda x: mdp.lossless_state_encoding(x), **params\n",
+    "  File \"../../human_aware_rl/baselines_utils.py\", line 171, in get_vectorized_gym_env\n    vectorized_gym_env = RewardShapingEnv(SubprocVecEnv([gym_env_fn] * kwargs[\"sim_threads\"]))\n",
+    "  File \"/home/mzhao2/overcooked-teaming/baselines/baselines/common/vec_env/subproc_vec_env.py\", line 62, in __init__\n    observation_space, action_space, self.spec = self.remotes[0].recv()\n",
+    "  File \"/home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/multiprocessing/connection.py\", line 250, in recv\n    buf = self._recv_bytes()\n",
+    "  File \"/home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/multiprocessing/connection.py\", line 407, in _recv_bytes\n    buf = self._recv(4)\n",
+    "  File \"/home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/multiprocessing/connection.py\", line 379, in _recv\n    chunk = read(handle, remaining)\n",
+    "ConnectionResetError: [Errno 104] Connection reset by peer\n"
+  ],
+  "heartbeat": "2021-08-16T22:57:05.320636",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "gpus": {
+      "driver_version": "465.19.01",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11019
+        },
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11016
+        }
+      ]
+    },
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.11"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=dispenser_side_specific_ppo_bc_test_random0_test2",
+        "layout_name=random0",
+        "REW_SHAPING_HORIZON=4e6",
+        "PPO_RUN_TOT_TIMESTEPS=9e6",
+        "LR=1.5e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=bc_test",
+        "SEEDS=[2888, 7424, 7360, 4467,  184]",
+        "VF_COEF=0.1",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=2",
+        "SELF_PLAY_HORIZON=None",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-08-16T22:56:59.312282",
+  "status": "FAILED",
+  "stop_time": "2021-08-16T22:57:05.323228"
+}

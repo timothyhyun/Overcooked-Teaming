@@ -1,0 +1,444 @@
+INFO - PPO - Running command 'ppo_run'
+INFO - PPO - Started run with ID "49"
+Creating env with params {'RUN_TYPE': 'ppo', 'SEEDS': [9456, 1887, 5578, 5987, 516], 'LOCAL_TESTING': False, 'EX_NAME': 'dispenser_side_specific_ppo_bc_train_random0_test2', 'SAVE_DIR': 'data/ppo_runs/2021_08_16-18_58_31_dispenser_side_specific_ppo_bc_train_random0_test2/', 'GPU_ID': 0, 'PPO_RUN_TOT_TIMESTEPS': 9000000.0, 'mdp_params': {'layout_name': 'random0', 'start_order_list': None, 'rew_shaping_params': {'PLACEMENT_IN_POT_REW': 3, 'DISH_PICKUP_REWARD': 3, 'SOUP_PICKUP_REWARD': 5, 'DISH_DISP_DISTANCE_REW': 0, 'POT_DISTANCE_REW': 0, 'SOUP_DISTANCE_REW': 0}}, 'env_params': {'horizon': 400}, 'mdp_generation_params': {'padded_mdp_shape': [11, 7], 'mdp_shape_fn': [[5, 11], [5, 7]], 'prop_empty_fn': [0.6, 1], 'prop_feats_fn': [0, 0.6]}, 'ENTROPY': 0.1, 'GAMMA': 0.99, 'sim_threads': 30, 'TOTAL_BATCH_SIZE': 12000, 'BATCH_SIZE': 400, 'MAX_GRAD_NORM': 0.1, 'LR': 0.0015, 'LR_ANNEALING': 2, 'VF_COEF': 0.1, 'STEPS_PER_UPDATE': 8, 'MINIBATCHES': 15, 'CLIPPING': 0.05, 'LAM': 0.98, 'SELF_PLAY_HORIZON': None, 'REW_SHAPING_HORIZON': 4000000.0, 'OTHER_AGENT_TYPE': 'bc_train', 'HM_PARAMS': [True, 0.3], 'NUM_HIDDEN_LAYERS': 3, 'SIZE_HIDDEN_LAYERS': 64, 'NUM_FILTERS': 25, 'NUM_CONV_LAYERS': 3, 'NETWORK_TYPE': 'conv_and_mlp', 'SAVE_BEST_THRESH': 50, 'TRAJECTORY_SELF_PLAY': True, 'VIZ_FREQUENCY': 50, 'grad_updates_per_agent': 90000.0}
+Computing MediumLevelPlanner to be saved in /home/mzhao2/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/random0_am.pkl
+It took 0.03742814064025879 seconds to create mlp
+LOADING BC MODEL FROM: random0_bc_train_seed0
+Loading a model without an environment, this model cannot be trained until it has a valid environment.
+WARNING:tensorflow:From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING - tensorflow - From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /home/mzhao2/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING - tensorflow - From /home/mzhao2/overcooked-teaming/stable-baselines/stable_baselines/common/policies.py:436: flatten (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.flatten instead.
+WARNING:tensorflow:From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING:tensorflow:From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+WARNING - tensorflow - From /home/mzhao2/anaconda3/envs/harl-gpu/lib/python3.7/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+Mlp with different params or mdp found, computing from scratch
+Computing MediumLevelPlanner to be saved in /home/mzhao2/overcooked-teaming/overcooked_ai/overcooked_ai_py/data/planners/random0_am.pkl
+It took 0.038329124450683594 seconds to create mlp
+NETWORK TYPE conv_and_mlp
+
+
+
+Network conv_and_mlp 
+
+
+
+WARNING:tensorflow:From /home/mzhao2/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING - tensorflow - From /home/mzhao2/overcooked-teaming/baselines/baselines/common/input.py:57: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+(30, 5, 5, 20)
+WARNING:tensorflow:From ../../human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING - tensorflow - From ../../human_aware_rl/baselines_utils.py:127: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.conv2d instead.
+WARNING:tensorflow:From ../../human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+WARNING - tensorflow - From ../../human_aware_rl/baselines_utils.py:143: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+Last layer conv network output shape (30, 64)
+(800, 5, 5, 20)
+Last layer conv network output shape (800, 64)
+TOT NUM UPDATES 0
+
+
+
+Network conv_and_mlp 
+
+
+
+TOT NUM UPDATES 750
+SP envs: 0/30
+Other agent actions took 4.549113988876343 seconds
+Total simulation time for 400 steps: 7.742915153503418 	 Other agent action time: 0 	 51.66012955973216 steps/s
+Curr learning rate 0.0015 	 Curr reward per step 0.01825
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8:  13%|█▎        | 2/15 [00:00<00:00, 19.89it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 79.46it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 168.21it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 165.72it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 169.70it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 170.09it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 172.23it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 169.71it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 171.91it/s]
+Logging to /tmp/openai-2021-08-16-18-58-48-298826
+-------------------------------------
+| approxkl           | 0.0006872747 |
+| clipfrac           | 0.056479167  |
+| eplenmean          | 400          |
+| eprewmean          | 7.3          |
+| explained_variance | 0.00443      |
+| fps                | 1396         |
+| nupdates           | 1            |
+| policy_entropy     | 1.7910845    |
+| policy_loss        | -0.001639874 |
+| serial_timesteps   | 400          |
+| time_elapsed       | 8.6          |
+| time_remaining     | 107          |
+| total_timesteps    | 12000        |
+| true_eprew         | 0            |
+| value_loss         | 0.60193497   |
+-------------------------------------
+Current reward shaping 0.997
+SP envs: 0/30
+Other agent actions took 4.569332122802734 seconds
+Total simulation time for 400 steps: 7.3486809730529785 	 Other agent action time: 0 	 54.43153696109108 steps/s
+Curr learning rate 0.001499 	 Curr reward per step 0.019192250000000008
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 167.53it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 172.73it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 170.21it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 170.46it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 174.97it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 175.26it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 172.20it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 177.47it/s]
+-------------------------------------
+| approxkl           | 0.0006104579 |
+| clipfrac           | 0.06466666   |
+| eplenmean          | 400          |
+| eprewmean          | 7.49         |
+| explained_variance | -0.000388    |
+| fps                | 1486         |
+| nupdates           | 2            |
+| policy_entropy     | 1.7895858    |
+| policy_loss        | -0.002257577 |
+| serial_timesteps   | 800          |
+| time_elapsed       | 16.7         |
+| time_remaining     | 104          |
+| total_timesteps    | 24000        |
+| true_eprew         | 0            |
+| value_loss         | 0.61727524   |
+-------------------------------------
+Current reward shaping 0.994
+SP envs: 0/30
+Other agent actions took 4.579545736312866 seconds
+Total simulation time for 400 steps: 7.697089195251465 	 Other agent action time: 0 	 51.967697119421516 steps/s
+Curr learning rate 0.001498 	 Curr reward per step 0.026516666666666678
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 157.41it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 167.00it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 180.94it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 166.96it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 180.67it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 168.88it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 171.28it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 158.79it/s]
+--------------------------------------
+| approxkl           | 0.00046713266 |
+| clipfrac           | 0.08938543    |
+| eplenmean          | 400           |
+| eprewmean          | 8.53          |
+| explained_variance | 0.00537       |
+| fps                | 1421          |
+| nupdates           | 3             |
+| policy_entropy     | 1.788002      |
+| policy_loss        | -0.002188832  |
+| serial_timesteps   | 1200          |
+| time_elapsed       | 25.1          |
+| time_remaining     | 104           |
+| total_timesteps    | 36000         |
+| true_eprew         | 0.222         |
+| value_loss         | 1.1936139     |
+--------------------------------------
+Current reward shaping 0.991
+SP envs: 0/30
+Other agent actions took 4.507616996765137 seconds
+Total simulation time for 400 steps: 7.797973155975342 	 Other agent action time: 0 	 51.29538047889952 steps/s
+Curr learning rate 0.001497 	 Curr reward per step 0.025766
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 168.02it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 169.65it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 171.35it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 174.39it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 167.38it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 173.61it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 175.18it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 174.94it/s]
+-------------------------------------
+| approxkl           | 0.0005275703 |
+| clipfrac           | 0.10707295   |
+| eplenmean          | 400          |
+| eprewmean          | 9.27         |
+| explained_variance | 0.00506      |
+| fps                | 1406         |
+| nupdates           | 4            |
+| policy_entropy     | 1.7856624    |
+| policy_loss        | -0.002640498 |
+| serial_timesteps   | 1600         |
+| time_elapsed       | 33.6         |
+| time_remaining     | 105          |
+| total_timesteps    | 48000        |
+| true_eprew         | 0.2          |
+| value_loss         | 0.89478654   |
+-------------------------------------
+Current reward shaping 0.988
+SP envs: 0/30
+Other agent actions took 4.489611864089966 seconds
+Total simulation time for 400 steps: 7.86091947555542 	 Other agent action time: 0 	 50.884632674823024 steps/s
+Curr learning rate 0.001496 	 Curr reward per step 0.029926999999999995
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 160.50it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 162.84it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 163.07it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 165.06it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 166.41it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 163.14it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 166.68it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 163.85it/s]
+--------------------------------------
+| approxkl           | 0.00083346444 |
+| clipfrac           | 0.16055211    |
+| eplenmean          | 400           |
+| eprewmean          | 10.5          |
+| explained_variance | 0.00908       |
+| fps                | 1391          |
+| nupdates           | 5             |
+| policy_entropy     | 1.7839036     |
+| policy_loss        | -0.0042951745 |
+| serial_timesteps   | 2000          |
+| time_elapsed       | 42.3          |
+| time_remaining     | 105           |
+| total_timesteps    | 60000         |
+| true_eprew         | 0.6           |
+| value_loss         | 1.7218477     |
+--------------------------------------
+Current reward shaping 0.985
+SP envs: 0/30
+Other agent actions took 4.507871627807617 seconds
+Total simulation time for 400 steps: 7.8282716274261475 	 Other agent action time: 0 	 51.096847303894045 steps/s
+Curr learning rate 0.001495 	 Curr reward per step 0.030231666666666667
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 177.46it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 181.98it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 177.85it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 162.00it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 166.07it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 168.01it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 169.17it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 169.97it/s]
+--------------------------------------
+| approxkl           | 0.00080478773 |
+| clipfrac           | 0.18238544    |
+| eplenmean          | 400           |
+| eprewmean          | 11.4          |
+| explained_variance | 0.0193        |
+| fps                | 1402          |
+| nupdates           | 6             |
+| policy_entropy     | 1.7808253     |
+| policy_loss        | -0.004192659  |
+| serial_timesteps   | 2400          |
+| time_elapsed       | 50.8          |
+| time_remaining     | 105           |
+| total_timesteps    | 72000         |
+| true_eprew         | 0.6           |
+| value_loss         | 1.4003903     |
+--------------------------------------
+Current reward shaping 0.982
+SP envs: 0/30
+Other agent actions took 4.523797273635864 seconds
+Total simulation time for 400 steps: 7.783336877822876 	 Other agent action time: 0 	 51.39183955145552 steps/s
+Curr learning rate 0.001494 	 Curr reward per step 0.03387899999999999
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 162.19it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 169.83it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 165.43it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 163.52it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 174.68it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 168.98it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 167.36it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 175.96it/s]
+-------------------------------------
+| approxkl           | 0.0010232449 |
+| clipfrac           | 0.22512498   |
+| eplenmean          | 400          |
+| eprewmean          | 12.3         |
+| explained_variance | 0.0358       |
+| fps                | 1407         |
+| nupdates           | 7            |
+| policy_entropy     | 1.7782747    |
+| policy_loss        | -0.00522048  |
+| serial_timesteps   | 2800         |
+| time_elapsed       | 59.4         |
+| time_remaining     | 105          |
+| total_timesteps    | 84000        |
+| true_eprew         | 0.6          |
+| value_loss         | 1.1656301    |
+-------------------------------------
+Current reward shaping 0.979
+SP envs: 0/30
+Other agent actions took 4.489853620529175 seconds
+Total simulation time for 400 steps: 7.8120644092559814 	 Other agent action time: 0 	 51.20285484667373 steps/s
+Curr learning rate 0.001493 	 Curr reward per step 0.039148416666666665
+
+0/8:   0%|          | 0/15 [00:00<?, ?it/s]
+0/8: 100%|██████████| 15/15 [00:00<00:00, 164.89it/s]
+
+1/8:   0%|          | 0/15 [00:00<?, ?it/s]
+1/8: 100%|██████████| 15/15 [00:00<00:00, 165.53it/s]
+
+2/8:   0%|          | 0/15 [00:00<?, ?it/s]
+2/8: 100%|██████████| 15/15 [00:00<00:00, 164.02it/s]
+
+3/8:   0%|          | 0/15 [00:00<?, ?it/s]
+3/8: 100%|██████████| 15/15 [00:00<00:00, 166.11it/s]
+
+4/8:   0%|          | 0/15 [00:00<?, ?it/s]
+4/8: 100%|██████████| 15/15 [00:00<00:00, 166.88it/s]
+
+5/8:   0%|          | 0/15 [00:00<?, ?it/s]
+5/8: 100%|██████████| 15/15 [00:00<00:00, 169.11it/s]
+
+6/8:   0%|          | 0/15 [00:00<?, ?it/s]
+6/8: 100%|██████████| 15/15 [00:00<00:00, 175.89it/s]
+
+7/8:   0%|          | 0/15 [00:00<?, ?it/s]
+7/8: 100%|██████████| 15/15 [00:00<00:00, 173.29it/s]
+-------------------------------------
+| approxkl           | 0.0011432648 |
+| clipfrac           | 0.25597915   |
+| eplenmean          | 400          |
+| eprewmean          | 13.5         |
+| explained_variance | 0.0446       |
+| fps                | 1402         |
+| nupdates           | 8            |
+| policy_entropy     | 1.7757704    |
+| policy_loss        | -0.00533261  |
+| serial_timesteps   | 3200         |
+| time_elapsed       | 67.9         |
+| time_remaining     | 105          |
+| total_timesteps    | 96000        |
+| true_eprew         | 0.6          |
+| value_loss         | 2.1071384    |
+-------------------------------------
+Current reward shaping 0.976
+SP envs: 0/30

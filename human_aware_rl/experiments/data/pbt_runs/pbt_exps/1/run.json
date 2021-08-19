@@ -1,0 +1,101 @@
+{
+  "artifacts": [],
+  "command": "run_pbt",
+  "experiment": {
+    "base_dir": "/home/mzhao2/overcooked-teaming/human_aware_rl/pbt",
+    "dependencies": [
+      "gym==0.18.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.17.3",
+      "sacred==0.7.4",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "pbt.py",
+    "name": "PBT",
+    "repositories": [
+      {
+        "commit": "ee9de410e44bd7c50c675f81bf22445bb4f237ce",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "pbt.py",
+        "_sources/pbt_c4c6be79f3829c2866bb7972b96850f4.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-08-02T07:56:54.483958",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "gpus": {
+      "driver_version": "465.19.01",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11019
+        },
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11016
+        }
+      ]
+    },
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "run_pbt",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "fixed_mdp",
+        "layout_name=simple",
+        "EX_NAME=pbt_simple_REPLICATE1",
+        "TOTAL_STEPS_PER_AGENT=8e6",
+        "REW_SHAPING_HORIZON=3e6",
+        "LR=2e-3",
+        "GPU_ID=2",
+        "POPULATION_SIZE=3",
+        "SEEDS=[8015, 3554,  581, 5608, 4221]",
+        "NUM_SELECTION_GAMES=6",
+        "VF_COEF=0.5",
+        "MINIBATCHES=10",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-07-31T16:54:27.528332",
+  "status": "COMPLETED",
+  "stop_time": "2021-08-02T07:56:53.393395"
+}

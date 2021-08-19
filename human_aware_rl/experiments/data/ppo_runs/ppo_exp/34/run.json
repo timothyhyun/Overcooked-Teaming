@@ -1,0 +1,112 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/home/mzhao2/overcooked-teaming/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.0.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.17.3",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "ppo.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "ee9de410e44bd7c50c675f81bf22445bb4f237ce",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo.py",
+        "_sources/ppo_02a1ae619a128c04d6118c3d1f9c1a73.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/mzhao2/anaconda3/envs/harl/lib/python3.7/site-packages/sacred-0.7.4-py3.7.egg/sacred/config/captured_function.py\", line 46, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"../ppo/ppo.py\", line 383, in ppo_run\n    mlp = MediumLevelPlanner.from_pickle_or_compute(mdp, NO_COUNTERS_PARAMS, force_compute=True)\n",
+    "  File \"/home/mzhao2/implicit_communication/human_aware_rl/overcooked_ai/overcooked_ai_py/planning/planners.py\", line 911, in from_pickle_or_compute\n    return MediumLevelPlanner.compute_mlp(filename, mdp, mlp_params)\n",
+    "  File \"/home/mzhao2/implicit_communication/human_aware_rl/overcooked_ai/overcooked_ai_py/planning/planners.py\", line 933, in compute_mlp\n    mlp.ml_action_manager.save_to_file(final_filepath)\n",
+    "  File \"/home/mzhao2/implicit_communication/human_aware_rl/overcooked_ai/overcooked_ai_py/planning/planners.py\", line 733, in save_to_file\n    with open(filename, 'wb') as output:\n",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/home/mzhao2/implicit_communication/human_aware_rl/overcooked_ai/overcooked_ai_py/data/planners/random1_am.pkl'\n"
+  ],
+  "heartbeat": "2021-08-17T03:31:04.655825",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "gpus": {
+      "driver_version": "465.19.01",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11019
+        },
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11016
+        }
+      ]
+    },
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.10"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=ppo_bc_train_random1_REPLICATE1",
+        "layout_name=random1",
+        "REW_SHAPING_HORIZON=5e6",
+        "PPO_RUN_TOT_TIMESTEPS=1.6e7",
+        "LR=1e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=bc_train",
+        "SEEDS=[9456, 1887, 5578, 5987,  516]",
+        "VF_COEF=0.5",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=1.5",
+        "SELF_PLAY_HORIZON=[2e6, 6e6]",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-08-15T06:55:36.445258",
+  "status": "FAILED",
+  "stop_time": "2021-08-17T03:31:04.788207"
+}

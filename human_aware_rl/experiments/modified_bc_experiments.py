@@ -29,7 +29,8 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
     bc_params["mdp_params"]['layout_name'] = layout_name
     bc_params["mdp_params"]['start_order_list'] = None
 
-    model_save_dir = layout_name + "_" + agent_name + "/"
+    model_save_dir = "dual_pot_finetune_" + layout_name + "_" + agent_name + "/"
+    # model_save_dir = layout_name + "_" + agent_name + "/"
     # train_bc_agent() returns the bc model
     if finetuning:
         return train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
@@ -57,7 +58,7 @@ def train_bc_models_w_finetuning_on_single_strat_train(all_params, seeds):
         for seed_idx, seed in enumerate(seeds):
             set_global_seed(seed)
             # 1. Train BC model
-            model = train_bc_agent_from_hh_data(agent_name="bc_train_seed{}".format(seed), model='train', **params, finetuning=False)
+            model = train_bc_agent_from_hh_data(agent_name="bc_train_seed{}".format(seed), model='train', **params, finetuning=True)
             # plot_bc_run(model.bc_info, params['num_epochs'])
             plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
 

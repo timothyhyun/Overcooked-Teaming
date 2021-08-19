@@ -1,0 +1,39 @@
+{
+    "os": "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid",
+    "python": "3.7.11",
+    "heartbeatAt": "2021-08-16T21:55:15.767562",
+    "startedAt": "2021-08-16T21:55:14.201157",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 2080 Ti",
+    "gpu_count": 2,
+    "cpu_count": 64,
+    "cuda": "10.0.130",
+    "args": [
+        "with",
+        "EX_NAME=just_testing",
+        "layout_name=random0",
+        "REW_SHAPING_HORIZON=4e6",
+        "PPO_RUN_TOT_TIMESTEPS=9e6",
+        "LR=1.5e-3",
+        "GPU_ID=0",
+        "OTHER_AGENT_TYPE=bc_train",
+        "SEEDS=[9456, 1887, 5578, 5987,  516]",
+        "VF_COEF=0.1",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=2",
+        "SELF_PLAY_HORIZON=None",
+        "TIMESTAMP_DIR=True"
+    ],
+    "state": "running",
+    "program": "../ppo/ppo_strat_specific.py",
+    "codePath": "human_aware_rl/ppo/ppo_strat_specific.py",
+    "git": {
+        "remote": "https://github.com/mzhao98/overcooked-teaming.git",
+        "commit": "ee9de410e44bd7c50c675f81bf22445bb4f237ce"
+    },
+    "email": null,
+    "root": "/home/mzhao2/overcooked-teaming",
+    "host": "forte",
+    "username": "mzhao2",
+    "executable": "/home/mzhao2/anaconda3/envs/harl-gpu/bin/python"
+}

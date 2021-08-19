@@ -1,6 +1,11 @@
 import itertools, os
 import numpy as np
 import pickle, time
+
+import sys, os
+import pickle
+sys.path.insert(0, "../../")
+
 from overcooked_ai_py.utils import pos_distance, manhattan_distance
 from overcooked_ai_py.planning.search import SearchTree, Graph
 from overcooked_ai_py.mdp.actions import Action, Direction

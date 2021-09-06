@@ -10,7 +10,7 @@ def json_eval(s):
 
 
 def import_2019_data():
-    hh_all_2019_file = '/Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/static/human_data/cleaned/2019_hh_trials_all.pickle'
+    hh_all_2019_file = '../../human_aware_rl/static/human_data/cleaned/2019_hh_trials_all.pickle'
 
     with open(hh_all_2019_file,'rb') as file:
         humans_2019_file = pkl.load(file)
@@ -20,7 +20,7 @@ def import_2019_data():
     return old_trials
 
 def import_2020_data():
-    hh_all_2020_file = '/Users/michellezhao/Documents/overcooked-teaming/human_aware_rl/static/human_data/cleaned/2020_hh_trials_all.pickle'
+    hh_all_2020_file = '../../human_aware_rl/static/human_data/cleaned/2020_hh_trials_all.pickle'
 
     with open(hh_all_2020_file,'rb') as file:
         humans_2020_file = pkl.load(file)

@@ -1,6 +1,10 @@
+import numpy as np
 from dependencies import *
 from hmm import supervised_HMM, unsupervised_HMM, HiddenMarkovModel
 from extract_features import *
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import plot_precision_recall_curve
+import sklearn
 
 def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
                      p2_actions, name, time_elapsed):
@@ -27,10 +31,14 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
     }
 
     # P2 took what action when one pot had 3 onions? Fill the other or Go for a plate?
-    # 0 = Fill the other
-    # 1 = Go for a plate
+    # 0 = P1 passes onion
+    # 1 = P1 passes dish
+    # 2 = P2 puts onion in pot
+    # 3 = P2 serves
     p2_time_strategic_action = []
     p2_time_strategy = []
+
+    both_players_strategic_action = []
     get_next_action = False
 
     #     p1_private_counters = [4,5]
@@ -221,20 +229,22 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
                 players_holding[1] = None
 
                 put_down_loc = new_obj_location
-                if p1_obj_name_next == 'onion':
+                if p1_obj_name == 'onion':
+                    both_players_strategic_action.append(0)
                     if put_down_loc in p1_private_counters:
                         p1_major_action = 10
                     if put_down_loc in shared_counters:
                         p1_major_action = 3
 
 
-                elif p1_obj_name_next == 'dish':
+                elif p1_obj_name == 'dish':
+                    both_players_strategic_action.append(1)
                     if put_down_loc in p1_private_counters:
                         p1_major_action = 11
                     if put_down_loc in shared_counters:
                         p1_major_action = 4
 
-                elif p1_obj_name_next == 'soup':
+                elif p1_obj_name == 'soup':
                     if put_down_loc in p1_private_counters:
                         p1_major_action = 12
                     if put_down_loc in shared_counters:
@@ -341,7 +351,7 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
                 if (placed_x, placed_y) in object_location_tracker:
                     obj_picked_id = object_location_tracker[(placed_x, placed_y)]
                 else:
-                    print('!!! problem p2 pickup not found')
+                    # print('!!! problem p2 pickup not found')
                     nearest_key = min(list(object_location_tracker.keys()),
                                       key=lambda c: (c[0] - placed_x) ** 2 + (c[1] - placed_y) ** 2)
                     obj_picked_id = object_location_tracker[nearest_key]
@@ -403,6 +413,8 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
 
                 p2_time_strategy.append(t1)
 
+                both_players_strategic_action.append(3)
+
                 if get_next_action == True:
                     p2_time_strategic_action.append((t1, 1))
                     get_next_action = False
@@ -412,10 +424,12 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
 
                 # placed at top counter pot
                 if (placed_obj_x, placed_obj_y) == (3, 0):
+
                     top_soup_contents_dict['this_contents'].append(object_held_id)
                     right_soup_contents_dict['other_contents'].append(object_held_id)
 
                     if p2_obj_name == 'onion':
+                        both_players_strategic_action.append(2)
                         p2_major_action = 5
 
                     if get_next_action == True:
@@ -429,10 +443,12 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
 
                 # placed at right counter pot
                 if (placed_obj_x, placed_obj_y) == (4, 1):
+
                     right_soup_contents_dict['this_contents'].append(object_held_id)
                     top_soup_contents_dict['other_contents'].append(object_held_id)
 
                     if p2_obj_name == 'onion':
+                        both_players_strategic_action.append(2)
                         p2_major_action = 6
 
                     if get_next_action == True:
@@ -552,25 +568,119 @@ def featurize_data_for_naive_hmm():
     return X_data, team_numbers
 
 
-def run_naive_hmm_on_p2():
+def featurize_data_for_chunked_naive_hmm(window=4, ss=2):
+    team_chunked_actions_data = {}
+
+    name = 'random0'
+    title = 'Forced Coord'
+
+    # name = 'random0'
+    # title = 'Forced Coordination'
+    old_trials = import_2019_data()
+    layout_trials = old_trials[old_trials['layout_name'] == name]['trial_id'].unique()
+    # name = 'random0'
+    # title = 'Forced Coordination'
+    trial_data = {}
+    team_numbers = []
+    for j in range(len(layout_trials)):
+        # for j in [5]:
+        trial_id = layout_trials[j]
+        team_numbers.append(trial_id)
+        # print('trial_id', trial_id)
+        trial_df = old_trials[old_trials['trial_id'] == trial_id]
+        score = old_trials[old_trials['trial_id'] == trial_id]['score'].to_numpy()[-1]
+        state_data = trial_df['state'].to_numpy()
+        joint_actions = trial_df['joint_action'].to_numpy()
+        time_elapsed = trial_df['time_elapsed'].to_numpy()
+
+        p1_data = []
+        p2_data = []
+        p1_actions = []
+        p2_actions = []
+        state_data_eval = []
+        objects_data = []
+        for i in range(1, len(state_data)):
+            prev_state_x = json_eval(state_data[i - 1])
+            state_x = json_eval(state_data[i])
+            joint_actions_i = literal_eval(joint_actions[i])
+            p1_index = 1
+            p2_index = 0
+
+            p1_data.append(state_x['players'][p1_index])
+            p2_data.append(state_x['players'][p2_index])
+            state_data_eval.append(state_x)
+            objects_data.append(state_x['objects'])
+
+            p1_actions.append(joint_actions_i[p1_index])
+            p2_actions.append(joint_actions_i[p2_index])
+
+        object_list_tracker, ordered_delivered_tracker, p1_actions_list, p2_actions_list, p2_time_strategic_action, p2_time_strategy = track_p2_actions(old_trials,
+            p1_data, p2_data, objects_data, p1_actions,
+            p2_actions, name, time_elapsed)
+        team_chunked_actions_data[trial_id] = {}
+        team_chunked_actions_data[trial_id]['p1_actions'] = p1_actions_list
+        team_chunked_actions_data[trial_id]['p2_actions'] = p2_actions_list
+        team_chunked_actions_data[trial_id]['p2_major_actions'] = p2_time_strategic_action
+        team_chunked_actions_data[trial_id]['p2_delivery_times'] = p2_time_strategy
+    #     other_pot_contains_num_onions, other_pot_states, steps_p1_took_total_order, \
+    #         steps_p2_took_total_order, order_completion_times = pull_features_from_output(object_list_tracker, ordered_delivered_tracker)
+
+    #     plot_results(other_pot_contains_num_onions, other_pot_states, steps_p1_took_total_order, steps_p2_took_total_order, order_completion_times)
+    #     print()
+    # team_idx = 9
+
+    X_data = []
+    team_numbers = []
+
+    X_data_chunked = []
+    team_numbers_chunked = []
+
+
+    for team_idx in team_chunked_actions_data:
+
+        p2_major_actions = team_chunked_actions_data[team_idx]['p2_major_actions']
+        p2_delivery_times = team_chunked_actions_data[team_idx]['p2_delivery_times']
+
+        #     print(len(p2_major_actions))
+        # add = []
+        # for j in range(5):
+        #     add.append(p2_major_actions[j][1])
+
+        # add = []
+        add = [p2_major_actions[c][1] for c in range(len(p2_major_actions))]
+        X_data.append(np.array(add))
+        team_numbers.append(team_idx)
+
+        for j in range(0, len(p2_major_actions)-window, ss):
+            add = [p2_major_actions[c][1] for c in range(j, j+window)]
+            X_data_chunked.append(np.array(add))
+            team_numbers_chunked.append(team_idx)
+
+    # X_data = np.array(X_data)
+
+    return X_data, team_numbers, X_data_chunked, team_numbers_chunked
+
+def run_naive_hmm_on_p2(n_states, window=4, ss=2):
 
     # X = observation_data
     # Y = hidden_state_data
-    X, team_numbers = featurize_data_for_naive_hmm()
+    X, team_numbers, X_data_chunked, team_numbers_chunked = featurize_data_for_chunked_naive_hmm(window=window, ss=ss)
 
-    n_states = 3
+
     N_iters = 100
 
     test_unsuper_hmm = unsupervised_HMM(X, n_states, N_iters)
 
     # print('emission', test_unsuper_hmm.generate_emission(10))
     hidden_seqs = []
+    team_num_to_seq_probs = {}
     for j in range(len(X)):
-        viterbi_output = test_unsuper_hmm.viterbi(X[j])
+        viterbi_output, all_sequences_and_probs = test_unsuper_hmm.viterbi_all_probs(X[j])
+        team_num_to_seq_probs[team_numbers[j]] = all_sequences_and_probs
         hidden_seqs.append([int(x) for x in viterbi_output])
-        print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
+        # print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
 
-    return test_unsuper_hmm, hidden_seqs
+    return test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs
 
 def pad_w_mode(hidden_seqs):
     max_len = max(len(elem) for elem in hidden_seqs)
@@ -592,24 +702,273 @@ def pad_w_mode(hidden_seqs):
 
 def cluster_hidden_states(hidden_seqs, n_clusters=2):
     X = pad_w_mode(hidden_seqs)
-    print('X=', X)
+    # print('X=', X)
     kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
     cluster_labels = kmeans.labels_
     cluster_centers = kmeans.cluster_centers_
-    return cluster_labels, cluster_centers
+    ss = sklearn.metrics.silhouette_score(X, cluster_labels)
+    # ss = sklearn.metrics.calinski_harabasz_score(X, cluster_labels)
+    return cluster_labels, cluster_centers, ss
 
-if __name__ == '__main__':
-    test_unsuper_hmm, hidden_seqs = run_naive_hmm_on_p2()
+
+def create_fake_dataset(window=4, ss=2, num_samples=10, seq_len=5):
+    X, team_numbers = featurize_data_for_chunked_naive_hmm(window=window, ss=ss)
+
+    simulated_X = []
+    simulated_team_labels = []
+    simulated_strategy_labels = []
+
+    for n in range(num_samples):
+        rand_indices = np.random.choice(range(len(X)), size=seq_len)
+        strat_1_index = team_numbers.index(79)
+        alternating_rand_indices = []
+        for value in rand_indices:
+            alternating_rand_indices.append(value)
+            alternating_rand_indices.append(strat_1_index)
+
+        print(alternating_rand_indices)
+        fake_seq = []
+        fake_seq_team_numbers = []
+        for idx in rand_indices:
+            fake_seq.extend(list(X[idx]))
+
+            fake_seq_team_numbers.extend([team_numbers[idx] for t in range(len(X[idx]))])
+
+        for j in range(0, len(fake_seq) - window, ss):
+            add = [fake_seq[c] for c in range(j, j + window)]
+            simulated_X.append(np.array(add))
+            team_idx = fake_seq_team_numbers[j+window]
+            if int(team_idx) == 79 or int(team_idx) == 114:
+                simulated_strategy_labels.append(1)
+            else:
+                simulated_strategy_labels.append(0)
+            simulated_team_labels.append(team_idx)
+
+    return simulated_X, simulated_team_labels, simulated_strategy_labels
+
+
+def get_predicted_team_strat(team_num_to_seq_probs, simulated_X, simulated_team_labels, simulated_strategy_labels):
+    predicted_team_labels = []
+    predicted_strat_labels = []
+    for j in range(len(simulated_X)):
+        find_X = simulated_X[j]
+        team_list = []
+        probs_list = []
+
+        probability_of_strat_0 = 0
+        probability_of_strat_1 = 0
+        for team_number in team_num_to_seq_probs:
+            seq_probs = team_num_to_seq_probs[team_number]
+            hidden_for_find_X = test_unsuper_hmm.viterbi(find_X)
+            print('hidden_for_find_X', hidden_for_find_X)
+            if hidden_for_find_X not in seq_probs:
+                print("problem", seq_probs)
+                continue
+            sequence_prob_for_team_i = seq_probs[hidden_for_find_X]
+            team_list.append(team_number)
+            probs_list.append(sequence_prob_for_team_i)
+            if team_number == 79 or team_number == 114:
+                probability_of_strat_1 += sequence_prob_for_team_i
+            else:
+                probability_of_strat_0 += sequence_prob_for_team_i
+
+        if len(probs_list) == 0:
+            predicted_team_labels.append(predicted_team_labels[-1])
+            predicted_strat_labels.append(predicted_strat_labels[-1])
+        else:
+            max_idx = np.argmax(probs_list)
+            max_team = team_list[max_idx]
+            max_prob = probs_list[max_idx]
+            # if int(max_team) == 79 or int(max_team) == 114:
+            #     max_strat = 1
+            # else:
+            #     max_strat = 0
+            if probability_of_strat_1 > probability_of_strat_0:
+                max_strat = 1
+            else:
+                max_strat = 0
+
+            predicted_team_labels.append(max_team)
+            predicted_strat_labels.append(max_strat)
+
+    team_acc = 0
+    strat_acc = 0
+    for i in range(len(predicted_team_labels)):
+        if int(predicted_team_labels[i]) == int(simulated_team_labels[i]):
+            team_acc += 1
+        if int(predicted_strat_labels[i]) == int(simulated_strategy_labels[i]):
+            strat_acc += 1
+
+
+    team_acc /= len(predicted_team_labels)
+    strat_acc /= len(predicted_team_labels)
+    return team_acc, strat_acc, predicted_team_labels, predicted_strat_labels
+
+
+def online_prediction_testing():
+    test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs = run_naive_hmm_on_p2(n_states=3, window=7, ss=3)
 
     # Try N=2 Clusters
     cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=2)
-    print(f'\nN=2: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+    print(f'\nN=2: cluster_labels = {[(team_numbers[i], cluster_labels[i]) for i in range(len(cluster_labels))]}, teams = {team_numbers}, cluster_centers = {cluster_centers}')
 
     # Try N=3 Clusters
-    cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=3)
-    print(f'\nN=3: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+    # cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=3)
+    # print(f'\nN=3: cluster_labels = {[(team_numbers[i], cluster_labels[i]) for i in range(len(cluster_labels))]}, cluster_centers = {cluster_centers}')
+
+    plot_window_size = [3,4,5,6,7]
+    strat_accuracies = []
+    strat_stds = []
+    n_reps = 1
+    strat_acc_means = []
+    strat_acc_stds = []
+
+    strat_recall_means = []
+    strat_recall_stds = []
+
+    strat_prec_means = []
+    strat_prec_stds = []
+
+
+    for win_size in plot_window_size:
+
+        strat_acc_list = []
+        strat_recall_list = []
+        strat_prec_list = []
+        for rep in range(n_reps):
+            simulated_X, simulated_team_labels, simulated_strategy_labels = create_fake_dataset(window=win_size, ss=3, num_samples=10, seq_len=6)
+
+            team_acc, strat_acc, predicted_team_labels, predicted_strat_labels = get_predicted_team_strat(team_num_to_seq_probs, simulated_X, simulated_team_labels, simulated_strategy_labels)
+
+            print('team_acc', team_acc)
+            print('predicted_team_labels, simulated_team_labels', [(predicted_team_labels[i], simulated_team_labels[i]) for i in range(len(predicted_team_labels))])
+
+            print('\n\nstrat_acc', strat_acc)
+
+            print('predicted_strat_labels, simulated_strategy_labels',
+                  [(predicted_strat_labels[i], simulated_strategy_labels[i]) for i in range(len(predicted_strat_labels))])
+
+            # strat_accuracies.append(np.mean(strat_acc_list))
+            # strat_stds.append(np.std(strat_acc_list))
+
+            precision, recall, thresholds = precision_recall_curve(simulated_strategy_labels, predicted_strat_labels)
+            strat_acc_list.append(strat_acc)
+            strat_recall_list.append(recall)
+            strat_prec_list.append(precision)
+
+        strat_acc_means.append(np.mean(strat_acc_list))
+        strat_acc_stds.append(np.std(strat_acc_list))
+
+        strat_recall_means.append(np.mean(strat_recall_list))
+        strat_recall_stds.append(np.std(strat_recall_list))
+
+        strat_prec_means.append(np.mean(strat_prec_list))
+        strat_prec_stds.append(np.std(strat_prec_list))
+
+        # decreasing_max_precision = np.maximum.accumulate(precision[::-1])[::-1]
+
+        # import sklearn.metrics as metrics
+        #
+        # # calculate the fpr and tpr for all thresholds of the classification
+        # # probs = model.predict_proba(X_test)
+        # # preds = probs[:, 1]
+        # fpr, tpr, threshold = metrics.roc_curve(simulated_strategy_labels, predicted_strat_labels)
+        # roc_auc = metrics.auc(fpr, tpr)
+        #
+        # # method I: plt
+        #
+        # plt.title('Receiver Operating Characteristic: Window Size = '+str(win_size))
+        # plt.plot(fpr, tpr, 'b', label='AUC = %0.2f' % roc_auc)
+        # plt.legend(loc='lower right')
+        # plt.plot([0, 1], [0, 1], 'r--')
+        # plt.xlim([0, 1])
+        # plt.ylim([0, 1])
+        # plt.ylabel('True Positive Rate')
+        # plt.xlabel('False Positive Rate')
+        # plt.savefig('roc_'+str(win_size)+'.png')
+        # plt.close()
+
+    # plt.plot(plot_window_size, strat_acc_means)
+    # plt.errorbar(plot_window_size, strat_acc_means, yerr=strat_acc_stds, label='STD')
+    # plt.xlabel("Window Size")
+    # plt.ylabel("Strategy Accuracy")
+    # plt.title("Strategy Accuracy vs. Window Size")
+    # plt.savefig("strat_acc6.png")
+    # plt.close()
+
+    # plt.plot(plot_window_size, strat_recall_means)
+    # # plt.errorbar(plot_window_size, strat_recall_means, yerr=strat_recall_stds, label='STD')
+    # plt.xlabel("Window Size")
+    # plt.ylabel("Strategy Recall")
+    # plt.title("Strategy Recall vs. Window Size")
+    # plt.savefig("strat_recall6.png")
+    # plt.close()
+
+    plt.plot(plot_window_size, strat_prec_means)
+    # plt.errorbar(plot_window_size, strat_prec_means, yerr=strat_prec_stds, label='STD')
+    plt.xlabel("Window Size")
+    plt.ylabel("Strategy Precision")
+    plt.title("Strategy Precision vs. Window Size")
+    plt.savefig("strat_prec6.png")
+    plt.close()
+
+    plt.plot(plot_window_size, strat_acc_means)
+    # plt.errorbar(plot_window_size, strat_acc_means, yerr=strat_acc_stds, label='STD')
+    plt.xlabel("Window Size")
+    plt.ylabel("Strategy Accuracy")
+    plt.title("Strategy Accuracy vs. Window Size")
+    plt.savefig("strat_acc6.png")
+    plt.close()
+
+    plt.plot(plot_window_size, strat_recall_means)
+    # plt.errorbar(plot_window_size, strat_recall_means, yerr=strat_recall_stds, label='STD')
+    plt.xlabel("Window Size")
+    plt.ylabel("Strategy Recall")
+    plt.title("Strategy Recall vs. Window Size")
+    plt.savefig("strat_recall6.png")
+    plt.close()
+
+    plt.scatter(strat_prec_means, strat_recall_means)
+    plt.ylabel("Strategy Recall")
+    plt.xlabel("Strategy Precision")
+    plt.title("Strategy Precision vs. Recall")
+    plt.savefig("strat_prec_recall6.png")
+    plt.close()
+
+def plot_validation_matrix():
+    # num_states_list = [2,3,4]
+    # num_clusters_list = [2, 3,4]
+    num_states_list = [3]
+    num_clusters_list = [2]
+
+    arr = np.zeros((5, 5))
+
+    for n_states in num_states_list:
+        test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs = run_naive_hmm_on_p2(n_states=n_states, window=7, ss=3)
+        for n_clusters in num_clusters_list:
 
 
 
+            cluster_labels, cluster_centers, ss = cluster_hidden_states(hidden_seqs, n_clusters=n_clusters)
+            print(f'\nN={n_states}, K={n_clusters}: cluster_labels = {cluster_labels}, teams = {team_numbers}')
+            print(f'N={n_states}, K={n_clusters}, sil. score = ', ss)
+            arr[n_states, n_clusters] = ss
 
 
+    # ax = plt.figure()
+    plt.imshow(arr, cmap='viridis')
+    plt.colorbar()
+    plt.title("Forced Coordination")
+    plt.ylabel("Number of Hidden States")
+    plt.xlabel("Number of Clusters")
+    plt.xlim(num_clusters_list[0]-0.5, num_clusters_list[-1]+0.5)
+    plt.ylim(num_states_list[0]-0.5, num_states_list[-1]+0.5)
+    # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    plt.savefig('fc_ss_score_1.png')
+    plt.close()
+
+
+
+if __name__ == '__main__':
+    plot_validation_matrix()
+    # online_prediction_testing()

@@ -1,0 +1,103 @@
+{
+  "artifacts": [],
+  "command": "ppo_run",
+  "experiment": {
+    "base_dir": "/home/mzhao2/overcooked-teaming/human_aware_rl/ppo",
+    "dependencies": [
+      "gym==0.18.3",
+      "matplotlib==3.0.3",
+      "memory-profiler==0.58.0",
+      "numpy==1.20.3",
+      "sacred==0.7.4",
+      "seaborn==0.9.0",
+      "tensorflow-gpu==1.13.1"
+    ],
+    "mainfile": "ppo_strat_specific.py",
+    "name": "PPO",
+    "repositories": [
+      {
+        "commit": "902b20b4d413738cf6bf4252947d13cfb0bf737c",
+        "dirty": true,
+        "url": "https://github.com/mzhao98/overcooked-teaming.git"
+      }
+    ],
+    "sources": [
+      [
+        "ppo_strat_specific.py",
+        "_sources/ppo_strat_specific_f3b2ffca9ad9040e587aee2aec859f6b.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-08-23T14:25:33.795775",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+    "gpus": {
+      "driver_version": "465.19.01",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11019
+        },
+        {
+          "model": "NVIDIA GeForce RTX 2080 Ti",
+          "persistence_mode": true,
+          "total_memory": 11016
+        }
+      ]
+    },
+    "hostname": "forte",
+    "os": [
+      "Linux",
+      "Linux-5.4.0-80-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.11"
+  },
+  "meta": {
+    "command": "ppo_run",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "EX_NAME=carry1_backup_ppo_bc_test_random3",
+        "layout_name=random3",
+        "REW_SHAPING_HORIZON=4e6",
+        "PPO_RUN_TOT_TIMESTEPS=1.2e7",
+        "LR=1.5e-3",
+        "GPU_ID=3",
+        "OTHER_AGENT_TYPE=bc_test",
+        "SEEDS=[2888, 7424, 7360, 4467,  184]",
+        "VF_COEF=0.1",
+        "MINIBATCHES=15",
+        "LR_ANNEALING=3",
+        "SELF_PLAY_HORIZON=[1e6, 4e6]",
+        "TIMESTAMP_DIR=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-08-23T00:58:35.255812",
+  "status": "INTERRUPTED",
+  "stop_time": "2021-08-23T14:25:33.832304"
+}

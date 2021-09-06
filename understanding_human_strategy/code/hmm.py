@@ -99,10 +99,123 @@ class HiddenMarkovModel:
                     seqs[t][o_curr] = add
 
         # Get the maximum probability and max probability sequence.
+        # print(f'probs[M]= {probs[M]}, seqs[M] = {seqs[M]}')
         max_prob_i = np.argmax(probs[M])
         max_seq = seqs[M][max_prob_i]
 
         return max_seq
+
+    def viterbi_all_probs(self, x):
+        '''
+        Uses the Viterbi algorithm to find the max probability state
+        sequence corresponding to a given input sequence.
+        Arguments:
+            x:          Input sequence in the form of a list of length M,
+                        consisting of integers ranging from 0 to D - 1.
+        Returns:
+            max_seq:    State sequence corresponding to x with the highest
+                        probability.
+        '''
+
+        M = len(x)  # Length of sequence.
+
+        # The (i, j)^th elements of probs and seqs are the max probability
+        # of the prefix of length i ending in state j and the prefix
+        # that gives this probability, respectively.
+        #
+        # For instance, probs[1][0] is the probability of the prefix of
+        # length 1 ending in state 0.
+        probs = [[0. for _ in range(self.L)] for _ in range(M + 1)]
+        seqs = [['' for _ in range(self.L)] for _ in range(M + 1)]
+
+        num_states = self.L
+        num_obs = self.D
+
+        # y = OBSERVATIONS (D) BY x = STATES (L)
+
+
+        # Fill hidden sequences dictionary
+        # all_sequences_and_probs = {}
+        # probs[0] = self.A_start
+        # for t in range(1, M + 1):
+        #     for o_curr in range(num_states):
+        #         if t == 1:
+        #             checkVal = np.array(probs[t - 1]) * self.O[o_curr][x[t - 1]]
+        #             # Set the maximum probability to be the value at the next probs[i, j] and
+        #             # add the max probability sequence to seqs.
+        #             probs[t][o_curr] = max(checkVal)
+        #             add = []
+        #             for j in range(num_states):
+        #                 add.append(str(j))
+        #             seqs[t] = add
+        #
+        #             all_sequences_and_probs["".join(add)] = max(checkVal)
+        #
+        #
+        #
+        #         else:
+        #             # For other states, multiply the previous
+        #             # max probability by the emission and transition probability.
+        #             checkVal = np.multiply(probs[t - 1], np.transpose(self.A)[o_curr]) * self.O[o_curr][x[t - 1]]
+        #             max_index = np.argmax(checkVal)
+        #             # Set the maximum probability to be the value at the next probs[i, j] and
+        #             # add the max probability sequence to seqs.
+        #             probs[t][o_curr] = max(checkVal)
+        #             add = seqs[t - 1][max_index] + str(o_curr)
+        #             seqs[t][o_curr] = add
+        #
+        #             # for index_i in range(len(checkVal)):
+        #             #     string_add = seqs[t - 1][index_i] + str(o_curr)
+        #             #     all_sequences_and_probs["".join(string_add)] = checkVal[index_i]
+        #
+
+        # Set start state transitions to be A_start.
+        all_sequences_and_probs = {}
+        probs[0] = self.A_start
+        for t in range(1, M + 1):
+            for o_curr in range(num_states):
+
+
+                # For first state after the state state, only multiply the previous
+                # probability by emission probability.
+                if t == 1:
+                    checkVal = np.array(probs[t - 1]) * self.O[o_curr][x[t - 1]]
+                    # Set the maximum probability to be the value at the next probs[i, j] and
+                    # add the max probability sequence to seqs.
+                    probs[t][o_curr] = max(checkVal)
+                    add = []
+                    for j in range(num_states):
+                        add.append(str(j))
+                    seqs[t] = add
+
+                    all_sequences_and_probs["".join(add)] = max(checkVal)
+
+
+
+                else:
+                    # For other states, multiply the previous
+                    # max probability by the emission and transition probability.
+                    checkVal = np.multiply(probs[t - 1], np.transpose(self.A)[o_curr]) * self.O[o_curr][x[t - 1]]
+                    max_index = np.argmax(checkVal)
+                    # Set the maximum probability to be the value at the next probs[i, j] and
+                    # add the max probability sequence to seqs.
+                    probs[t][o_curr] = max(checkVal)
+                    add = seqs[t - 1][max_index] + str(o_curr)
+                    seqs[t][o_curr] = add
+
+                    for index_i in range(len(checkVal)):
+                        string_add = seqs[t - 1][index_i] + str(o_curr)
+                        all_sequences_and_probs["".join(string_add)] = checkVal[index_i]
+
+        # Get the maximum probability and max probability sequence.
+        # print(f'probs= {probs}, seqs = {seqs}\n\n')
+        # print('all_sequences_and_probs', all_sequences_and_probs)
+        max_prob_i = np.argmax(probs[M])
+        max_seq = seqs[M][max_prob_i]
+
+        return max_seq, all_sequences_and_probs
+
+
 
     def forward(self, x, normalize=False):
         '''

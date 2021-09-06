@@ -3,7 +3,7 @@ import numpy as np
 
 import sys, os
 import pickle
-sys.path.insert(0, "../../")
+sys.path.insert(0, "../")
 # print('path', os.path.dirname(os.path.abspath(__file__)))
 
 from overcooked_ai_py.utils import save_pickle, mean_and_std_err
@@ -29,9 +29,14 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
     bc_params["mdp_params"]['layout_name'] = layout_name
     bc_params["mdp_params"]['start_order_list'] = None
 
-    model_save_dir = "dual_pot_finetune_" + layout_name + "_" + agent_name + "/"
+    model_save_dir = "aa_strat3_finetune_" + layout_name + "_" + agent_name + "/"
     # model_save_dir = layout_name + "_" + agent_name + "/"
     # train_bc_agent() returns the bc model
+    # if model == 'train':
+    #     is_train = True
+    # else:
+    #     is_train = False
+
     if finetuning:
         return train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
     return train_bc_agent(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
@@ -138,14 +143,14 @@ def run_all_bc_experiments():
     seeds = [5415]
     num_seeds = len(seeds)
 
-    # params_unident = {"layout_name": "unident_s", "num_epochs": 120, "lr": 1e-3, "adam_eps":1e-8}
+    params_unident = {"layout_name": "unident_s", "num_epochs": 120, "lr": 1e-3, "adam_eps":1e-8}
     # params_simple = {"layout_name": "simple", "num_epochs": 100, "lr": 1e-3, "adam_eps":1e-8}
     # params_random1 = {"layout_name": "random1", "num_epochs": 120, "lr": 1e-3, "adam_eps":1e-8}
-    params_random0 = {"layout_name": "random0", "num_epochs": 90, "lr": 1e-3, "adam_eps":1e-8}
+    # params_random0 = {"layout_name": "random0", "num_epochs": 90, "lr": 1e-3, "adam_eps":1e-8}
     # params_random3 = {"layout_name": "random3", "num_epochs": 110, "lr": 1e-3, "adam_eps":1e-8}
 
     # all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
-    all_params = [params_random0]
+    all_params = [params_unident]
 
     # 1. Train BC models for all parameters and seeds
     # train_bc_models(all_params, seeds)
@@ -171,8 +176,11 @@ def run_all_bc_experiments():
     #     "random0": [2, 1],
     #     # "random3": [3, 3]
     # }
+    # selected_models = {
+    #     "random0": [0, 0],
+    # }
     selected_models = {
-        "random0": [0, 0],
+        "unident_s": [0, 0],
     }
 
     final_bc_model_paths = { "train": {}, "test": {} }

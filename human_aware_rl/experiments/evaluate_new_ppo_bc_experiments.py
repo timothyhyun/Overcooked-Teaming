@@ -127,14 +127,14 @@ def run_two_bc_models_for_layout(layout, num_rounds, bc_model_paths, seeds, best
     # assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
 
     # Play two agents against each other.
-    bc_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_bc_train, agent_bc_test, allow_duplicate_agents=False), num_games=max(int(num_rounds/2), 1), display=display)
+    bc_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_bc_train, agent_bc_test, allow_duplicate_agents=False), num_games=max(int(num_rounds), 1), display=display)
     avg_bc_and_bc = np.mean(bc_and_bc['ep_returns'])
     bc_bc_performance[layout]["BC_train+BC_test"].append(avg_bc_and_bc)
 
     # Swap order and Play two agents against each other.
     bc_and_bc = evaluator.evaluate_agent_pair(
         AgentPair(agent_bc_test, agent_bc_train, allow_duplicate_agents=False),
-        num_games=max(int(num_rounds / 2), 1), display=display)
+        num_games=max(int(num_rounds), 1), display=display)
     avg_bc_and_bc = np.mean(bc_and_bc['ep_returns'])
     bc_bc_performance[layout]["BC_test+BC_train"].append(avg_bc_and_bc)
 
@@ -217,22 +217,22 @@ def check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths):
         "bc_test": [2888, 7424, 7360, 4467,  184]
     }
 
-    # best_bc_model_paths = {
-    #     'train': {
-    #         "random0": "random0_bc_train_seed0",
-    #     },
-    #     'test': {
-    #         "random0": "orig_berk_random0_bc_test_seed2",
-    #     }
-    # }
     best_bc_model_paths = {
         'train': {
-            "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+            "random0": "random0_bc_train_seed0",
         },
         'test': {
-            "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+            "random0": "orig_berk_random0_bc_test_seed2",
         }
     }
+    # best_bc_model_paths = {
+    #     'train': {
+    #         "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+    #     },
+    #     'test': {
+    #         "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+    #     }
+    # }
     # best_bc_model_paths = {
     #     'train': {
     #         "random0": "single_pot_finetune_random0_bc_train_seed5415",
@@ -245,12 +245,14 @@ def check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths):
     ppo_bc_model_paths = {
         'bc_train': {
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
-            "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
+            # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
+            "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5",
         },
         'bc_test':{
             # "random0": "orig_berk_random0_bc_test_seed2",
             # "random0": "2021_07_30-00_59_56_single_strat_wft_ppo_bc_test_random0_test4",
-            "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
+            # "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
+            "random0": "../../../data/ppo_runs/2021_08_19-23_18_20_dual_strat_wft_ppo_bc_test_random0_test5",
         }
     }
 
@@ -267,14 +269,14 @@ def check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths):
 def run_two_ppo_agents():
     reset_tf()
 
-    seeds = {
-        "bc_train": [9456, 1887, 5578, 5987,  516],
-        "bc_test": [2888, 7424, 7360, 4467,  184]
-    }
     # seeds = {
-    #     "bc_train": [9456, 1887, 5578, 5987, 516],
-    #     "bc_test": [9456, 1887, 5578, 5987, 516],
+    #     "bc_train": [9456, 1887, 5578, 5987,  516],
+    #     "bc_test": [2888, 7424, 7360, 4467,  184]
     # }
+    seeds = {
+        "bc_train": [9456, 1887, 5578, 5987, 516],
+        "bc_test": [9456, 1887, 5578, 5987, 516],
+    }
     # seeds = {
     #     "bc_train": [2888, 7424, 7360, 4467,  184],
     #     "bc_test": [2888, 7424, 7360, 4467,  184],
@@ -293,16 +295,20 @@ def run_two_ppo_agents():
     ppo_bc_model_paths = {
         'bc_train': {
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
-            "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
+            # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
             # "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
+            "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5",
         },
         'bc_test':{
             # "random0": "orig_berk_random0_bc_test_seed2",
+            "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
-            # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
-            "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
+            # "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
             # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
             # "random0": "2021_07_30-00_59_56_single_strat_wft_ppo_bc_test_random0_test4",
+            # "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5",
+            # "random0": "../../../data/ppo_runs/2021_08_19-23_18_20_dual_strat_wft_ppo_bc_test_random0_test5",
+
         }
     }
 
@@ -332,18 +338,20 @@ def run_two_bc_agents():
     best_bc_model_paths = {
         'train': {
             # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
-            # "random0": "single_pot_finetune_random0_bc_train_seed5415",
+            # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+            "random0": "single_pot_finetune_random0_bc_train_seed5415",
             # "random0": "dual_pot_finetune_random0_bc_test_seed5415",
             # "random0": "single_pot_finetune_random0_bc_test_seed5415",
-            "random0": "random0_bc_train_seed0",
+            # "random0": "random0_bc_train_seed0",
             # "random0": "orig_berk_random0_bc_test_seed2",
         },
         'test': {
             # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
-            # "random0": "single_pot_finetune_random0_bc_train_seed5415",
+            # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
+            "random0": "single_pot_finetune_random0_bc_train_seed5415",
             # "random0": "dual_pot_finetune_random0_bc_test_seed5415",
             # "random0": "single_pot_finetune_random0_bc_test_seed5415",
-            "random0": "random0_bc_train_seed0", # original train
+            # "random0": "random0_bc_train_seed0", # original train
             # "random0": "orig_berk_random0_bc_test_seed2", # bc test
         }
     }
@@ -366,7 +374,7 @@ if __name__ == "__main__":
     best_bc_model_paths = load_pickle("../data/bc_runs/best_bc_model_paths")
     print('best_bc_model_paths', best_bc_model_paths)
     print('\n\n\n RUNNING TWO BC AGENTS.................')
-    check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths)
+    # check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths)
     # run_two_ppo_agents()
-    # run_two_bc_agents()
+    run_two_bc_agents()
 

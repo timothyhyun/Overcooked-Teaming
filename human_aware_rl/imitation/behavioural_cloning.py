@@ -6,6 +6,9 @@ from collections import defaultdict
 from stable_baselines import GAIL
 from stable_baselines.gail import ExpertDataset
 
+# import sys
+# sys.path.insert(0, "../../")
+
 from overcooked_ai_py.mdp.actions import Action, Direction
 from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, OvercookedState
 from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv, DEFAULT_ENV_PARAMS
@@ -16,7 +19,8 @@ from overcooked_ai_py.utils import save_pickle, load_pickle
 
 from human_aware_rl.utils import reset_tf, set_global_seed, common_keys_equal
 from human_aware_rl.baselines_utils import create_dir_if_not_exists
-from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective, get_trajs_from_data_for_cross_validation
+from human_aware_rl.human.process_dataframes import save_npz_file, get_trajs_from_data, get_trajs_from_data_selective, \
+    get_trajs_from_data_for_cross_validation, get_trajs_from_data_specify_groups
 
 BC_SAVE_DIR = "../data/bc_runs/"
 
@@ -27,10 +31,10 @@ BC_SAVE_DIR = "../data/bc_runs/"
 #     "data_path": "../data/human/anonymized/clean_train_trials.pkl"
 # }
 DEFAULT_DATA_PARAMS = {
-    "train_mdps": ["random0"],
+    "train_mdps": ["unident_s"],
     "ordered_trajs": True,
     "human_ai_trajs": False,
-    "data_path": "../data/human/anonymized/clean_train_trials.pkl"
+    "data_path": "../data/human/anonymized/clean_main_trials.pkl"
 }
 
 DEFAULT_BC_PARAMS = {
@@ -86,9 +90,33 @@ def train_bc_agent_cross_validation(is_train, train_workers, test_workers, model
 
 
 def train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=1000, lr=1e-4, adam_eps=1e-8):
+    # Random 3
+    # {2: 13, 4: 23, 13: 68, 15: 78, 16: 83, 17: 88, 19: 98, 20: 103}
+    # {1: 8, 3: 18, 10: 53, 11: 58, 12: 63, 18: 93, 22: 113}
+
+    # train_workers = [1,3,10,11,12,18,22] # swap for random3
+    # test_workers = [2,4,13,15,16,17,19,20]
+
+    # AA
+    # {2: 11, 3: 16, 11: 56, 12: 61, 13: 66, 14: 71, 16: 81, 20: 101, 22: 111}
+    # {1: 6, 4: 21, 10: 51, 15: 76, 17: 86, 18: 91, 19: 96, 23: 116}
+    train_workers = [2, 15, 19, 4, 20, 3, 11, 12, 16]
+    test_workers = [1, 10, 17, 18, 23, 22, 14, 13]
+    # Strat 0 - 2, 15, 19
+    # Strat 1 - 4, 20
+    # Strat 2 - 3, 11, 12
+    # Strat 3 - 16
+
+    if 'train' in model_save_dir:
+        is_train = True
+    else:
+        is_train = False
+
     # Extract necessary expert data and save in right format
     set_global_seed(64)
-    expert_trajs = get_trajs_from_data(**bc_params["data_params"])
+    selective = False
+    # is_train = True
+    expert_trajs = get_trajs_from_data_specify_groups(selective, is_train, train_workers, test_workers, **bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp.npz")
     # Create a stable-baselines ExpertDataset
@@ -98,7 +126,11 @@ def train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=1000, lr=1
 
     ## GET DATASET FOR FINETUNING
     # Extract necessary expert data and save in right format
-    expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])
+    selective = True
+    # is_train = False
+    # expert_trajs = get_trajs_from_data_selective(**bc_params["data_params"])
+    expert_trajs = get_trajs_from_data_specify_groups(selective, is_train, train_workers, test_workers,
+                                                      **bc_params["data_params"])
     # Load the expert dataset
     save_npz_file(expert_trajs, "temp_finetune.npz")
     # Create a stable-baselines ExpertDataset

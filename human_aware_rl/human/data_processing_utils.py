@@ -88,9 +88,16 @@ def json_obj_to_python_obj_state(mdp, df_object):
 
 def extract_df_for_worker_on_layout(main_trials, worker_id, layout_name):
     """Extract trajectory for a specific layout and worker pair from main_trials df"""
-    worker_trajs_df = main_trials[main_trials['workerid_num'] == worker_id]
     layout_name = PYTHON_LAYOUT_NAME_TO_JS_NAME[layout_name]
-    worker_layout_traj_df = worker_trajs_df[worker_trajs_df['layout_name'] == layout_name]
+    layout_df = main_trials[main_trials['layout_name'] == layout_name]
+    # worker_trajs_df = main_trials[main_trials['workerid_num'] == worker_id]
+
+    worker_layout_traj_df = layout_df[layout_df['workerid_num'] == worker_id]
+
+    # print('worker_trajs_df',  worker_layout_traj_df)
+
+    # print('layout_name', layout_name)
+    # worker_layout_traj_df = worker_trajs_df[worker_trajs_df['layout_name'] == layout_name]
     return worker_layout_traj_df
 
 def df_traj_to_python_joint_traj(traj_df, complete_traj=True):
@@ -161,8 +168,12 @@ def convert_joint_df_trajs_to_overcooked_single(main_trials, worker_ids, layout_
 
     for worker_id, layout_name in itertools.product(worker_ids, layout_names):
         print('WORKER ID = ', worker_id)
+        print("UNIQUE WORKER NUMBER", main_trials['workerid_num'].unique())
         # Get an single game
         one_traj_df = extract_df_for_worker_on_layout(main_trials, worker_id, layout_name)
+
+        print('extracted', len(one_traj_df[one_traj_df['workerid_num']==2]))
+
 
         if len(one_traj_df) == 0:
             print("Layout {} is missing from worker {}".format(layout_name, worker_id))

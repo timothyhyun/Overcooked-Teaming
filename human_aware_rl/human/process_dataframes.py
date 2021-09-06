@@ -88,14 +88,66 @@ def get_trajs_from_data_selective(data_path, train_mdps, ordered_trajs, human_ai
     #     print('TRAIN IN DATAPATH')
     #     main_trials = main_trials[main_trials['workerid_num']==15]
     #     all_workers = [15]
-
+    print('original all_workers', all_workers)
     if 'train' in data_path:
         print('TRAIN IN DATAPATH')
         # main_trials = main_trials[main_trials['workerid_num']==15]
         # all_workers = [15, 22]
-        all_workers = [2, 4, 17, 19]
+        # all_workers = [2, 4, 17, 19]
+        all_workers = [2, 15, 19]
     # all_workers = [4, 15, 17, 22]
     # print('all_workers', all_workers)
+
+    # Random 3
+    # {2: 13, 4: 23, 13: 68, 15: 78, 16: 83, 17: 88, 19: 98, 20: 103}
+    # {1: 8, 3: 18, 10: 53, 11: 58, 12: 63, 18: 93, 22: 113}
+
+
+    trajs = convert_joint_df_trajs_to_overcooked_single(
+        main_trials,
+        all_workers,
+        train_mdps,
+        ordered_pairs=ordered_trajs,
+        human_ai_trajs=human_ai_trajs
+    )
+
+    return trajs
+
+
+
+def get_trajs_from_data_specify_groups(selective, is_train, train_workers, test_workers, data_path, train_mdps, ordered_trajs, human_ai_trajs):
+    """
+    Converts and returns trajectories from dataframe at `data_path` to overcooked trajectories.
+    """
+    data_path = "../data/human/anonymized/clean_main_trials.pkl"
+    # print("Loading data from {}".format(data_path))
+    # print('datapath', data_path)
+    main_trials = pd.read_pickle(data_path)
+
+    # print('main_trials', main_trials)
+    all_workers = list(main_trials['workerid_num'].unique())
+
+    # if 'train' in data_path:
+    #     print('TRAIN IN DATAPATH')
+    # # #     # main_trials = main_trials[main_trials['workerid_num']==15]
+    #     all_workers = [15, 22]
+    #     all_workers = [2, 4, 17, 19]
+    if is_train:
+        all_workers = train_workers
+    else:
+        all_workers = test_workers
+
+    # Random 3
+    # {2: 13, 4: 23, 13: 68, 15: 78, 16: 83, 17: 88, 19: 98, 20: 103}
+    # {1: 8, 3: 18, 10: 53, 11: 58, 12: 63, 18: 93, 22: 113}
+    if selective:
+        print("\n\n\nSELECTING for FINETUNING")
+        all_workers = [16]
+
+    # Strat 0 - 2, 15, 19
+    # Strat 1 - 4, 20
+    # Strat 2 - 3, 11, 12
+    # Strat 3 - 16
 
     trajs = convert_joint_df_trajs_to_overcooked_single(
         main_trials,

@@ -243,9 +243,12 @@ class BaseRLModel(ABC):
                     expert_obs, expert_actions = dataset.get_next_batch('val')
                     val_loss_, predicted_actions = self.sess.run([loss, actions_logits_ph], {obs_ph: expert_obs,
                                                         actions_ph: expert_actions})
+                    # print("predicted_actions", list(np.argmax(predicted_actions, axis=1)))
+                    # print('expert_actions', [elem[0] for elem in expert_actions])
                     # TODO: figure out why accuracy seems weird?
                     # print(expert_actions.shape)
-                    val_accuracy = np.mean(np.equal(expert_actions, np.argmax(predicted_actions, axis=1)))
+                    # val_accuracy = np.mean(np.equal(expert_actions, np.argmax(predicted_actions, axis=1)))
+                    val_accuracy = np.mean(np.equal([elem[0] for elem in expert_actions], list(np.argmax(predicted_actions, axis=1))))
                     val_loss += val_loss_
                 val_loss /= len(dataset.val_loader)
 

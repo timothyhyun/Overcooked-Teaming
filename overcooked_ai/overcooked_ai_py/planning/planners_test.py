@@ -4,6 +4,7 @@ from overcooked_ai_py.mdp.actions import Direction, Action
 from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, PlayerState, ObjectState, OvercookedState
 from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv
 
+
 force_compute = True
 force_compute_large = False
 

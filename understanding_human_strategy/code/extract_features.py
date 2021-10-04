@@ -1,5 +1,7 @@
-from dependencies import *
-from process_data import json_eval, import_2019_data
+# from dependencies import *
+from understanding_human_strategy.code.dependencies import *
+
+from understanding_human_strategy.code.process_data import json_eval, import_2019_data
 
 def f_p1(t, a, p1_data):
     t_partial = t[int(a) - 1:int(a)]
@@ -50,12 +52,30 @@ def world_obj(t, a, objects_data):
             color = 'k'
             objects_list.append((position[0], position[1], name, color))
         if name == 'soup':
-            if obj['is_cooking'] is True:
-                color = 'r'
-            elif obj['is_ready'] is True:
-                color = 'g'
-            else:
-                color = 'orange'
+            # print("OBJ", obj)
+            try:
+                (soup_type, num_items, cook_time) = obj['state']
+                obj_is_cooking = False
+                obj_is_ready = False
+                if num_items == 3:
+                    if cook_time >= 20:
+                        obj_is_ready = True
+                    if cook_time < 20:
+                        obj_is_cooking = True
+
+                if obj_is_cooking is True:
+                    color = 'r'
+                elif obj_is_ready is True:
+                    color = 'g'
+                else:
+                    color = 'orange'
+            except:
+                if obj['is_cooking'] is True:
+                    color = 'r'
+                elif obj['is_ready'] is True:
+                    color = 'g'
+                else:
+                    color = 'orange'
             objects_list.append((position[0], position[1], name, color))
 
     return objects_list
@@ -94,7 +114,7 @@ def obj_p2(t, a, p2_data):
 
 
 def action_p1(t, a, p1_data):
-    if p1_data[int(a)] == 'INTERACT':
+    if p1_data[int(a)] == 'interact' or p1_data[int(a)] == 'INTERACT':
         act = 'I'
     else:
         x, y = p1_data[int(a)][0], p1_data[int(a)][1]
@@ -114,7 +134,7 @@ def action_p1(t, a, p1_data):
 
 
 def action_p2(t, a, p2_data):
-    if p2_data[int(a)] == 'INTERACT':
+    if p2_data[int(a)] == 'interact' or p2_data[int(a)] == 'INTERACT':
         act = 'I'
     else:
         x, y = p2_data[int(a)][0], p2_data[int(a)][1]

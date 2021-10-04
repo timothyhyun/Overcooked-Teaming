@@ -32,7 +32,7 @@ class ExpertDataset(object):
     def __init__(self, expert_path, train_fraction=0.7, batch_size=64,
                  traj_limitation=-1, randomize=True, verbose=1,
                  sequential_preprocessing=False, indices_split=[]):
-        traj_data = np.load(expert_path)
+        traj_data = np.load(expert_path, allow_pickle=True)
 
         if verbose > 0:
             for key, val in traj_data.items():

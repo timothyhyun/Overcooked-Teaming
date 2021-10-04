@@ -27,7 +27,7 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
     bc_params["mdp_params"]['layout_name'] = layout_name
     bc_params["mdp_params"]['start_order_list'] = None
 
-    model_save_dir = layout_name + "_" + agent_name + "/"
+    model_save_dir = layout_name + "_TESTINGPLOTS_" + agent_name + "/"
     return train_bc_agent(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
 
 def train_bc_models(all_params, seeds):
@@ -106,7 +106,7 @@ def run_all_bc_experiments():
 
     all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
     # all_params = [params_random0]
-    # train_bc_models(all_params, seeds)
+    train_bc_models(all_params, seeds)
 
     # Evaluate BC models
     set_global_seed(64)

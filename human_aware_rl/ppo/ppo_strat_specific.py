@@ -164,10 +164,18 @@ def my_config():
     layout_name = None
     start_order_list = None
 
+    # rew_shaping_params = {
+    #     "PLACEMENT_IN_POT_REW": 3,
+    #     "DISH_PICKUP_REWARD": 3,
+    #     "SOUP_PICKUP_REWARD": 5,
+    #     "DISH_DISP_DISTANCE_REW": 0,
+    #     "POT_DISTANCE_REW": 0,
+    #     "SOUP_DISTANCE_REW": 0,
+    # }
     rew_shaping_params = {
-        "PLACEMENT_IN_POT_REW": 3,
-        "DISH_PICKUP_REWARD": 3,
-        "SOUP_PICKUP_REWARD": 5,
+        "PLACEMENT_IN_POT_REW": 0,
+        "DISH_PICKUP_REWARD": 0,
+        "SOUP_PICKUP_REWARD": 0,
         "DISH_DISP_DISTANCE_REW": 0,
         "POT_DISTANCE_REW": 0,
         "SOUP_DISTANCE_REW": 0,
@@ -261,23 +269,43 @@ def configure_other_agent(params, gym_env, mlp, mdp):
     elif params["OTHER_AGENT_TYPE"][:2] == "bc":
         # best_bc_model_paths = load_pickle(BEST_BC_MODELS_PATH)
         # print('best_bc_model_paths', best_bc_model_paths)
+        # best_bc_model_paths = {
+        #     'train': {
+        #         'simple': 'simple_bc_train_seed3',
+        #         'random1': 'random1_bc_train_seed0',
+        #         'unident_s': 'aa_strat3_finetune_unident_s_bc_train_seed5415',
+        #         # 'random0': 'single_pot_finetune_random0_bc_train_seed5415',
+        #         'random0': 'dual_pot_finetune_random0_bc_train_seed5415',
+        #         'random3': 'carry1_finetune_random3_bc_train_seed5415'
+        #     },
+        #      'test': {
+        #          'simple': 'simple_bc_test_seed2',
+        #          'random1': 'random1_bc_test_seed2',
+        #          'unident_s': 'aa_strat3_finetune_unident_s_bc_test_seed5415',
+        #          # 'random0': 'single_pot_finetune_random0_bc_test_seed5415',
+        #          'random0': 'dual_pot_finetune_random0_bc_test_seed5415',
+        #          'random3': 'carry1_finetune_random3_bc_test_seed5415'
+        #      }
+        # }
         best_bc_model_paths = {
             'train': {
                 'simple': 'simple_bc_train_seed3',
                 'random1': 'random1_bc_train_seed0',
                 'unident_s': 'aa_strat3_finetune_unident_s_bc_train_seed5415',
+                'random0': 'dual_pot_finetune_random0_bc_test_seed5415',
                 # 'random0': 'single_pot_finetune_random0_bc_train_seed5415',
-                'random0': 'dual_pot_finetune_random0_bc_train_seed5415',
+                # 'random0': 'bc_train_fixed_strat_DP_DP_random0_bc_train_seed5415',
                 'random3': 'carry1_finetune_random3_bc_train_seed5415'
             },
-             'test': {
-                 'simple': 'simple_bc_test_seed2',
-                 'random1': 'random1_bc_test_seed2',
-                 'unident_s': 'aa_strat3_finetune_unident_s_bc_test_seed5415',
-                 # 'random0': 'single_pot_finetune_random0_bc_test_seed5415',
-                 'random0': 'dual_pot_finetune_random0_bc_test_seed5415',
-                 'random3': 'carry1_finetune_random3_bc_test_seed5415'
-             }
+            'test': {
+                'simple': 'simple_bc_test_seed2',
+                'random1': 'random1_bc_test_seed2',
+                'unident_s': 'aa_strat3_finetune_unident_s_bc_test_seed5415',
+
+                'random0': 'single_pot_finetune_random0_bc_test_seed5415',
+                # 'random0': 'bc_train_fixed_strat_SP_SP_random0_bc_train_seed5415',
+                'random3': 'carry1_finetune_random3_bc_test_seed5415'
+            }
         }
         print('\n\n\n\nbest_bc_model_paths', best_bc_model_paths)
 

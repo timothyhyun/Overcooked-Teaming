@@ -153,6 +153,8 @@ class RandomAgent(Agent):
         return [np.random.randint(4) for _ in range(self.sim_threads)]
 
 
+
+
 class StayAgent(Agent):
 
     def __init__(self, sim_threads=None):

@@ -154,7 +154,7 @@ class AgentEvaluator(object):
             'episode_returns': rollout_trajs["ep_returns"]
         }
         stable_baselines_trajs_dict = { k:np.array(v) for k, v in stable_baselines_trajs_dict.items() }
-        np.savez(filename, **stable_baselines_trajs_dict)
+        np.savez(filename, **stable_baselines_trajs_dict, allow_pickle=True)
 
     @staticmethod
     def save_traj_as_json(trajectory, filename):

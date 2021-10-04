@@ -684,7 +684,7 @@ class JointMotionPlanner(object):
         dummy_orientation = Direction.NORTH
         dummy_player_states = [PlayerState(pos, dummy_orientation) for pos in starting_positions]
         for joint_action in joint_motion_actions:
-            new_positions, _ = self.mdp.compute_new_positions_and_orientations(dummy_player_states, joint_action)
+            new_positions, _, collided = self.mdp.compute_new_positions_and_orientations(dummy_player_states, joint_action)
             successor_joint_positions[joint_action] = new_positions
         return successor_joint_positions
 

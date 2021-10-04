@@ -1,4 +1,4 @@
-from dependencies import *
+from understanding_human_strategy.code.dependencies import *
 
 
 

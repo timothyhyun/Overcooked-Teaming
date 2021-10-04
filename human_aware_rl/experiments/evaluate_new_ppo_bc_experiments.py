@@ -12,6 +12,8 @@ from human_aware_rl.utils import reset_tf, set_global_seed, prepare_nested_defau
 from human_aware_rl.imitation.behavioural_cloning import get_bc_agent_from_saved
 from human_aware_rl.ppo.ppo import get_ppo_agent, plot_ppo_run, PPO_DATA_DIR
 
+from visualizer_save_games_to_video import visualize_trial
+
 
 def plot_runs_training_curves(ppo_bc_model_paths, seeds, single=False, show=False, save=False):
     # Plot PPO BC models
@@ -75,15 +77,16 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
                                           display=False):
     # evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, best_bc_model_paths, ppo_bc_model_paths, seeds=seeds, best=best)
     # assert len(seeds["bc_train"]) == len(seeds["bc_test"])
-    ppo_bc_performance = defaultdict(lambda: defaultdict(list))
+    ppo_ppo_performance = defaultdict(lambda: defaultdict(list))
 
     agent_bc_test, bc_params = get_bc_agent_from_saved(bc_model_paths['test'][layout])
+    print('bc_params = ', bc_params)
     ppo_bc_train_path = ppo_bc_model_paths['bc_train'][layout]
     ppo_bc_test_path = ppo_bc_model_paths['bc_test'][layout]
 
     evaluator = AgentEvaluator(mdp_params=bc_params["mdp_params"], env_params=bc_params["env_params"])
 
-
+    original_num_games = max(int(num_rounds/2), 1)
     for train_seed_idx in range(len(seeds["bc_train"])):
         for test_seed_idx in range(len(seeds["bc_test"])):
             agent_ppo_bc_train, ppo_config = get_ppo_agent(ppo_bc_train_path, seeds["bc_train"][train_seed_idx], best=best)
@@ -94,19 +97,24 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
             # assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
 
             # Play two agents against each other.
-            ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_test, allow_duplicate_agents=False), num_games=max(int(num_rounds/2), 1), display=display)
+            ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_test, allow_duplicate_agents=False), num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_bc_performance[layout]["PPO_BC_train+PPO_BC_test"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout]["PPO_BC_train+PPO_BC_test"].append(avg_ppo_and_ppo)
+
+            visualize_trial(ppo_and_ppo, title=f"dp_ppo_vs_dp_ppo_train_test_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}", video_filename=f"dp_ppo_vs_dp_ppo_train_test_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}")
 
             # Swap order and Play two agents against each other.
             ppo_and_ppo = evaluator.evaluate_agent_pair(
                 AgentPair(agent_ppo_bc_test, agent_ppo_bc_train, allow_duplicate_agents=False),
-                num_games=max(int(num_rounds / 2), 1), display=display)
+                num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_bc_performance[layout]["PPO_BC_test+PPO_BC_train"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout]["PPO_BC_test+PPO_BC_train"].append(avg_ppo_and_ppo)
+
+            # visualize_trial(ppo_and_ppo, title=f"dp_ppo_vs_dp_ppo_test_train_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}",
+            #                 video_filename=f"dp_ppo_vs_dp_ppo_test_train_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}")
 
 
-    return ppo_bc_performance
+    return ppo_ppo_performance
 
 
 def run_two_bc_models_for_layout(layout, num_rounds, bc_model_paths, seeds, best=False,
@@ -119,7 +127,7 @@ def run_two_bc_models_for_layout(layout, num_rounds, bc_model_paths, seeds, best
     agent_bc_train, train_bc_params = get_bc_agent_from_saved(bc_model_paths['train'][layout])
     agent_bc_test, test_bc_params = get_bc_agent_from_saved(bc_model_paths['test'][layout])
 
-
+    print('train_bc_params', train_bc_params)
 
     evaluator = AgentEvaluator(mdp_params=train_bc_params["mdp_params"], env_params=train_bc_params["env_params"])
 
@@ -297,17 +305,19 @@ def run_two_ppo_agents():
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
             # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
             # "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
-            "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5",
+            # "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5", # right one
+            "random0": "2021_10_01-16_58_19_fixedstrat_dpdp_ppo_bc_train_random0_test3",
         },
         'bc_test':{
             # "random0": "orig_berk_random0_bc_test_seed2",
-            "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
+            # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4", # right one
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
             # "random0": "2021_07_30-01_20_34_dual_strat_nft_ppo_bc_test_random0_test3",
             # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
             # "random0": "2021_07_30-00_59_56_single_strat_wft_ppo_bc_test_random0_test4",
             # "random0": "../../../data/ppo_runs/2021_08_19-13_36_51_dual_strat_wft_ppo_bc_train_random0_test5",
             # "random0": "../../../data/ppo_runs/2021_08_19-23_18_20_dual_strat_wft_ppo_bc_test_random0_test5",
+            "random0": "2021_10_01-16_58_19_fixedstrat_dpdp_ppo_bc_train_random0_test3",
 
         }
     }
@@ -375,6 +385,6 @@ if __name__ == "__main__":
     print('best_bc_model_paths', best_bc_model_paths)
     print('\n\n\n RUNNING TWO BC AGENTS.................')
     # check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths)
-    # run_two_ppo_agents()
-    run_two_bc_agents()
+    run_two_ppo_agents()
+    # run_two_bc_agents()
 

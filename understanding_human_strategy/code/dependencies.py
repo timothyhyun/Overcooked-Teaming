@@ -37,6 +37,7 @@ import os
 from ast import literal_eval
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
+import sklearn
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LinearRegression
 

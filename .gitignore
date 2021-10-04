@@ -134,5 +134,8 @@ data/gail_runs/
 data/joint_ppo_runs/
 data/ppo_exp/
 
+# Michelle Additions
+human_aware_rl/experiments/data/ppo_runs/ppo_exp/
+
 # Other files
 transfer_agent.sh

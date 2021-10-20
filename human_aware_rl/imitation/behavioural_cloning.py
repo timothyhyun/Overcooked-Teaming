@@ -276,7 +276,7 @@ def plot_bc_run_modified(run_info, num_epochs, seed_idx, seed):
 class ImitationAgentFromPolicy(AgentFromPolicy):
     """Behavior cloning agent interface"""
     #
-    def __init__(self, state_policy, direct_policy, mlp=None, stochastic=False, no_waits=False, stuck_time=3):
+    def __init__(self, state_policy, direct_policy, mlp=None, stochastic=True, no_waits=False, stuck_time=3):
         super().__init__(state_policy, direct_policy)
         # How many turns in same position to be considered 'stuck'
         self.stuck_time = stuck_time
@@ -336,7 +336,7 @@ class ImitationAgentFromPolicy(AgentFromPolicy):
             if self.stochastic:
                 action_idx = np.random.choice(len(curr_agent_action_probs), p=curr_agent_action_probs)
             else:
-                curr_agent_action_probs /= sum(curr_agent_action_probs)
+                # curr_agent_action_probs /= sum(curr_agent_action_probs)
                 # if np.sum(curr_agent_action_probs) != 0:
                 #     curr_agent_action_probs /= np.sum(curr_agent_action_probs)
                 # else:
@@ -344,9 +344,10 @@ class ImitationAgentFromPolicy(AgentFromPolicy):
 
                 # print("\n\ncurr_agent_action_probs", curr_agent_action_probs)
                 action_idx = np.argmax(curr_agent_action_probs)
-                max_action_prob = np.max(curr_agent_action_probs)
-                if max_action_prob < 0.5:
-                    action_idx = 4
+
+                # max_action_prob = np.max(curr_agent_action_probs)
+                # if max_action_prob < 0.5:
+                #     action_idx = 4
                 # print("selected action idx = ", action_idx)
 
             curr_agent_action = Action.INDEX_TO_ACTION[action_idx]

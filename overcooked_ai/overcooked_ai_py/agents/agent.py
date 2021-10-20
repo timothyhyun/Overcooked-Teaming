@@ -36,8 +36,14 @@ class AgentGroup(object):
         if not all(a0 is not a1 for a0, a1 in itertools.combinations(agents, 2)):
             assert allow_duplicate_agents, "All agents should be separate instances, unless allow_duplicate_agents is set to true"
 
+        self.prev_actions = [(0,0), (0,0)]
+
     def joint_action(self, state):
-        return tuple(a.action(state) for a in self.agents)
+        # select_actions = tuple(a.action(state, self.prev_actions) for a in self.agents)
+        select_actions = tuple(a.action(state) for a in self.agents)
+        # self.prev_actions = select_actions
+        # print("prev_actions", self.prev_actions)
+        return select_actions
 
     def set_mdp(self, mdp):
         for a in self.agents:

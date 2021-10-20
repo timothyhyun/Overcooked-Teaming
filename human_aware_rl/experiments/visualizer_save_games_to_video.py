@@ -232,6 +232,8 @@ def visualize_fixed_trial(a0_type, a1_type, title="FC: DP vs. DP Players", video
 
 
 def visualize_trial(fixed_results, title="test_vid", video_filename='my_video'):
+    print("CLEARING DIRECTORY...................")
+    clear_images_directory()
 
     avg_fixed_results = np.mean(fixed_results['ep_returns'])
 
@@ -280,7 +282,7 @@ def clear_images_directory():
 
 def save_images_to_video(videofile):
     image_folder = 'imgs_test'
-    fps = 1
+    fps = 0.5
 
     image_files = sorted([image_folder + '/' + img for img in os.listdir(image_folder) if img.endswith(".png")])
     clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files, fps=fps)

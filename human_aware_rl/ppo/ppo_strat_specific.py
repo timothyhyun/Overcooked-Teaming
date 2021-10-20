@@ -164,22 +164,22 @@ def my_config():
     layout_name = None
     start_order_list = None
 
-    # rew_shaping_params = {
-    #     "PLACEMENT_IN_POT_REW": 3,
-    #     "DISH_PICKUP_REWARD": 3,
-    #     "SOUP_PICKUP_REWARD": 5,
-    #     "DISH_DISP_DISTANCE_REW": 0,
-    #     "POT_DISTANCE_REW": 0,
-    #     "SOUP_DISTANCE_REW": 0,
-    # }
     rew_shaping_params = {
-        "PLACEMENT_IN_POT_REW": 0,
-        "DISH_PICKUP_REWARD": 0,
-        "SOUP_PICKUP_REWARD": 0,
+        "PLACEMENT_IN_POT_REW": 3,
+        "DISH_PICKUP_REWARD": 3,
+        "SOUP_PICKUP_REWARD": 5,
         "DISH_DISP_DISTANCE_REW": 0,
         "POT_DISTANCE_REW": 0,
         "SOUP_DISTANCE_REW": 0,
     }
+    # rew_shaping_params = {
+    #     "PLACEMENT_IN_POT_REW": 0,
+    #     "DISH_PICKUP_REWARD": 0,
+    #     "SOUP_PICKUP_REWARD": 0,
+    #     "DISH_DISP_DISTANCE_REW": 0,
+    #     "POT_DISTANCE_REW": 0,
+    #     "SOUP_DISTANCE_REW": 0,
+    # }
     
     # Env params
     horizon = 400
@@ -307,6 +307,7 @@ def configure_other_agent(params, gym_env, mlp, mdp):
                 'random3': 'carry1_finetune_random3_bc_test_seed5415'
             }
         }
+        best_bc_model_paths = load_pickle(BEST_BC_MODELS_PATH) # uncomment to change
         print('\n\n\n\nbest_bc_model_paths', best_bc_model_paths)
 
         if params["OTHER_AGENT_TYPE"] == "bc_train":

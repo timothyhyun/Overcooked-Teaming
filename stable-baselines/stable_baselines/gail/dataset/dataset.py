@@ -54,6 +54,7 @@ class ExpertDataset(object):
 
         observations = traj_data['obs'][:traj_limit_idx]
         actions = traj_data['actions'][:traj_limit_idx]
+        print("ACTIONS:", actions)
 
         # obs, actions: shape (N * L, ) + S
         # where N = # episodes, L = episode length

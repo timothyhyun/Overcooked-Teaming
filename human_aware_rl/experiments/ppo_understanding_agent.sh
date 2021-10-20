@@ -17,8 +17,8 @@
 #nice -n 2 python ../ppo/ppo.py with EX_NAME="CF_HT_OP_PC_WCP_CSMR_ppo_bc_test_random3_test4" layout_name="random3" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=1.2e7 LR=1.5e-3 GPU_ID=3 OTHER_AGENT_TYPE="bc_test" SEEDS="[2888, 7424, 7360, 4467,  184]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=3 SELF_PLAY_HORIZON="[1e6, 4e6]" TIMESTAMP_DIR=True
 
 
-nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="NRS_ppo_bc_dpft_random0_test7" layout_name="random0" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=9e6 LR=1.5e-3 GPU_ID=0 OTHER_AGENT_TYPE="bc_train" SEEDS="[9456]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=2 SELF_PLAY_HORIZON=None TIMESTAMP_DIR=True
-nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="NRS_ppo_bc_spft_random0_test7" layout_name="random0" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=9e6 LR=1.5e-3 GPU_ID=0 OTHER_AGENT_TYPE="bc_test" SEEDS="[2888]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=2 SELF_PLAY_HORIZON=None TIMESTAMP_DIR=True
+#nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="CF_HT_CSMR_NTP_ppo_bc_spft_random0_test8" layout_name="random0" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=9e6 LR=1.5e-3 GPU_ID=0 OTHER_AGENT_TYPE="bc_test" SEEDS="[2888]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=2 SELF_PLAY_HORIZON=None TIMESTAMP_DIR=True
+nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="CF_HT_CSMR_NTP_ppo_bc_dpft_random0_test9" layout_name="random0" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=9e6 LR=1.5e-3 GPU_ID=0 OTHER_AGENT_TYPE="bc_train" SEEDS="[9456]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=2 SELF_PLAY_HORIZON=None TIMESTAMP_DIR=True
 
 
 

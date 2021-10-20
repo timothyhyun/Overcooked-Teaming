@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from overcooked_ai_py.utils import save_pickle, load_pickle
 from overcooked_ai_py.agents.agent import AgentPair, RandomAgent, CoupledPlanningAgent
-from overcooked_ai_py.agents.fixed_strategy_agent import DualPotAgent, FixedStrategy_AgentPair, SinglePotAgent
+# from overcooked_ai_py.agents.fixed_strategy_agent import DualPotAgent, FixedStrategy_AgentPair, SinglePotAgent
 from overcooked_ai_py.agents.benchmarking import AgentEvaluator
 from overcooked_ai_py.utils import save_pickle
 from overcooked_ai_py.planning.planners import MediumLevelPlanner
@@ -25,14 +25,14 @@ def test_random_agents():
         'same_motion_goals': False
     }
     mlp = MediumLevelPlanner(simple_mdp, base_params_start_or)
-    # random_agent_0 = CoupledPlanningAgent(mlp)
-    # random_agent_1 = CoupledPlanningAgent(mlp)
+    random_agent_0 = RandomAgent(mlp)
+    random_agent_1 = RandomAgent(mlp)
 
 
-    random_agent_0 = DualPotAgent(simple_mdp, player_index=0)
-    random_agent_1 = DualPotAgent(simple_mdp, player_index=1)
+    # random_agent_0 = DualPotAgent(simple_mdp, player_index=0)
+    # random_agent_1 = DualPotAgent(simple_mdp, player_index=1)
 
-    num_rounds = 1
+    num_rounds = 100
     display = False
     bc_params = {
                 'data_params': {
@@ -50,7 +50,7 @@ def test_random_agents():
     evaluator = AgentEvaluator(mdp_params=bc_params["mdp_params"], env_params=bc_params["env_params"])
 
     random_results = evaluator.evaluate_agent_pair(
-        FixedStrategy_AgentPair(random_agent_0, random_agent_1, allow_duplicate_agents=False),
+        AgentPair(random_agent_0, random_agent_1, allow_duplicate_agents=False),
         num_games=max(int(num_rounds / 2), 1), display=display)
 
     # print('results', random_results)

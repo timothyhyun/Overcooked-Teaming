@@ -368,7 +368,7 @@ def run_two_bc_agents():
 
 
     set_global_seed(248)
-    num_rounds = 100
+    num_rounds = 10
     bc_bc_performance = evaluate_two_bc_models(best_bc_model_paths, num_rounds, seeds, best=True)
     print('BC vs. BC bc_bc_performance', bc_bc_performance)
     # bc_bc_performance  = prepare_nested_default_dict_for_pickle(bc_bc_performance)
@@ -385,6 +385,6 @@ if __name__ == "__main__":
     print('best_bc_model_paths', best_bc_model_paths)
     print('\n\n\n RUNNING TWO BC AGENTS.................')
     # check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths)
-    run_two_ppo_agents()
-    # run_two_bc_agents()
+    # run_two_ppo_agents()
+    run_two_bc_agents()
 

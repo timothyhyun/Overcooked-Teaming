@@ -26,11 +26,11 @@
 #
 
 
-nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="aa_strat3_ppo_bc_train_random3" layout_name="unident_s" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=1.2e7 LR=1.5e-3 GPU_ID=3 OTHER_AGENT_TYPE="bc_train" SEEDS="[9456, 1887, 5578, 5987,  516]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=3 SELF_PLAY_HORIZON="[1e6, 4e6]" TIMESTAMP_DIR=True
+#nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="aa_strat3_ppo_bc_train_random3" layout_name="unident_s" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=1.2e7 LR=1.5e-3 GPU_ID=3 OTHER_AGENT_TYPE="bc_train" SEEDS="[9456, 1887, 5578, 5987,  516]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=3 SELF_PLAY_HORIZON="[1e6, 4e6]" TIMESTAMP_DIR=True
+#
+#nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="aa_strat3_ppo_bc_test_random3" layout_name="unident_s" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=1.2e7 LR=1.5e-3 GPU_ID=3 OTHER_AGENT_TYPE="bc_test" SEEDS="[2888, 7424, 7360, 4467,  184]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=3 SELF_PLAY_HORIZON="[1e6, 4e6]" TIMESTAMP_DIR=True
+#
 
-nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="aa_strat3_ppo_bc_test_random3" layout_name="unident_s" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=1.2e7 LR=1.5e-3 GPU_ID=3 OTHER_AGENT_TYPE="bc_test" SEEDS="[2888, 7424, 7360, 4467,  184]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=3 SELF_PLAY_HORIZON="[1e6, 4e6]" TIMESTAMP_DIR=True
-
-
-
+nice -n 2 python ../ppo/ppo_strat_specific.py with EX_NAME="single_strat_rew_weights_ppo_bc_train_random0_test1" layout_name="random0" REW_SHAPING_HORIZON=4e6 PPO_RUN_TOT_TIMESTEPS=9e6 LR=1.5e-3 GPU_ID=0 OTHER_AGENT_TYPE="bc_train" SEEDS="[516]" VF_COEF=0.1 MINIBATCHES=15 LR_ANNEALING=2 SELF_PLAY_HORIZON=None TIMESTAMP_DIR=True
 
 

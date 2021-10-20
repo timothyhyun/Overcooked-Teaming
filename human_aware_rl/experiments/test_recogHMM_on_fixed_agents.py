@@ -84,6 +84,54 @@ def run_one_game_fixed_agents(a0_type, a1_type):
     return random_results, avg_random_results
 
 
+def run_ppo_bc_game(layout, num_rounds, bc_model_paths, ppo_bc_model_paths, seeds, best=False,
+                                          display=False):
+    # evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, best_bc_model_paths, ppo_bc_model_paths, seeds=seeds, best=best)
+    assert len(seeds["bc_train"]) == len(seeds["bc_test"])
+    ppo_bc_performance = defaultdict(lambda: defaultdict(list))
+
+    agent_bc_test, bc_params = get_bc_agent_from_saved(bc_model_paths['test'][layout])
+    ppo_bc_train_path = ppo_bc_model_paths['bc_train'][layout]
+    ppo_bc_test_path = ppo_bc_model_paths['bc_test'][layout]
+    evaluator = AgentEvaluator(mdp_params=bc_params["mdp_params"], env_params=bc_params["env_params"])
+
+    # num_rounds = 10
+    seed_input = 9456
+    agent_ppo_bc_train, ppo_config = get_ppo_agent(ppo_bc_train_path, seed_input, best=False)
+    assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
+
+    # For curiosity, how well does agent do with itself?
+    # ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_train, allow_duplicate_agents=True), num_games=max(int(num_rounds/2), 1), display=display)
+    # avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
+    # ppo_bc_performance[layout]["PPO_BC_train+PPO_BC_train"].append(avg_ppo_and_ppo)
+
+    # How well it generalizes to new agent in simulation?
+    ppo_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_bc_test), num_games=num_rounds,
+                                               display=display)
+    avg_ppo_and_bc = np.mean(ppo_and_bc['ep_returns'])
+    ppo_bc_performance[layout]["PPO_BC_train+BC_test_0"].append(avg_ppo_and_bc)
+
+    bc_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_bc_test, agent_ppo_bc_train), num_games=num_rounds,
+                                               display=display)
+    avg_bc_and_ppo = np.mean(bc_and_ppo['ep_returns'])
+    ppo_bc_performance[layout]["PPO_BC_train+BC_test_1"].append(avg_bc_and_ppo)
+
+    # How well could we do if we knew true model BC_test?
+    agent_ppo_bc_test, ppo_config = get_ppo_agent(ppo_bc_test_path, seeds["bc_test"][seed_idx], best=best)
+    assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
+
+    ppo_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_test, agent_bc_test), num_games=num_rounds,
+                                               display=display)
+    avg_ppo_and_bc = np.mean(ppo_and_bc['ep_returns'])
+    ppo_bc_performance[layout]["PPO_BC_test+BC_test_0"].append(avg_ppo_and_bc)
+
+    bc_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_bc_test, agent_ppo_bc_test), num_games=num_rounds,
+                                               display=display)
+    avg_bc_and_ppo = np.mean(bc_and_ppo['ep_returns'])
+    ppo_bc_performance[layout]["PPO_BC_test+BC_test_1"].append(avg_bc_and_ppo)
+
+    return ppo_bc_performance
+
 
 def track_p2_actions(p1_data, p2_data, objects_data, p1_actions,
                      p2_actions, name, time_elapsed):

@@ -26,7 +26,7 @@ def test_behavior_cloning():
 
     # N is batch size; D_in is input dimension;
     # H is hidden dimension; D_out is output dimension.
-    N, D_in, H, D_out = 256, 108, 100, 34
+    N, D_in, H, D_out = 256, 107, 100, 34
 
     # Create random Tensors to hold inputs and outputs
     x = torch.Tensor(X)

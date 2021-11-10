@@ -4,9 +4,8 @@ from overcooked_ai_py.planning.planners import MediumLevelPlanner
 from overcooked_ai_py.mdp.actions import Action, Direction
 import pdb
 from state_featurization_for_irl import *
-from fixed_strat_state_featurization import run_fixed_featurization, run_data_featurization, run_data_featurization_reduced
-# from numba import cuda, float32
-from multiprocessing.pool import ThreadPool as Pool
+from fixed_strat_state_featurization import run_fixed_featurization
+
 
 from itertools import product
 
@@ -16,7 +15,6 @@ import numpy.random as rn
 import value_iteration
 import policy_iteration
 
-# @cuda.jit
 def irl(feature_matrix, n_actions, discount, transition_probability,
         trajectories, epochs, learning_rate, max_policy_iters):
     """
@@ -50,7 +48,7 @@ def irl(feature_matrix, n_actions, discount, transition_probability,
     for i in range(epochs):
         print("IRL Iteration = i: {}".format(i))
         r = feature_matrix.dot(alpha)
-        expected_svf = find_expected_svf_multiprocessed(n_states, r, n_actions, discount,
+        expected_svf = find_expected_svf(n_states, r, n_actions, discount,
                                          transition_probability, trajectories, max_policy_iters)
         grad = feature_expectations - feature_matrix.T.dot(expected_svf)
 
@@ -121,7 +119,6 @@ def find_expected_svf(n_states, r, n_actions, discount,
         trajectories and L is the trajectory length.
     -> Expected state visitation frequencies vector with shape (N,).
     """
-    pool_size = 64
 
     n_trajectories = trajectories.shape[0]
     trajectory_length = trajectories.shape[1]
@@ -155,87 +152,6 @@ def find_expected_svf(n_states, r, n_actions, discount,
                                   transition_probability[i, j, k])
     print("Found expected SVF")
     return expected_svf.sum(axis=1)
-
-
-
-def find_expected_svf_multiprocessed(n_states, r, n_actions, discount,
-                      transition_probability, trajectories, max_iters=100):
-    """
-    Find the expected state visitation frequencies using algorithm 1 from
-    Ziebart et al. 2008.
-    n_states: Number of states N. int.
-    alpha: Reward. NumPy array with shape (N,).
-    n_actions: Number of actions A. int.
-    discount: Discount factor of the MDP. float.
-    transition_probability: NumPy array mapping (state_i, action, state_k) to
-        the probability of transitioning from state_i to state_k under action.
-        Shape (N, A, N).
-    trajectories: 3D array of state/action pairs. States are ints, actions
-        are ints. NumPy array with shape (T, L, 2) where T is the number of
-        trajectories and L is the trajectory length.
-    -> Expected state visitation frequencies vector with shape (N,).
-    """
-    pool_size = 64
-
-    # define worker function before a Pool is instantiated
-    def worker(i, t, j, k):
-        try:
-            expected_svf[k, t] += (expected_svf[i, t - 1] *
-                                   policy[i, j] *  # Stochastic policy
-                                   transition_probability[i, j, k])
-        except:
-            print('error with item')
-
-    n_trajectories = trajectories.shape[0]
-
-    for traj in trajectories:
-        print(len(traj))
-
-    trajectory_length = trajectories.shape[1]
-
-    # policy = find_policy(n_states, r, n_actions, discount,
-    #                                 transition_probability)
-    print("FINDING POLICY")
-    policy = policy_iteration.find_policy(n_states, n_actions,
-                                          transition_probability, r, discount, max_iters)
-    print("policy found")
-
-    start_state_count = np.zeros(n_states)
-    for trajectory in trajectories:
-        start_state_count[trajectory[0, 0]] += 1
-    p_start_state = start_state_count / n_trajectories
-
-    print("Getting expected SVF multiprocessed")
-    expected_svf = np.tile(p_start_state, (trajectory_length, 1)).T
-    # for t in range(1, trajectory_length):
-    #     expected_svf[:, t] = 0
-    #     for i, j, k in product(range(n_states), range(n_actions), range(n_states)):
-    #         expected_svf[k, t] += (expected_svf[i, t-1] *
-    #                               policy[i, j] * # Stochastic policy
-    #                               transition_probability[i, j, k])
-    # for t in range(1, int(trajectory_length / 4)):
-    #     expected_svf[:, t] = 0
-    #     for i, j, k in product(range(n_states), range(n_actions), range(n_states)):
-    #         # for i, j, k in product(range(int(n_states/10)), range(int(n_actions/10)), range(int(n_states/10))):
-    #         expected_svf[k, t] += (expected_svf[i, t - 1] *
-    #                                policy[i, j] *  # Stochastic policy
-    #                                transition_probability[i, j, k])
-
-    pool = Pool(pool_size)
-
-    for t in range(1, int(trajectory_length / 1)):
-        if t % 100 == 0:
-            print("t = ", t)
-        expected_svf[:, t] = 0
-        for i, j, k in product(range(int(n_states/1)), range(int(n_actions/1)), range(int(n_states/1))):
-            pool.apply_async(worker, (i, t, j, k,))
-
-    pool.close()
-    pool.join()
-
-    print("Found expected SVF")
-    return expected_svf.sum(axis=1)
-
 
 def softmax(x1, x2):
     """
@@ -332,13 +248,12 @@ def expected_value_difference(n_states, n_actions, transition_probability,
 def main():
     a0_type, a1_type = 'SP', 'SP'
 
-    state_seq, action_seq, feature_seq, transition_matrix, state_idx_to_state, state_tuple_to_state_idx, state_reward_list, feature_matrix, trajectories = run_data_featurization_reduced(a0_type, a1_type)
+    state_seq, action_seq, feature_seq, transition_matrix, state_idx_to_state, state_tuple_to_state_idx, state_reward_list, feature_matrix, trajectories = run_fixed_featurization(a0_type, a1_type)
     print("state_seq shape", state_seq.shape)
     print('action_seq shape', action_seq.shape)
     print("feature_seq.shape = ", feature_seq.shape)
     print("state_reward_list", state_reward_list.shape)
     print("transition_matrix", transition_matrix.shape)
-    print('feature_matrix', feature_matrix.shape)
     # print(feature_seq)
 
     n_states = transition_matrix.shape[0]
@@ -346,7 +261,7 @@ def main():
     transition_probability = transition_matrix
     reward = state_reward_list
     discount = 0.9
-    epochs = 5
+    epochs = 10
     learning_rate = 0.1
     max_policy_iters = 1000
 

@@ -412,8 +412,8 @@ class OvercookedGridworld(object):
         self.soup_cooking_time = cook_time
         self.num_items_for_soup = num_items_for_soup
         self.delivery_reward = delivery_reward
-        # self.reward_shaping_params = NO_REW_SHAPING_PARAMS if rew_shaping_params is None else rew_shaping_params
-        self.reward_shaping_params = SP_REW_SHAPING_PARAMS
+        self.reward_shaping_params = NO_REW_SHAPING_PARAMS if rew_shaping_params is None else rew_shaping_params
+        # self.reward_shaping_params = SP_REW_SHAPING_PARAMS
         self.layout_name = layout_name
 
         self.item_tracking_dict = {}
@@ -740,7 +740,7 @@ class OvercookedGridworld(object):
 
         return new_state, sparse_reward, shaped_reward
 
-    def resolve_interacts_old(self, new_state, joint_action):
+    def resolve_interacts(self, new_state, joint_action):
         """
         Resolve any INTERACT actions, if present.
 
@@ -1054,7 +1054,7 @@ class OvercookedGridworld(object):
 
         return sparse_reward, shaped_reward
 
-    def resolve_interacts(self, new_state, joint_action):
+    def resolve_interacts_new(self, new_state, joint_action):
         """
         Resolve any INTERACT actions, if present.
 
@@ -1389,6 +1389,7 @@ class OvercookedGridworld(object):
         4. Soup picked up from ready pot
         5. Both pots cooking simultaneously
         8/6. Serve soup
+        7. Shared counter usage
 
         6. Handoff time of object picked up <= self mean
         7. Number of touches on onion or dish == len unique players
@@ -1402,10 +1403,12 @@ class OvercookedGridworld(object):
         full_pots = cooking_pots + ready_pots
         num_pots = len(pot_states)
 
-        reward_featurized_state = [0, 0, 0, 0, 0]
+        shared_counters = [(2,1), (2,2), (2,3)]
+
+        reward_featurized_state = [0, 0, 0, 0, 0, 0, 0]
 
         # if (4,1) in full_pots and (3,0) in full_pots:
-        #     print("NUM FULL POTS = 2", full_pots)
+        #     # print("NUM FULL POTS = 2", full_pots)
         #     reward_featurized_state[4] = 1
 
         # self.mean_limbo_time = max([self.item_tracking_dict[item_uid]['limbo_time'] for item_uid in self.item_tracking_dict]) \
@@ -1544,6 +1547,9 @@ class OvercookedGridworld(object):
                 elif not player.has_object() and new_state.has_object(i_pos):
                     # Action Type 2: Player picked object up from counter
                     player.set_object(new_state.remove_object(i_pos))
+
+                    if tuple(i_pos) in shared_counters:
+                        reward_featurized_state[6] = 1
 
                     if player.get_object().name == 'onion':
                         player_idx_to_high_level_action[player_idx] = PICKUP_ONION_FROM_COUNTER
@@ -1724,9 +1730,9 @@ class OvercookedGridworld(object):
                             player_idx_to_high_level_action[player_idx] = PUT_DOWN_ONION_IN_POT
 
                             reward_featurized_state[1] = 1
-                            # if num_cooking_pots > 1:
-                            #     shaped_reward += HIGH_POT_COVERAGE_SIMUL_COOKING_REWARD
-                            #     reward_featurized_state[4] = 1
+                            if num_cooking_pots > 1:
+                                shaped_reward += HIGH_POT_COVERAGE_SIMUL_COOKING_REWARD
+                                reward_featurized_state[4] = 1
 
                             # Onion placed in pot is no longer active
                             try:
@@ -1751,7 +1757,7 @@ class OvercookedGridworld(object):
                     player_idx_to_high_level_action[player_idx] = SERVE_SOUP
                     new_state, delivery_rew = self.deliver_soup(new_state, player, obj)
                     sparse_reward += delivery_rew
-                    reward_featurized_state[4] = 1
+                    reward_featurized_state[5] = 1
                     # Dish served is no longer active
                     try:
                         placed_item_uid = self.player_idx_to_item_holding_uid[player_idx]

@@ -2,7 +2,7 @@ from dependencies import *
 from hmm import supervised_HMM, unsupervised_HMM, HiddenMarkovModel
 from extract_features import *
 
-def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
+def track_player_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
                      p2_actions, name, time_elapsed):
     # Save player 1 and 2 actions
     p1_actions_list = []
@@ -86,10 +86,36 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
             9. P2 picked up soup from top pot (0/1)
             10. P2 picked up soup from right pot (0/1)
 
-            
-        
         
         """
+
+    """ (10 actions)
+
+            1. P1 pickup onion
+            2. P1 put down onion
+            3. P1 pick up dish
+            4. P1 put down dish
+            5. P1 serve soup
+
+            6. P1 pickup onion
+            7. P1 put down onion
+            8. P1 pick up dish
+            9. P1 put down dish
+            10. P1 serve soup
+
+        """
+
+    P1_PICKUP_ONION = 1 #1. P1 pickup onion
+    P1_PUTDOWN_ONION = 1 # 2. P1 put down onion
+    P1_PICKUP_DISH = 1 # 3. P1 pick up dish
+    P1_PUTDOWN_DISH = 1 # 4. P1 put down dish
+    P1_SERVE_SOUP = 1 # 5. P1 serve soup
+    #
+    P1_PICKUP_ONION = 1  # 1. P1 pickup onion
+    P1_PUTDOWN_ONION = 1  # 2. P1 put down onion
+    P1_PICKUP_DISH = 1  # 3. P1 pick up dish
+    P1_PUTDOWN_DISH = 1  # 4. P1 put down dish
+    P1_SERVE_SOUP = 1  # 5. P1 serve soup
 
     p1_major_action = 17  # initialize as doing nothing (stationary)
     p2_major_action = 17
@@ -156,10 +182,10 @@ def track_p2_actions(old_trials, p1_data, p2_data, objects_data, p1_actions,
 
                 if p1_obj_name_next == 'onion':
                     p1_major_action = 13
-                    state_testing_action = 1
+                    # state_testing_action = 1
                 elif p1_obj_name_next == 'dish':
                     p1_major_action = 14
-                    state_testing_action = 2
+                    # state_testing_action = 2
                 elif p1_obj_name_next == 'soup':
                     p1_major_action = 15
             else:
@@ -557,7 +583,7 @@ def featurize_data_for_naive_hmm():
             p1_actions.append(joint_actions_i[p1_index])
             p2_actions.append(joint_actions_i[p2_index])
 
-        object_list_tracker, ordered_delivered_tracker, p1_actions_list, p2_actions_list, p2_time_strategic_action, p2_time_strategy, state_actions_list = track_p2_actions(old_trials,
+        object_list_tracker, ordered_delivered_tracker, p1_actions_list, p2_actions_list, p2_time_strategic_action, p2_time_strategy, state_actions_list = track_player_actions(old_trials,
             p1_data, p2_data, objects_data, p1_actions,
             p2_actions, name, time_elapsed)
         team_chunked_actions_data[trial_id] = {}
@@ -593,10 +619,129 @@ def featurize_data_for_naive_hmm():
     return X_data, team_numbers
 
 
-def run_naive_hmm_on_p2(n_states):
+def featurize_data_for_naive_hmm_w_window(window=4, ss=3):
+    team_chunked_actions_data = {}
+
+    name = 'random3'
+    title = 'Counter Circuit'
+
+    # name = 'random0'
+    # title = 'Forced Coordination'
+    old_trials = import_2019_data()
+    layout_trials = old_trials[old_trials['layout_name'] == name]['trial_id'].unique()
+    # name = 'random0'
+    # title = 'Forced Coordination'
+    trial_data = {}
+
+    for j in range(len(layout_trials)):
+        # for j in [5]:
+        trial_id = layout_trials[j]
+        # print('trial_id', trial_id)
+        trial_df = old_trials[old_trials['trial_id'] == trial_id]
+        score = old_trials[old_trials['trial_id'] == trial_id]['score'].to_numpy()[-1]
+        state_data = trial_df['state'].to_numpy()
+        joint_actions = trial_df['joint_action'].to_numpy()
+        time_elapsed = trial_df['time_elapsed'].to_numpy()
+
+        p1_data = []
+        p2_data = []
+        p1_actions = []
+        p2_actions = []
+        state_data_eval = []
+        objects_data = []
+        for i in range(1, len(state_data)):
+            prev_state_x = json_eval(state_data[i - 1])
+            state_x = json_eval(state_data[i])
+            joint_actions_i = literal_eval(joint_actions[i])
+            p1_index = 1
+            p2_index = 0
+
+            p1_data.append(state_x['players'][p1_index])
+            p2_data.append(state_x['players'][p2_index])
+            state_data_eval.append(state_x)
+            objects_data.append(state_x['objects'])
+
+            p1_actions.append(joint_actions_i[p1_index])
+            p2_actions.append(joint_actions_i[p2_index])
+
+        object_list_tracker, ordered_delivered_tracker, hmm_observations = track_player_actions(old_trials, p1_data, p2_data,
+                                                                                                       objects_data,
+                                                                                                       p1_actions,
+                                                                                                       p2_actions, name,
+                                                                                                       time_elapsed)
+        # print("hmm_observations", hmm_observations)
+        team_chunked_actions_data[trial_id] = {}
+        team_chunked_actions_data[trial_id]['hmm_observations'] = hmm_observations
+
+    # X_data = []
+    # team_numbers = []
+    # for team_idx in team_chunked_actions_data:
+    #     add = team_chunked_actions_data[team_idx]['hmm_observations']
+    #     print('len add', len(add))
+    #     X_data.append(np.array(add))
+    #     team_numbers.append(team_idx)
+
+    # X_data = np.array(X_data)
+
+    # return X_data, team_numbers
+
+    X_data = []
+    team_numbers = []
+
+    X_data_chunked = []
+    team_numbers_chunked = []
+
+    for team_idx in team_chunked_actions_data:
+
+        observation_list = team_chunked_actions_data[team_idx]['hmm_observations']
+
+        #     print(len(p2_major_actions))
+        # add = []
+        # for j in range(5):
+        #     add.append(p2_major_actions[j][1])
+
+        # add = []
+        add = [observation_list[c] for c in range(len(observation_list))]
+        X_data.append(np.array(add))
+        team_numbers.append(team_idx)
+
+        for j in range(0, len(observation_list) - window, ss):
+            add = [observation_list[c] for c in range(j, j + window)]
+            X_data_chunked.append(np.array(add))
+            team_numbers_chunked.append(team_idx)
+
+    # X_data = np.array(X_data)
+    # return X_data, team_numbers
+    return X_data, team_numbers, X_data_chunked, team_numbers_chunked
+
+# def run_naive_hmm_on_p2(n_states):
+#
+#     # X = observation_data
+#     # Y = hidden_state_data
+#     X, team_numbers = featurize_data_for_naive_hmm()
+#
+#     # X = X[:100]
+#
+#
+#     N_iters = 100
+#
+#     test_unsuper_hmm = unsupervised_HMM(X, n_states, N_iters)
+#
+#     # print('emission', test_unsuper_hmm.generate_emission(10))
+#     hidden_seqs = []
+#     for j in range(len(X)):
+#         team_data = X[j][:100]
+#         viterbi_output = test_unsuper_hmm.viterbi(team_data)
+#         hidden_seqs.append([int(x) for x in viterbi_output])
+#         print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
+#
+#     return test_unsuper_hmm, hidden_seqs
+
+def run_naive_hmm_on_p2_method_2(n_states, window=4, ss=2):
 
     # X = observation_data
     # Y = hidden_state_data
+    # X, team_numbers, X_data_chunked, team_numbers_chunked = featurize_data_for_naive_hmm(window=window, ss=ss)
     X, team_numbers = featurize_data_for_naive_hmm()
 
 
@@ -606,12 +751,16 @@ def run_naive_hmm_on_p2(n_states):
 
     # print('emission', test_unsuper_hmm.generate_emission(10))
     hidden_seqs = []
+    team_num_to_seq_probs = {}
     for j in range(len(X)):
-        viterbi_output = test_unsuper_hmm.viterbi(X[j])
+        trial_data = X[j][:100]
+        viterbi_output, all_sequences_and_probs = test_unsuper_hmm.viterbi_all_probs(trial_data)
+        team_num_to_seq_probs[team_numbers[j]] = all_sequences_and_probs
         hidden_seqs.append([int(x) for x in viterbi_output])
-        print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
+        # print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
 
-    return test_unsuper_hmm, hidden_seqs
+    return test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs
+
 
 def pad_w_mode(hidden_seqs):
     max_len = max(len(elem) for elem in hidden_seqs)
@@ -629,27 +778,116 @@ def pad_w_mode(hidden_seqs):
     # print('X', X)
     return np.array(X)
 
+def cut_to_same_length(hidden_seqs):
+    min_len = min(len(elem) for elem in hidden_seqs)
+    X = []
+    for i in range(len(hidden_seqs)):
+        team_hs = hidden_seqs[i]
+        team_hs_pad = []
+        for j in range(min_len):
+            if j < len(team_hs):
+                team_hs_pad.append(team_hs[j])
+            # else:
+            #     team_hs_pad.append(team_hs_mode)
+        X.append(team_hs_pad)
+    # print('X', X)
+    return np.array(X)
 
 
+#
+# def cluster_hidden_states(hidden_seqs, n_clusters=2):
+#     X = pad_w_mode(hidden_seqs)
+#     print('X=', X)
+#     kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
+#     cluster_labels = kmeans.labels_
+#     cluster_centers = kmeans.cluster_centers_
+#     return cluster_labels, cluster_centers
 def cluster_hidden_states(hidden_seqs, n_clusters=2):
-    X = pad_w_mode(hidden_seqs)
-    print('X=', X)
+    # X = pad_w_mode(hidden_seqs)
+    X = cut_to_same_length(hidden_seqs)
+    # print('X=', X)
     kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
     cluster_labels = kmeans.labels_
     cluster_centers = kmeans.cluster_centers_
-    return cluster_labels, cluster_centers
+    ss = sklearn.metrics.silhouette_score(X, cluster_labels)
+    # ss = sklearn.metrics.calinski_harabasz_score(X, cluster_labels)
+    return cluster_labels, cluster_centers, ss
+
+
+def run_naive_hmm_on_p2(n_states, window=4, ss=2):
+
+    # X = observation_data
+    # Y = hidden_state_data
+    # X, team_numbers, X_data_chunked, team_numbers_chunked = featurize_data_for_naive_hmm_w_window(window=window, ss=ss)
+    X, team_numbers = featurize_data_for_naive_hmm()
+
+    N_iters = 100
+
+    test_unsuper_hmm = unsupervised_HMM(X, n_states, N_iters)
+
+    # print('emission', test_unsuper_hmm.generate_emission(10))
+    hidden_seqs = []
+    team_num_to_seq_probs = {}
+    for j in range(len(X)):
+        viterbi_output, all_sequences_and_probs = test_unsuper_hmm.viterbi_all_probs(X[j])
+        team_num_to_seq_probs[team_numbers[j]] = all_sequences_and_probs
+        hidden_seqs.append([int(x) for x in viterbi_output])
+        # print('viterbi: hidden seq: Team ' + str(team_numbers[j]) + ": ", viterbi_output)
+
+    return test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs
+
+
+def plot_validation_matrix():
+    num_states_list = [4,5,6,7]
+    num_clusters_list = [2, 3, 4]
+    # num_states_list = [4]
+    # num_clusters_list = [2]
+
+    arr = np.zeros((max(num_states_list), max(num_states_list)))
+
+    max_ss_score = 0
+    best_combo = (0,0) # (n_states, n_clusters)
+    for n_states in num_states_list:
+        test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs = run_naive_hmm_on_p2(n_states=n_states)
+        for n_clusters in num_clusters_list:
+
+
+
+            cluster_labels, cluster_centers, ss = cluster_hidden_states(hidden_seqs, n_clusters=n_clusters)
+            print(f'\nN={n_states}, K={n_clusters}: cluster_labels = {cluster_labels}, teams = {team_numbers}')
+            print(f'N={n_states}, K={n_clusters}, sil. score = ', ss)
+            arr[n_states, n_clusters] = ss
+            if ss > max_ss_score:
+                max_ss_score = ss
+                best_combo = (n_states, n_clusters)
+
+
+    plt.imshow(arr, cmap='viridis')
+    plt.colorbar()
+    plt.title("Counter Circuit")
+    plt.ylabel("Number of Hidden States")
+    plt.xlabel("Number of Clusters")
+    plt.xlim(num_clusters_list[0] - 0.5, num_clusters_list[-1] + 0.5)
+    plt.ylim(num_states_list[0] - 0.5, num_states_list[-1] + 0.5)
+    plt.savefig('cc_ch_score.png')
+    plt.close()
+
+    print("best combo", best_combo)
+
+
 
 if __name__ == '__main__':
-    n_states = 6
-    test_unsuper_hmm, hidden_seqs = run_naive_hmm_on_p2(n_states)
-
-    # Try N=2 Clusters
-    cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=2)
-    print(f'\nN=2: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
-
-    # Try N=3 Clusters
-    cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=3)
-    print(f'\nN=3: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+    plot_validation_matrix()
+    # n_states = 6
+    # test_unsuper_hmm, hidden_seqs = run_naive_hmm_on_p2(n_states)
+    #
+    # # Try N=2 Clusters
+    # cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=2)
+    # print(f'\nN=2: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
+    #
+    # # Try N=3 Clusters
+    # cluster_labels, cluster_centers = cluster_hidden_states(hidden_seqs, n_clusters=3)
+    # print(f'\nN=3: cluster_labels = {cluster_labels}, cluster_centers = {cluster_centers}')
 
 
 

@@ -41,6 +41,9 @@ def world_obj(t, a, objects_data):
     if len(obj_world) == 0:
         return []
     objects_list = []
+    # print('obj_world', obj_world)
+    if type(obj_world) == dict:
+        obj_world = list(obj_world.values())
     for i in range(len(obj_world)):
         obj = obj_world[i]
         name = obj_world[i]['name']
@@ -85,7 +88,7 @@ def obj_p1(t, a, p1_data):
     #     t_partial = t[int(a)-1:int(a)+1]
     #     print('t_input', t)
     color = 'k'
-    if p1_data[int(a)]['held_object'] is None:
+    if 'held_object' not in p1_data[int(a)] or p1_data[int(a)]['held_object'] is None:
         return [None, None, None, None]
     else:
         name = p1_data[int(a)]['held_object']['name']
@@ -100,7 +103,7 @@ def obj_p1(t, a, p1_data):
 
 def obj_p2(t, a, p2_data):
     color = 'k'
-    if p2_data[int(a)]['held_object'] is None:
+    if 'held_object' not in p2_data[int(a)]  or p2_data[int(a)]['held_object'] is None:
         return [None, None, None, None]
     else:
         name = p2_data[int(a)]['held_object']['name']

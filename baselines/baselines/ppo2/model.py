@@ -47,9 +47,9 @@ class Model(object):
         self.ADV = ADV = tf.placeholder(tf.float32, [None])
         self.R = R = tf.placeholder(tf.float32, [None])
         # Keep track of old actor
-        self.OLDNEGLOGPAC = OLDNEGLOGPAC = tf.placeholder(tf.float32, [None])
+        self.OLDNEGLOGPAC = OLDNEGLOGPAC = tf.placeholder(tf.float32, [None]) # policy
         # Keep track of old critic
-        self.OLDVPRED = OLDVPRED = tf.placeholder(tf.float32, [None])
+        self.OLDVPRED = OLDVPRED = tf.placeholder(tf.float32, [None]) # value function
         self.LR = LR = tf.placeholder(tf.float32, [])
         # Cliprange
         self.CLIPRANGE = CLIPRANGE = tf.placeholder(tf.float32, [])

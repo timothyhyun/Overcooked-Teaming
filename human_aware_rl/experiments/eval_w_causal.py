@@ -4,12 +4,12 @@ import tensorflow as tf
 from collections import defaultdict
 
 from overcooked_ai_py.utils import save_pickle, load_pickle
-from overcooked_ai_py.agents.agent import AgentPair
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
+from overcooked_ai_py.agents.agent import AgentPair, CausalAgentPair
+from overcooked_ai_py.agents.causal_learner import AgentEvaluator
 from overcooked_ai_py.utils import save_pickle
 
 from human_aware_rl.utils import reset_tf, set_global_seed, prepare_nested_default_dict_for_pickle, common_keys_equal
-from human_aware_rl.imitation.behavioural_cloning import get_bc_agent_from_saved
+from human_aware_rl.imitation.causal_behavioral_cloning import get_bc_agent_from_saved
 from human_aware_rl.ppo.ppo import get_ppo_agent, plot_ppo_run, PPO_DATA_DIR
 
 from visualizer_save_games_to_video import visualize_trial
@@ -131,7 +131,7 @@ def run_two_bc_models_for_layout(layout, num_rounds, bc_model_paths, seeds, best
                                  display=False):
     # evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, best_bc_model_paths, ppo_bc_model_paths, seeds=seeds, best=best)
     # assert len(seeds["bc_train"]) == len(seeds["bc_test"])
-
+    num_rounds = 20
     bc_bc_performance = defaultdict(lambda: defaultdict(list))
 
     agent_bc_train, train_bc_params = get_bc_agent_from_saved(bc_model_paths['train'][layout])
@@ -144,19 +144,34 @@ def run_two_bc_models_for_layout(layout, num_rounds, bc_model_paths, seeds, best
     # assert common_keys_equal(bc_params["mdp_params"], ppo_config["mdp_params"])
 
     # Play two agents against each other.
-    bc_and_bc = evaluator.evaluate_agent_pair(AgentPair(agent_bc_train, agent_bc_test, allow_duplicate_agents=False),
+    bc_and_bc = evaluator.evaluate_agent_pair(CausalAgentPair(agent_bc_train, agent_bc_test, allow_duplicate_agents=False),
                                               num_games=max(int(num_rounds), 1), display=display)
     avg_bc_and_bc = np.mean(bc_and_bc['ep_returns'])
     bc_bc_performance[layout]["BC_train+BC_test"].append(avg_bc_and_bc)
 
     # Swap order and Play two agents against each other.
     bc_and_bc = evaluator.evaluate_agent_pair(
-        AgentPair(agent_bc_test, agent_bc_train, allow_duplicate_agents=False),
+        CausalAgentPair(agent_bc_test, agent_bc_train, allow_duplicate_agents=False),
         num_games=max(int(num_rounds), 1), display=display)
     avg_bc_and_bc = np.mean(bc_and_bc['ep_returns'])
     bc_bc_performance[layout]["BC_test+BC_train"].append(avg_bc_and_bc)
 
+    training_losses = agent_bc_test.accuracies
+    plt.plot(range(len(training_losses)), training_losses)
+    plt.xlabel("Timestep")
+    plt.ylabel("Training Acc")
+    plt.savefig("imgs_causal/bc_test_acc_4.png")
+    plt.close()
+
+    training_losses = agent_bc_train.accuracies
+    plt.plot(range(len(training_losses)), training_losses)
+    plt.xlabel("Timestep")
+    plt.ylabel("Training Acc")
+    plt.savefig("imgs_causal/bc_train_acc_4.png")
+    plt.close()
+
     return bc_bc_performance
+
 
 
 def evaluate_two_ppo_models(ppo_bc_model_paths, best_bc_model_paths, num_rounds, seeds, best):

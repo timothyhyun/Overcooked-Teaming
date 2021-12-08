@@ -907,10 +907,10 @@ def cluster_hidden_states_agglo(hidden_seqs, n_clusters=2):
 #
 #
 def plot_validation_matrix():
-    # num_states_list = [2,3,4]
-    # num_clusters_list = [2, 3, 4]
-    num_states_list = [4]
-    num_clusters_list = [2]
+    num_states_list = [2,3,4]
+    num_clusters_list = [2, 3, 4]
+    # num_states_list = [4]
+    # num_clusters_list = [2]
 
     arr = np.zeros((5, 5))
 

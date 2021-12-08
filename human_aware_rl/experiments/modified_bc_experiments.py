@@ -19,7 +19,7 @@ from human_aware_rl.imitation.behavioural_cloning import train_bc_agent, eval_wi
 BEST_BC_MODELS_PATH = BC_SAVE_DIR + "best_bc_model_paths"
 BC_MODELS_EVALUATION_PATH = BC_SAVE_DIR + "bc_models_all_evaluations"
 
-def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_eps, model, finetuning=False):
+def train_bc_agent_from_hh_data(selected_workers, save_filename, layout_name, agent_name, num_epochs, lr, adam_eps, model, finetuning=False):
     """Trains a BC agent from human human data (model can either be `train` or `test`, which is trained
     on two different subsets of the data)."""
 
@@ -29,7 +29,8 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
     bc_params["mdp_params"]['layout_name'] = layout_name
     bc_params["mdp_params"]['start_order_list'] = None
 
-    model_save_dir = "aa_strat3_finetune_" + layout_name + "_" + agent_name + "/"
+    # model_save_dir = "aa_strat3_finetune_" + layout_name + "_" + agent_name + "/"
+    model_save_dir = save_filename
     # model_save_dir = layout_name + "_" + agent_name + "/"
     # train_bc_agent() returns the bc model
     # if model == 'train':
@@ -38,7 +39,7 @@ def train_bc_agent_from_hh_data(layout_name, agent_name, num_epochs, lr, adam_ep
     #     is_train = False
 
     if finetuning:
-        return train_bc_agent_w_finetuning(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
+        return train_bc_agent_w_finetuning(selected_workers, model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
     return train_bc_agent(model_save_dir, bc_params, num_epochs=num_epochs, lr=lr, adam_eps=adam_eps)
 
 def train_bc_models(all_params, seeds):
@@ -57,37 +58,134 @@ def train_bc_models(all_params, seeds):
             plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
             reset_tf()
 
+def get_strategy_dicts():
+    layout_strategy_dict = {
+        "unident_s": {
+            0: [6, 11, 16, 31, 51, 56, 61, 66, 71, 76, 86, 91, 96, 101, 111, 116],
+            1: [21, 46, 81],
+        },
+        "simple": {
+            0: [70, 75, 80],
+            1: [5, 10, 45, 60, 100],
+            2: [15, 20, 50, 55, 65, 85, 90, 110, 115],
+            3: [0, 95],
+        },
+        "random0": {
+            0: [19, 24, 69, 79, 89, 114],
+            1: [9, 14, 54, 59, 64, 99],
+        },
+        "random1": {
+            0: [7, 12, 17, 22, 62, 67, 72, 82, 87, 92, 97, 102, 112],
+            1: [47, 52, 117],
+        },
+        "random3": {
+            0: [63, 73],
+            1: [48, 53, 83, 93],
+            2: [8, 18, 33, 58, 68, 88, 98, 103, 113],
+            3: [13, 23, 78],
+        },
+
+    }
+
+    layout_id_to_worker_num = {
+        "unident_s": {0: None, 1: 6, 2: 11, 3: 16, 4: 21, 6: 31, 9: 46, 10: 51, 11: 56, 12: 61, 13: 66, 14: 71, 15: 76,
+                      16: 81, 17: 86, 18: 91, 19: 96, 20: 101, 22: 111, 23: 116},
+        "simple": {0: 0, 1: 5, 2: 10, 3: 15, 4: 20, 6: None, 9: 45, 10: 50, 11: 55, 12: 60, 13: 65, 14: 70, 15: 75,
+                   16: 80, 17: 85, 18: 90, 19: 95, 20: 100, 22: 110, 23: 115},
+        "random0": {0: None, 1: 9, 2: 14, 3: 19, 4: 24, 6: None, 9: None, 10: 54, 11: 59, 12: 64, 13: 69, 14: None,
+                    15: 79, 16: None, 17: 89, 18: None, 19: 99, 20: None, 22: 114, 23: None},
+        "random1": {0: None, 1: 7, 2: 12, 3: 17, 4: 22, 6: None, 9: 47, 10: 52, 11: 57, 12: 62, 13: 67, 14: 72, 15: 77,
+                    16: 82, 17: 87, 18: 92, 19: 97, 20: 102, 22: 112, 23: 117},
+        "random3": {0: None, 1: 8, 2: 13, 3: 18, 4: 23, 6: 33, 9: 48, 10: 53, 11: 58, 12: 63, 13: 68, 14: 73, 15: 78,
+                    16: 83, 17: 88, 18: 93, 19: 98, 20: 103, 22: 113, 23: None},
+    }
+    worker_num_to_layout_id = {}
+    for layout_to_run in layout_id_to_worker_num:
+        worker_num_to_layout_id[layout_to_run] = {v: k for k, v in layout_id_to_worker_num[layout_to_run].items()}
+
+    for layout_to_run in layout_strategy_dict:
+        for strat_idx in layout_strategy_dict[layout_to_run]:
+            layout_strategy_dict[layout_to_run][strat_idx] = [worker_num_to_layout_id[layout_to_run][elem] for elem in
+                                                              layout_strategy_dict[layout_to_run][strat_idx]]
+            # worker_num_list = []
+            # for elem in layout_strategy_dict[layout_to_run][strat_idx]:
+            #     worker_num_list.append(worker_num_to_layout_id[layout_to_run][elem])
+    return layout_strategy_dict, layout_id_to_worker_num, worker_num_to_layout_id
+
 def train_bc_models_w_finetuning_on_single_strat_train(all_params, seeds):
     """Train len(seeds) num of models for each layout"""
+    layout_strategy_dict, layout_id_to_worker_num, worker_num_to_layout_id = get_strategy_dicts()
     for params in all_params:
-        for seed_idx, seed in enumerate(seeds):
-            set_global_seed(seed)
-            # 1. Train BC model
-            model = train_bc_agent_from_hh_data(agent_name="bc_train_seed{}".format(seed), model='train', **params, finetuning=True)
-            # plot_bc_run(model.bc_info, params['num_epochs'])
-            plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
+        layout_name = params["layout_name"]
+        all_strategies = list(layout_strategy_dict[layout_name].keys())
+        for strategy_idx in all_strategies:
+            selected_workers = layout_strategy_dict[layout_name][strategy_idx]
+            for seed_idx, seed in enumerate(seeds):
+                set_global_seed(seed)
+                # 1. Train BC model
 
-            # 2. Test BC model
-            model = train_bc_agent_from_hh_data(agent_name="bc_test_seed{}".format(seed), model='test', **params, finetuning=False)
-            # plot_bc_run(model.bc_info, params['num_epochs'])
-            plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
-            reset_tf()
 
-def evaluate_all_bc_models(all_params, num_rounds, num_seeds):
+                save_filename = layout_name+"_STRAT"+str(strategy_idx)+"_finetune3070_" + "seed"+ str(seed) + "/"
+
+                model = train_bc_agent_from_hh_data(selected_workers, save_filename, agent_name="bc_train_seed{}".format(seed), model='train', **params, finetuning=True)
+                # plot_bc_run(model.bc_info, params['num_epochs'])
+                plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
+
+                # 2. Test BC model
+                # model = train_bc_agent_from_hh_data(agent_name="bc_test_seed{}".format(seed), model='test', **params, finetuning=False)
+                # # plot_bc_run(model.bc_info, params['num_epochs'])
+                # plot_bc_run_modified(model.bc_info, params['num_epochs'], seed_idx, seed)
+                reset_tf()
+
+def evaluate_strategy_bc_models(all_params, num_rounds, seeds):
     """Evaluate all trained models"""
+    layout_strategy_dict, layout_id_to_worker_num, worker_num_to_layout_id = get_strategy_dicts()
+
     bc_models_evaluation = {}
     for params in all_params:
         layout_name = params["layout_name"]
+        all_strategies = list(layout_strategy_dict[layout_name].keys())
         
         print(layout_name)
         bc_models_evaluation[layout_name] = { "train": {}, "test": {} }
 
+        for strategy_idx in all_strategies:
+            selected_workers = layout_strategy_dict[layout_name][strategy_idx]
+            for seed_idx, seed in enumerate(seeds):
+                set_global_seed(seed)
+                # 1. Train BC model
+
+                save_filename = layout_name + "_strat" + str(strategy_idx) + "_finetune_" + "seed" + str(seed) + "/"
+
+            # For all params and seeds, evaluate the model with a saved model. Pass in the BC model file name to evaluate.
+                eval_trajs = eval_with_benchmarking_from_saved(num_rounds, save_filename)
+                bc_models_evaluation[layout_name]["train"][strategy_idx] = np.mean(eval_trajs['ep_returns'])
+                # pickle.dump(eval_trajs, open(f'saved_eval_trajs/{save_filename}.pkl', 'wb'))
+                #
+                # eval_trajs = eval_with_benchmarking_from_saved(num_rounds, layout_name + "_bc_test_seed{}".format(seed_idx))
+                # bc_models_evaluation[layout_name]["test"][seed_idx] = np.mean(eval_trajs['ep_returns'])
+                # pickle.dump(eval_trajs, open('saved_eval_trajs/test_test_ex4_dual.pkl', 'wb'))
+
+    return bc_models_evaluation
+
+
+def evaluate_all_bc_models(all_params, num_rounds, num_seeds):
+    """Evaluate all trained models"""
+
+    bc_models_evaluation = {}
+    for params in all_params:
+        layout_name = params["layout_name"]
+
+        print(layout_name)
+        bc_models_evaluation[layout_name] = {"train": {}, "test": {}}
+
         for seed_idx in range(num_seeds):
             # For all params and seeds, evaluate the model with a saved model. Pass in the BC model file name to evaluate.
-            eval_trajs = eval_with_benchmarking_from_saved(num_rounds, layout_name + "_bc_train_seed{}".format(seed_idx))
+            eval_trajs = eval_with_benchmarking_from_saved(num_rounds,
+                                                           layout_name + "_bc_train_seed{}".format(seed_idx))
             bc_models_evaluation[layout_name]["train"][seed_idx] = np.mean(eval_trajs['ep_returns'])
             pickle.dump(eval_trajs, open('saved_eval_trajs/train_train_ex4_dual.pkl', 'wb'))
-            
+
             eval_trajs = eval_with_benchmarking_from_saved(num_rounds, layout_name + "_bc_test_seed{}".format(seed_idx))
             bc_models_evaluation[layout_name]["test"][seed_idx] = np.mean(eval_trajs['ep_returns'])
             pickle.dump(eval_trajs, open('saved_eval_trajs/test_test_ex4_dual.pkl', 'wb'))
@@ -143,14 +241,14 @@ def run_all_bc_experiments():
     seeds = [5415]
     num_seeds = len(seeds)
 
-    params_unident = {"layout_name": "unident_s", "num_epochs": 120, "lr": 1e-3, "adam_eps":1e-8}
-    # params_simple = {"layout_name": "simple", "num_epochs": 100, "lr": 1e-3, "adam_eps":1e-8}
-    # params_random1 = {"layout_name": "random1", "num_epochs": 120, "lr": 1e-3, "adam_eps":1e-8}
-    # params_random0 = {"layout_name": "random0", "num_epochs": 90, "lr": 1e-3, "adam_eps":1e-8}
-    # params_random3 = {"layout_name": "random3", "num_epochs": 110, "lr": 1e-3, "adam_eps":1e-8}
+    params_unident = {"layout_name": "unident_s", "num_epochs": 120*2, "lr": 1e-3, "adam_eps":1e-8}
+    params_simple = {"layout_name": "simple", "num_epochs": 100*2, "lr": 1e-3, "adam_eps":1e-8}
+    params_random1 = {"layout_name": "random1", "num_epochs": 120*2, "lr": 1e-3, "adam_eps":1e-8}
+    params_random0 = {"layout_name": "random0", "num_epochs": 90*2, "lr": 1e-3, "adam_eps":1e-8}
+    params_random3 = {"layout_name": "random3", "num_epochs": 110*2, "lr": 1e-3, "adam_eps":1e-8}
 
-    # all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
-    all_params = [params_unident]
+    all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
+    # all_params = [params_unident]
 
     # 1. Train BC models for all parameters and seeds
     # train_bc_models(all_params, seeds)
@@ -169,19 +267,19 @@ def run_all_bc_experiments():
 
     # These models have been manually selected to more or less match in performance,
     # (test BC model should be a bit better than the train BC model)
-    # selected_models = {
-    #     # "simple": [0, 1],
-    #     # "unident_s": [0, 0],
-    #     # "random1": [4, 2],
-    #     "random0": [2, 1],
-    #     # "random3": [3, 3]
-    # }
+    selected_models = {
+        # "simple": [0, 1],
+        # "unident_s": [0, 0],
+        # "random1": [4, 2],
+        "random0": [2, 1],
+        # "random3": [3, 3]
+    }
     # selected_models = {
     #     "random0": [0, 0],
     # }
-    selected_models = {
-        "unident_s": [0, 0],
-    }
+    # selected_models = {
+    #     "unident_s": [0, 0],
+    # }
 
     final_bc_model_paths = { "train": {}, "test": {} }
     for layout_name, seed_indices in selected_models.items():
@@ -199,7 +297,51 @@ def run_all_bc_experiments():
     
 
 if __name__ == "__main__":
-    run_all_bc_experiments()
+    # with open("../data/bc_runs/true_berk_bc_models_all_evaluations.pickle", "rb") as file:
+    #     bc_eval = pickle.load(file)
+    #
+    # # bc_eval = {'simple': {'train': {0: 102.0, 1: 96.0, 2: 110.0, 3: 118.0}, 'test': {}}, 'random1': {'train': {0: 84.0, 1: 76.0}, 'test': {}}, 'unident_s': {'train': {0: 170.0, 1: 86.0}, 'test': {}}, 'random0': {'train': {0: 28.0, 1: 40.0}, 'test': {}}, 'random3': {'train': {0: 40.0, 1: 58.0, 2: 54.0, 3: 58.0}, 'test': {}}}
+    # # print("bc_eval", bc_eval)
+    # avg_results = {}
+    # for layout_name in bc_eval:
+    #     all_vals = []
+    #     for trial_name in ['train']:
+    #         all_vals.extend(list(bc_eval[layout_name][trial_name].values()))
+    #         # print("bc_eval[layout_name][trial_name]", bc_eval[layout_name][trial_name])
+    #     avg_results[layout_name] = np.mean(list(bc_eval[layout_name][trial_name].values()))
+    #
+    # print("avg_results", avg_results)
+
+    seeds = [5415]
+    num_seeds = len(seeds)
+    num_rounds = 10
+
+    params_unident = {"layout_name": "unident_s", "num_epochs": 120 * 2, "lr": 1e-3, "adam_eps": 1e-8}
+    params_simple = {"layout_name": "simple", "num_epochs": 100 * 2, "lr": 1e-3, "adam_eps": 1e-8}
+    params_random1 = {"layout_name": "random1", "num_epochs": 120 * 2, "lr": 1e-3, "adam_eps": 1e-8}
+    params_random0 = {"layout_name": "random0", "num_epochs": 90 * 2, "lr": 1e-3, "adam_eps": 1e-8}
+    params_random3 = {"layout_name": "random3", "num_epochs": 110 * 2, "lr": 1e-3, "adam_eps": 1e-8}
+
+    all_params = [params_simple, params_random1, params_unident, params_random0, params_random3]
+
+    bc_models_evaluation = evaluate_strategy_bc_models(all_params, num_rounds, seeds)
+
+    # Save evaluation to BC_MODELS_EVALUATION_PATH
+    print('BC_MODELS_EVALUATION_PATH = ', BC_MODELS_EVALUATION_PATH)
+    # save_pickle(bc_models_evaluation, BC_MODELS_EVALUATION_PATH)
+    print("All BC models evaluation: ", bc_models_evaluation)
+    # run_all_bc_experiments()
+
+    bc_eval = bc_models_evaluation
+    avg_results = {}
+    for layout_name in bc_eval:
+        all_vals = []
+        for trial_name in ['train']:
+            all_vals.extend(list(bc_eval[layout_name][trial_name].values()))
+            # print("bc_eval[layout_name][trial_name]", bc_eval[layout_name][trial_name])
+        avg_results[layout_name] = np.mean(list(bc_eval[layout_name][trial_name].values()))
+
+    print("avg_results", avg_results)
 
 
 # Automatic selection of best BC models. Caused imbalances that made interpretation of results more difficult, 

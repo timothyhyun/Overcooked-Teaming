@@ -306,6 +306,7 @@ class Overcooked(gym.Env):
         # self.agent_idx = 0
         # print(f'\n\n\n\n\nAGENT INDEX {self.agent_idx} \n\n\n\n\n\n')
         self.agent_idx = np.random.choice([0, 1])
+        # self.agent_idx = 1 # dispenser side
 
         ob_p0, ob_p1 = self.featurize_fn(self.base_env.state)
         if self.agent_idx == 0:

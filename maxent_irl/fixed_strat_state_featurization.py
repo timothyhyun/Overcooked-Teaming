@@ -24,6 +24,8 @@ from overcooked_ai_py.agents.benchmarking import AgentEvaluator
 # 12. Pickup soup with dish
 # 13. Serve Soup
 
+
+
 NORTH = 0
 SOUTH = 1
 EAST = 3
@@ -358,15 +360,23 @@ def run_fixed_featurization(a0_type, a1_type):
 
 
 
-def run_data_featurization(a0_type, a1_type):
+def run_data_featurization(layout_name, team_list, N_FEATURES = 7):
     # FOR RANDOM 0
     #     all_workers = [15, 22]
     #     all_workers = [2, 4, 17, 19]
 
-    name = 'random0'
+    name = layout_name
+    layout_name_to_data_name = {
+        "random0": "random0",
+        "random1": "coordination_ring",
+        "simple": "cramped_room",
+        "unident_s": "asymmetric_advantages",
+        "random3": "random3"
+
+    }
 
     old_trials = import_2019_data()
-    layout_trials = old_trials[old_trials['layout_name'] == name]['trial_id'].unique()
+    layout_trials = old_trials[old_trials['layout_name'] == layout_name_to_data_name[name]]['trial_id'].unique()
 
     trial_hl_actions_seq = []
 
@@ -375,6 +385,21 @@ def run_data_featurization(a0_type, a1_type):
     trial_feature_seq = []
     trial_sparse_reward_seq = []
     all_states = []
+    all_possible_joint_actions = []
+
+    min_traj_length = 10000000000
+    # for trial_id in [79, 114]:
+    for j in range(len(layout_trials)):
+        trial_id = layout_trials[j]
+        if trial_id not in team_list:
+            continue
+        trial_df = old_trials[old_trials['trial_id'] == trial_id]
+        state_data = trial_df['state'].values
+        if len(state_data) < min_traj_length:
+            min_traj_length = len(state_data)
+    # print("layout_trials", layout_trials)
+    min_traj_length = 200
+    print("min_traj_length", min_traj_length)
 
     # print("layout_trials", layout_trials)
 
@@ -390,6 +415,8 @@ def run_data_featurization(a0_type, a1_type):
     #     time_elapsed = trial_df['time_elapsed'].values
     for j in range(len(layout_trials)):
         trial_id = layout_trials[j]
+        if trial_id not in team_list:
+            continue
         trial_df = old_trials[old_trials['trial_id'] == trial_id]
 
         score = old_trials[old_trials['trial_id'] == trial_id]['score'].to_numpy()[-1]
@@ -406,10 +433,10 @@ def run_data_featurization(a0_type, a1_type):
         sparse_reward_seq = []
 
         hl_action_seq = []
-        all_possible_joint_actions = []
 
 
-        overcooked_mdp = OvercookedGridworld.from_layout_name('random0', start_order_list=['any'], cook_time=20)
+
+        overcooked_mdp = OvercookedGridworld.from_layout_name(name, start_order_list=['any'], cook_time=20)
         base_params_start_or = {
             'start_orientations': True,
             'wait_allowed': False,
@@ -420,7 +447,7 @@ def run_data_featurization(a0_type, a1_type):
         }
         mlp = MediumLevelPlanner(overcooked_mdp, base_params_start_or)
 
-        for state_i in range(1, len(state_data)):
+        for state_i in range(1, min_traj_length):
             # print("json_eval(state_data[state_i])", json_eval(state_data[state_i]))
             overcooked_state_i = OvercookedState.from_dict(json_eval(state_data[state_i]))
             # overcooked_state_i = state_data[state_i] # for fixed
@@ -449,7 +476,7 @@ def run_data_featurization(a0_type, a1_type):
             # print('overcooked_state_i', overcooked_state_i)
             team_features = overcooked_mdp.featurize_state_for_irl(overcooked_state_i, mlp, prev_joint_action)
 
-            player_idx_to_high_level_action, reward_featurized_state, sparse_reward = overcooked_mdp.get_high_level_interact_action(overcooked_state_i, joint_action)
+            player_idx_to_high_level_action, reward_featurized_state, sparse_reward = overcooked_mdp.get_high_level_interact_action(overcooked_state_i, joint_action, n_features=N_FEATURES)
             high_level_action_p0, high_level_action_p1 = player_idx_to_high_level_action[0], player_idx_to_high_level_action[1]
             joint_action_indices = (high_level_action_p0, high_level_action_p1)
             # hl_actions_list.append(high_level_action)
@@ -458,19 +485,22 @@ def run_data_featurization(a0_type, a1_type):
             state_seq.append(team_features)
             action_seq.append(high_level_action_label)
             feature_seq.append(reward_featurized_state)
-            all_states.append(team_features)
+            all_states.append(tuple(team_features))
             hl_action_seq.append(joint_action_indices)
             sparse_reward_seq.append(sparse_reward)
             all_possible_joint_actions.append(tuple(joint_action_indices))
+
 
         trial_state_seq.append(state_seq)
         trial_action_seq.append(action_seq)
         trial_feature_seq.append(feature_seq)
         trial_hl_actions_seq.append(hl_action_seq)
         trial_sparse_reward_seq.append(sparse_reward_seq)
-        break
+        # break
 
-    unique_states = np.unique(all_states, axis=0)
+    # unique_states = np.unique(all_states, axis=0)
+
+    unique_states = list(set(all_states))
     n_unique_states = len(unique_states)
     state_idx_to_state = {idx:state for idx,state in enumerate(unique_states)}
     state_tuple_to_state_idx = {tuple(state): idx for idx, state in enumerate(unique_states)}
@@ -480,10 +510,16 @@ def run_data_featurization(a0_type, a1_type):
     # n_unique_states = len(unique_states)
     # state_idx_to_state = {idx: state for idx, state in enumerate(unique_states)}
     # state_tuple_to_state_idx = {tuple(state): idx for idx, state in enumerate(unique_states)}
-    all_possible_joint_actions.append((HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE], HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE]))
-    unique_joint_actions = np.unique(all_possible_joint_actions, axis=0)
-    unique_joint_actions = [tuple(x) for x in unique_joint_actions]
-    print("unique_joint_actions", unique_joint_actions)
+    # all_possible_joint_actions.append((HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE], HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE]))
+    joint_stay_action = (HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE], HL_ACTION_TO_ACTION_IDX[STAY_IN_PLACE])
+    all_possible_joint_actions.append(joint_stay_action)
+
+
+    # unique_joint_actions, unique_joint_actions_counts = np.unique(all_possible_joint_actions, axis=0, return_counts=True)
+    unique_joint_actions = list(set(all_possible_joint_actions))
+
+    # unique_joint_actions = [tuple(x) for x in unique_joint_actions]
+    # print("unique_joint_actions", unique_joint_actions)
     # n_unique_joint_actions = len(unique_joint_actions)
 
     # unique_joint_actions = []
@@ -492,9 +528,14 @@ def run_data_featurization(a0_type, a1_type):
     #         unique_joint_actions.append((action_p0, action_p1))
 
     n_unique_joint_actions = len(unique_joint_actions)
-    joint_idx_to_action = {idx: act for idx, act in enumerate(unique_joint_actions)}
-    joint_action_to_idx = {act: idx for idx, act in enumerate(unique_joint_actions)}
+    joint_idx_to_action, joint_action_to_idx = {}, {}
+    # joint_idx_to_action = {idx: act for idx, act in enumerate(unique_joint_actions)}
+    # joint_action_to_idx = {act: idx for idx, act in enumerate(unique_joint_actions)}
+    for u_idx in range(len(unique_joint_actions)):
+        joint_idx_to_action[u_idx] = tuple(unique_joint_actions[u_idx])
+        joint_action_to_idx[tuple(unique_joint_actions[u_idx])] = u_idx
 
+    # print("joint_action_to_idx", joint_action_to_idx)
     state_idx_to_reward = {}
 
     transition_matrix = np.zeros((n_unique_states, n_unique_joint_actions, n_unique_states))
@@ -527,8 +568,11 @@ def run_data_featurization(a0_type, a1_type):
             if rew_list[i] > 0:
                 state_idx_to_reward[s] = rew_list[i]
 
-            featurized_state = feature_seq[i]
-            state_to_feature[s] = featurized_state
+            featurized_state_s = feature_seq[i]
+            featurized_state_sp = feature_seq[i+1]
+            state_to_feature[s] = featurized_state_s
+            state_to_feature[sp] = featurized_state_sp
+
 
         trajectories.append(np.array(add_to_trajectory))
 
@@ -538,11 +582,11 @@ def run_data_featurization(a0_type, a1_type):
         state_reward_list.append(state_idx_to_reward[s])
         # print("s = ", s)
         # print(state_to_feature)
-        if s not in state_to_feature:
-            print("not found")
-            feature_matrix.append([0]*6)
-        else:
-            feature_matrix.append(state_to_feature[s])
+        # if s not in state_to_feature:
+        #     print("not found")
+        #     feature_matrix.append([0]*N_FEATURES)
+        # else:
+        feature_matrix.append(state_to_feature[s])
 
 
     # print("unique_states", state_idx_to_state) # 4672
@@ -586,13 +630,18 @@ def run_data_featurization_reduced(a0_type, a1_type):
     all_states = []
 
     min_traj_length = 10000000000
-    for trial_id in [79, 114]:
+    # for trial_id in [79, 114]:
+    for j in range(len(layout_trials)):
+        trial_id = layout_trials[j]
+    #     if trial_id in [79, 114]:
+    #         continue
         trial_df = old_trials[old_trials['trial_id'] == trial_id]
         state_data = trial_df['state'].values
         if len(state_data) < min_traj_length:
             min_traj_length = len(state_data)
     # print("layout_trials", layout_trials)
-    min_traj_length = 100
+    # min_traj_length = 200
+    print("min_traj_length", min_traj_length)
 
     # for j in range(len(layout_trials)):
     # for j in [8]:
@@ -604,9 +653,9 @@ def run_data_featurization_reduced(a0_type, a1_type):
     #     state_data = trial_df['state'].values
     #     joint_actions = trial_df['joint_action'].values
     #     time_elapsed = trial_df['time_elapsed'].values
-    for trial_id in [59]:
-    # for j in range(len(layout_trials)):
-    #     trial_id = layout_trials[j]
+    # for trial_id in [79, 114]:
+    for j in range(len(layout_trials)):
+        trial_id = layout_trials[j]
     #     if trial_id in [79, 114]:
     #         continue
         trial_df = old_trials[old_trials['trial_id'] == trial_id]
@@ -668,7 +717,7 @@ def run_data_featurization_reduced(a0_type, a1_type):
             # print('overcooked_state_i', overcooked_state_i)
             team_features = overcooked_mdp.featurize_state_for_irl(overcooked_state_i, mlp, prev_joint_action)
 
-            player_idx_to_high_level_action, reward_featurized_state, sparse_reward = overcooked_mdp.get_high_level_interact_action(overcooked_state_i, joint_action)
+            player_idx_to_high_level_action, reward_featurized_state, sparse_reward = overcooked_mdp.get_high_level_interact_action(overcooked_state_i, joint_action, N_FEATURES)
             high_level_action_p0, high_level_action_p1 = player_idx_to_high_level_action[0], player_idx_to_high_level_action[1]
             joint_action_indices = (high_level_action_p0, high_level_action_p1)
             # hl_actions_list.append(high_level_action)
@@ -796,7 +845,7 @@ def run_data_featurization_reduced(a0_type, a1_type):
         # print(state_to_feature)
         if s not in state_to_feature:
             print("not found")
-            feature_matrix.append([0]*7)
+            feature_matrix.append([0]*N_FEATURES)
         else:
             feature_matrix.append(state_to_feature[s])
 

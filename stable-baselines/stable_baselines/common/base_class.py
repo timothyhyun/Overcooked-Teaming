@@ -307,8 +307,8 @@ class BaseRLModel(ABC):
         continuous_actions = isinstance(self.action_space, gym.spaces.Box)
         discrete_actions = isinstance(self.action_space, gym.spaces.Discrete)
 
-        first_half_size = int(int(n_epochs)*3/10)
-        second_half_size = int(int(n_epochs)*7/10)
+        first_half_size = int(int(n_epochs)*7/10)
+        second_half_size = int(int(n_epochs)*3/10)
         if first_half_size + second_half_size != int(n_epochs):
             second_half_size += (int(n_epochs) - (first_half_size + second_half_size))
 

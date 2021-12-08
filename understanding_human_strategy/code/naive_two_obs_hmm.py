@@ -638,8 +638,10 @@ def featurize_data_for_chunked_naive_hmm(window=4, ss=2):
 
     for team_idx in team_chunked_actions_data:
 
+
         p2_major_actions = team_chunked_actions_data[team_idx]['p2_major_actions']
         p2_delivery_times = team_chunked_actions_data[team_idx]['p2_delivery_times']
+
 
         #     print(len(p2_major_actions))
         # add = []
@@ -648,6 +650,8 @@ def featurize_data_for_chunked_naive_hmm(window=4, ss=2):
 
         # add = []
         add = [p2_major_actions[c][1] for c in range(len(p2_major_actions))]
+        print("team indx", team_idx)
+        print("p2_major_actions", add)
         X_data.append(np.array(add))
         team_numbers.append(team_idx)
 
@@ -666,7 +670,7 @@ def run_naive_hmm_on_p2(n_states, window=4, ss=2):
     # Y = hidden_state_data
     X, team_numbers, X_data_chunked, team_numbers_chunked = featurize_data_for_chunked_naive_hmm(window=window, ss=ss)
 
-
+    print('X=', X)
     N_iters = 100
 
     test_unsuper_hmm = unsupervised_HMM(X, n_states, N_iters)
@@ -702,7 +706,7 @@ def pad_w_mode(hidden_seqs):
 
 def cluster_hidden_states(hidden_seqs, n_clusters=2):
     X = pad_w_mode(hidden_seqs)
-    # print('X=', X)
+    print('X=', X)
     kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
     cluster_labels = kmeans.labels_
     cluster_centers = kmeans.cluster_centers_

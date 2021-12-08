@@ -70,6 +70,7 @@ class ObjectState(object):
     @staticmethod
     def from_dict(obj_dict):
         obj_dict = copy.deepcopy(obj_dict)
+
         new_obj_dict = {}
         new_obj_dict['name'] = obj_dict['name']
         new_obj_dict['position'] = obj_dict['position']
@@ -156,9 +157,12 @@ class PlayerState(object):
     @staticmethod
     def from_dict(player_dict):
         player_dict = copy.deepcopy(player_dict)
-        held_obj = player_dict["held_object"]
-        if held_obj is not None:
-            player_dict["held_object"] = ObjectState.from_dict(held_obj)
+        if "held_object" not in player_dict:
+            held_obj = None
+        else:
+            held_obj = player_dict["held_object"]
+            if held_obj is not None:
+                player_dict["held_object"] = ObjectState.from_dict(held_obj)
         return PlayerState(**player_dict)
 
 
@@ -327,6 +331,8 @@ class OvercookedState(object):
         new_state_dict = {}
 
         new_state_dict["players"] = [PlayerState.from_dict(p) for p in state_dict["players"]]
+
+        # state_dict_objs = list(state_dict["objects"].values())
         object_list = [ObjectState.from_dict(o) for o in state_dict["objects"]]
         new_state_dict["objects"] = { ob.position : ob for ob in object_list }
         new_state_dict["order_list"] = None
@@ -365,25 +371,74 @@ BASE_REW_SHAPING_PARAMS = {
 # 5. Both pots cooking simultaneously
 # 6. Serve soup
 
-DP_REW_SHAPING_PARAMS = {
-    "ONION_IN_EMPTY_POT_REWARD": 1.4,
-    "ONION_IN_PARTIAL_POT_REWARD": 2.6,
-    "DISH_PICKUP_REWARD": 1.2,
-    "SOUP_PICKUP_FROM_READY_POT_REWARD": 1.2,
-    "BOTH_POTS_FULL_REWARD": 7.6,
-    "SERVE_SOUP_REWARD": 1.6,
+scale = 2
+DP_REW_SHAPING_PARAMS_7 = {
+    "ONION_IN_EMPTY_POT_REWARD": 0.78 * scale,
+    "ONION_IN_PARTIAL_POT_REWARD": 1.46 * scale,
+    "DISH_PICKUP_REWARD": 0.63 * scale,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 0.76 * scale,
+    "BOTH_POTS_FULL_REWARD": 4.93 * scale,
+    "SERVE_SOUP_REWARD": 0 * scale,
+    "SHARED_COUNTER_REWARD": 0.60 * scale,
+}
+#
+# DP_REW_SHAPING_PARAMS_6 = {
+#     "ONION_IN_EMPTY_POT_REWARD": 0.84 * scale,
+#     "ONION_IN_PARTIAL_POT_REWARD": 1.56 * scale,
+#     "DISH_PICKUP_REWARD": 0.67,
+#     "SOUP_PICKUP_FROM_READY_POT_REWARD": 0.80 * scale,
+#     "BOTH_POTS_FULL_REWARD": 5.24 * scale,
+#     "SERVE_SOUP_REWARD": 0.89 * scale,
+# }
+
+# [0.15588226 0.27       0.11882367 0.14941186 0.1323528  0.17352941]
+DP_REW_SHAPING_PARAMS_6 = {
+    "ONION_IN_EMPTY_POT_REWARD": 1.56 * scale,
+    "ONION_IN_PARTIAL_POT_REWARD": 2.70 * scale,
+    "DISH_PICKUP_REWARD": 1.19 * scale,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 1.49 * scale,
+    "BOTH_POTS_FULL_REWARD": 1.32 * scale,
+    "SERVE_SOUP_REWARD": 1.74 * scale,
 }
 
-SP_REW_SHAPING_PARAMS = {
-    "ONION_IN_EMPTY_POT_REWARD": 2.8,
-    "ONION_IN_PARTIAL_POT_REWARD": 4.9,
-    "DISH_PICKUP_REWARD": 2.4,
-    "SOUP_PICKUP_FROM_READY_POT_REWARD": 2.4,
-    "BOTH_POTS_FULL_REWARD": 0,
-    "SERVE_SOUP_REWARD": 2.4,
+SP_REW_SHAPING_PARAMS_7 = {
+    "ONION_IN_EMPTY_POT_REWARD": 1.48 * scale,
+    "ONION_IN_PARTIAL_POT_REWARD": 2.93 * scale,
+    "DISH_PICKUP_REWARD": 1.03 * scale,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 1.83 * scale,
+    "BOTH_POTS_FULL_REWARD": 0 * scale,
+    "SERVE_SOUP_REWARD": 1.56 * scale,
+    "SHARED_COUNTER_REWARD": 1.15 * scale,
+}
+
+SP_REW_SHAPING_PARAMS_6 = {
+    "ONION_IN_EMPTY_POT_REWARD": 1.69 * scale,
+    "ONION_IN_PARTIAL_POT_REWARD": 3.31 * scale,
+    "DISH_PICKUP_REWARD": 1.17 * scale,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 2.07 * scale,
+    "BOTH_POTS_FULL_REWARD": 0 * scale,
+    "SERVE_SOUP_REWARD": 1.77 * scale,
 }
 
 
+DP_REW_SHAPING_PARAMS_HAND = {
+    "ONION_IN_EMPTY_POT_REWARD": 4,
+    "ONION_IN_PARTIAL_POT_REWARD": 4,
+    "DISH_PICKUP_REWARD": 1,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 1,
+    "BOTH_POTS_FULL_REWARD": 6,
+    "SERVE_SOUP_REWARD": 1,
+}
+
+BASE_REW_SHAPING_PARAMS = {
+    "ONION_IN_EMPTY_POT_REWARD": 3,
+    "ONION_IN_PARTIAL_POT_REWARD": 3,
+    "DISH_PICKUP_REWARD": 3,
+    "SOUP_PICKUP_FROM_READY_POT_REWARD": 4,
+    "BOTH_POTS_FULL_REWARD": 6,
+    "SERVE_SOUP_REWARD": 1,
+    "SHARED_COUNTER_REWARD": 1,
+}
 
 
 class OvercookedGridworld(object):
@@ -412,8 +467,16 @@ class OvercookedGridworld(object):
         self.soup_cooking_time = cook_time
         self.num_items_for_soup = num_items_for_soup
         self.delivery_reward = delivery_reward
-        self.reward_shaping_params = NO_REW_SHAPING_PARAMS if rew_shaping_params is None else rew_shaping_params
-        # self.reward_shaping_params = SP_REW_SHAPING_PARAMS
+        # self.reward_shaping_params = NO_REW_SHAPING_PARAMS if rew_shaping_params is None else rew_shaping_params
+        # self.reward_shaping_params = DP_REW_SHAPING_PARAMS_HAND
+        self.reward_shaping_params = BASE_REW_SHAPING_PARAMS if rew_shaping_params is None else rew_shaping_params
+
+        # rescale reward_shaping params
+        scale = 3/self.reward_shaping_params['ONION_IN_EMPTY_POT_REWARD']
+        for keyname in self.reward_shaping_params:
+            self.reward_shaping_params[keyname] = self.reward_shaping_params[keyname]*scale
+
+        # print("\n\n\nreward_shaping_params: ", self.reward_shaping_params)
         self.layout_name = layout_name
 
         self.item_tracking_dict = {}
@@ -428,6 +491,8 @@ class OvercookedGridworld(object):
 
 
         self.player_idle_time = [0] * self.num_players
+
+        self.set_layout_params(layout_name)
 
     def __eq__(self, other):
         return np.array_equal(self.terrain_mtx, other.terrain_mtx) and \
@@ -631,6 +696,124 @@ class OvercookedGridworld(object):
         x, y = pos
         return self.terrain_mtx[y][x]
 
+    def set_layout_params(self, layout_name):
+        all_layout_params = {
+            'random0': {
+                "counter_location_to_id": {
+                    (2, 1): 1,
+                    (2, 2): 2,
+                    (2, 3): 3,
+                    (1, 0): 4,
+                    (1, 4): 5,
+                    (4, 2): 6,
+                    (4, 3): 7
+                },
+                "p1_private_counters": [(1, 0), (1, 4)],
+                "p2_private_counters": [(4, 2), (4, 3)],
+                "shared_counters": [(2, 1), (2, 2), (2, 3)],
+                "onion_dispenser_locations": [(0, 1), (0, 2)],
+                "dish_dispenser_locations": [(0, 3)],
+                "pot_locations": [(3, 0), (4, 1)],
+                "serve_locations": [(3, 4)],
+            },
+            'random3': {
+                "counter_location_to_id": {
+                    (0, 1): 1,
+                    (1, 0): 2,
+                    (2, 0): 3,
+                    (5, 0): 4,
+                    (6, 0): 5,
+                    (7, 1): 6,
+                    (7, 3): 7,
+                    (6, 4): 8,
+                    (5, 4): 9,
+                    (2, 4): 10,
+                    (1, 4): 11,
+                    (0, 3): 12,
+                    (2, 2): 13,
+                    (3, 2): 14,
+                    (4, 2): 15,
+                    (5, 2): 16,
+                },
+                "p1_private_counters": [],
+                "p2_private_counters": [],
+                "shared_counters": [],
+                "onion_dispenser_locations": [(3, 4), (4, 4)],
+                "dish_dispenser_locations": [(0, 2)],
+                "pot_locations": [(3, 0), (4, 0)],
+                "serve_locations": [(7, 2)],
+
+            },
+            'unident_s': {
+                "counter_location_to_id": {
+                    (0, 3): 1,
+                    (0, 2): 2,
+                    (1, 0): 3,
+                    (2, 1): 4,
+                    (1, 4): 5,
+                    (2, 4): 6,
+                    (6, 1): 7,
+                    (7, 0): 8,
+                    (8, 2): 9,
+                    (8, 3): 10,
+                    (7, 4): 11,
+                    (6, 4): 12
+
+                },
+                "p1_private_counters": [],
+                "p2_private_counters": [],
+                "shared_counters": [],
+                "onion_dispenser_locations": [(0, 1), (5, 1)],
+                "dish_dispenser_locations": [(3, 4), (5, 4)],
+                "pot_locations": [(4, 2), (4, 3)],
+                "serve_locations": [(3, 1), (8, 1)],
+            },
+            'random1': {
+                "counter_location_to_id": {
+                    (0, 1): 1,
+                    (1, 0): 2,
+                    (2, 0): 3,
+                    (4, 2): 4,
+                    (4, 3): 5,
+                    (3, 4): 6,
+                    (2, 2): 7,
+
+                },
+                "p1_private_counters": [],
+                "p2_private_counters": [],
+                "shared_counters": [],
+                "onion_dispenser_locations": [(0, 3), (1, 4)],
+                "dish_dispenser_locations": [(0, 2)],
+                "pot_locations": [(3, 0), (4, 1)],
+                "serve_locations": [(2, 4)],
+            },
+            'simple': {
+                "counter_location_to_id": {
+                    (0, 2): 1,
+                    (1, 0): 2,
+                    (3, 0): 3,
+                    (4, 2): 4,
+                    (2, 3): 5,
+
+                },
+                "p1_private_counters": [],
+                "p2_private_counters": [],
+                "shared_counters": [],
+                "onion_dispenser_locations": [(0, 1), (4, 1)],
+                "dish_dispenser_locations": [(1, 3)],
+                "pot_locations": [(2, 0)],
+                "serve_locations": [(3, 3)],
+            },
+        }
+        for name in all_layout_params:
+            if name != "random0":
+                all_layout_params[name]['shared_counters'] = list(all_layout_params[name]['counter_location_to_id'].keys())
+        self.layout_params_dict = all_layout_params[layout_name]
+        return
+
+    def get_layout_params(self, layout_name):
+        return self.layout_params_dict[layout_name]
+
     def get_dish_dispenser_locations(self):
         return list(self.terrain_pos_dict['D'])
 
@@ -740,7 +923,7 @@ class OvercookedGridworld(object):
 
         return new_state, sparse_reward, shaped_reward
 
-    def resolve_interacts(self, new_state, joint_action):
+    def resolve_interacts_old(self, new_state, joint_action):
         """
         Resolve any INTERACT actions, if present.
 
@@ -1054,12 +1237,22 @@ class OvercookedGridworld(object):
 
         return sparse_reward, shaped_reward
 
-    def resolve_interacts_new(self, new_state, joint_action):
+    def resolve_interacts(self, new_state, joint_action):
         """
         Resolve any INTERACT actions, if present.
 
         Currently if two players both interact with a terrain, we resolve player 1's interact
         first and then player 2's, without doing anything like collision checking.
+
+        State, Action Featurization
+        1. Onion placed in empty pot
+        2. Onion placed in partially full pot
+        3. Dish picked up from dispenser if no dishes on counters, and # nearly ready pots > dishes out already
+        4. Soup picked up from ready pot
+        5. Both pots cooking simultaneously
+        8/6. Serve soup
+        7. Shared counter usage
+
         """
         pot_states = self.get_pot_states(new_state)
         ready_pots = pot_states["tomato"]["ready"] + pot_states["onion"]["ready"]
@@ -1099,10 +1292,10 @@ class OvercookedGridworld(object):
         # OVERPASSING_PENALTY = -2
         # USE_BOTH_POTS_REWARD = 2
         # HIGH_POT_COVERAGE_SIMUL_COOKING_REWARD = 0
-        # NUM_TOUCHES_PENALTY = -2
+        # NUM_TOUCHES_PENALTY = -4
 
 
-        HANDOFF_TIME_REWARD = 0
+        HANDOFF_TIME_REWARD = 1
         HANDOFF_TIME_OVER_MEAN_PENALTY = 0
         FC_MEAN_LIMBO = 74
         FC_MEAN_TRANSFER = 63
@@ -1111,6 +1304,7 @@ class OvercookedGridworld(object):
         USE_BOTH_POTS_REWARD = 0
         HIGH_POT_COVERAGE_SIMUL_COOKING_REWARD = 0
 
+        shared_counters = [(2, 1), (2, 2), (2, 3)]
 
 
         sparse_reward, shaped_reward = 0, 0
@@ -1167,6 +1361,10 @@ class OvercookedGridworld(object):
                     # Action Type 2: Player picked object up from counter
                     player.set_object(new_state.remove_object(i_pos))
 
+                    if len(self.reward_shaping_params)==7:
+                        if tuple(i_pos) in shared_counters:
+                            shaped_reward += (self.reward_shaping_params['SHARED_COUNTER_REWARD'])
+
                     try:
                         picked_item_uid = self.location_to_item_uid[i_pos]
 
@@ -1175,9 +1373,10 @@ class OvercookedGridworld(object):
                         self.item_tracking_dict[picked_item_uid]['past_players'].append(player_idx)
                         self.item_tracking_dict[picked_item_uid]['n_touches'] += 1
 
-                        # if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
-                        #         and self.item_tracking_dict[picked_item_uid]['handoff_time'] <= self.mean_handoff_time:
-                        #     shaped_reward += HANDOFF_TIME_REWARD
+                        if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
+                                and len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) < 3:
+                            if self.item_tracking_dict[picked_item_uid]['handoff_time'] <= self.mean_handoff_time:
+                                shaped_reward += HANDOFF_TIME_REWARD
                         # if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
                         #         and self.item_tracking_dict[picked_item_uid]['handoff_time'] > self.mean_handoff_time:
                         #     if self.mean_handoff_time > 3:
@@ -1259,6 +1458,9 @@ class OvercookedGridworld(object):
                 if len(nearly_ready_pots) > dishes_already and len(dishes_on_counters) == 0:
                     shaped_reward += self.reward_shaping_params["DISH_PICKUP_REWARD"]
 
+                if (4, 1) in full_pots and (3, 0) in full_pots:
+                    shaped_reward += self.reward_shaping_params["BOTH_POTS_FULL_REWARD"]
+
                 # If player picked up an dish from dispenser
                 self.object_uid_counter += 1
                 new_obj_record = {
@@ -1322,6 +1524,9 @@ class OvercookedGridworld(object):
                             obj.state = (soup_type, num_items + 1, 0)
                             shaped_reward += self.reward_shaping_params["ONION_IN_PARTIAL_POT_REWARD"]
 
+
+
+
                             current_pots_states_dict = self.get_pot_states(new_state)
                             num_cooking_pots = len(current_pots_states_dict['onion']['cooking'])
                             # if num_cooking_pots > 1:
@@ -1329,6 +1534,8 @@ class OvercookedGridworld(object):
                             ready_pots = pot_states["onion"]["ready"]
                             cooking_pots = pot_states["onion"]["cooking"]
                             full_pots = cooking_pots + ready_pots
+
+                            #### IF both pots full
                             if (4, 1) in full_pots and (3, 0) in full_pots:
                                 shaped_reward += self.reward_shaping_params["BOTH_POTS_FULL_REWARD"]
 
@@ -1374,7 +1581,7 @@ class OvercookedGridworld(object):
 
         return sparse_reward, shaped_reward
 
-    def get_high_level_interact_action(self, new_state, joint_action):
+    def get_high_level_interact_action(self, new_state, joint_action, n_features=7):
         """
         Resolve any INTERACT actions, if present.
 
@@ -1403,13 +1610,20 @@ class OvercookedGridworld(object):
         full_pots = cooking_pots + ready_pots
         num_pots = len(pot_states)
 
-        shared_counters = [(2,1), (2,2), (2,3)]
+        shared_counters = self.layout_params_dict['shared_counters']
+        pot_locations = self.layout_params_dict['pot_locations']
 
-        reward_featurized_state = [0, 0, 0, 0, 0, 0, 0]
+        reward_featurized_state = [0]*n_features
 
         # if (4,1) in full_pots and (3,0) in full_pots:
         #     # print("NUM FULL POTS = 2", full_pots)
-        #     reward_featurized_state[4] = 1
+        #     reward_featurized_state[4] = 0.15
+        if len(pot_locations)==2:
+            if pot_locations[0] in full_pots and pot_locations[1] in full_pots:
+                reward_featurized_state[4] = 0.15
+        # elif len(pot_locations)==1:
+        #     if pot_locations[0] in full_pots:
+        #         reward_featurized_state[4] = 0
 
         # self.mean_limbo_time = max([self.item_tracking_dict[item_uid]['limbo_time'] for item_uid in self.item_tracking_dict]) \
         #     if len(self.item_tracking_dict) > 0 else 0
@@ -1548,8 +1762,9 @@ class OvercookedGridworld(object):
                     # Action Type 2: Player picked object up from counter
                     player.set_object(new_state.remove_object(i_pos))
 
-                    if tuple(i_pos) in shared_counters:
-                        reward_featurized_state[6] = 1
+                    if n_features == 7:
+                        if tuple(i_pos) in shared_counters:
+                            reward_featurized_state[6] = 0.15
 
                     if player.get_object().name == 'onion':
                         player_idx_to_high_level_action[player_idx] = PICKUP_ONION_FROM_COUNTER
@@ -1684,7 +1899,7 @@ class OvercookedGridworld(object):
                     if num_items == self.num_items_for_soup and cook_time >= self.soup_cooking_time:
                         player.remove_object()  # Turn the dish into the soup
                         player.set_object(new_state.remove_object(i_pos))
-                        shaped_reward += self.reward_shaping_params["SOUP_PICKUP_REWARD"]
+                        shaped_reward += self.reward_shaping_params["SOUP_PICKUP_FROM_READY_POT_REWARD"]
                         reward_featurized_state[3] = 1
                 elif player.get_object().name in ['onion', 'tomato']:
                     item_type = player.get_object().name
@@ -1695,7 +1910,7 @@ class OvercookedGridworld(object):
                         # Pot was empty
                         player.remove_object()
                         new_state.add_object(ObjectState('soup', i_pos, (item_type, 1, 0)), i_pos)
-                        shaped_reward += self.reward_shaping_params["PLACEMENT_IN_POT_REW"]
+                        shaped_reward += self.reward_shaping_params["ONION_IN_EMPTY_POT_REWARD"]
                         reward_featurized_state[0] = 1
                         # Onion placed in pot is no longer active
                         try:
@@ -1722,7 +1937,7 @@ class OvercookedGridworld(object):
                         if num_items < self.num_items_for_soup and soup_type == item_type:
                             player.remove_object()
                             obj.state = (soup_type, num_items + 1, 0)
-                            shaped_reward += self.reward_shaping_params["PLACEMENT_IN_POT_REW"]
+                            shaped_reward += self.reward_shaping_params["ONION_IN_PARTIAL_POT_REWARD"]
                             reward_featurized_state[1] = 1
                             current_pots_states_dict = self.get_pot_states(new_state)
                             num_cooking_pots = len(current_pots_states_dict['onion']['cooking'])

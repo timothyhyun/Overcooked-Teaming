@@ -307,7 +307,8 @@ def load_training_data(run_name, seeds=None):
 
 def get_ppo_agent(save_dir, seed=0, best=False):
     # save_dir = 'ppo/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
-    save_dir = '../experiments/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    # save_dir = '../experiments/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
+    save_dir = '../../human_aware_rl/experiments/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
     # save_dir = '../experiments/results_forte2/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
     # save_dir = '../experiments/results_forte3_strat_specific/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)
     # save_dir = '../experiments/results_forte4_err_pen/' + PPO_DATA_DIR + save_dir + '/seed{}'.format(seed)

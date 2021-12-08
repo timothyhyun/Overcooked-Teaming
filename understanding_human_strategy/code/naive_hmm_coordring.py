@@ -946,13 +946,15 @@ def cluster_hidden_states_agglo(hidden_seqs, n_clusters=2):
 #
 #
 def plot_validation_matrix():
-    num_states_list = [2,3,4, 5, 6, 7, 8, 9]
+    num_states_list = [2,3,4, 5, 6]
     num_clusters_list = [2, 3, 4]
     # num_states_list = [4]
     # num_clusters_list = [2]
 
     arr = np.zeros((max(num_states_list)+1, max(num_states_list)+1))
 
+    max_ss_score = 0
+    best_combo = (0, 0)  # (n_states, n_clusters)
     for n_states in num_states_list:
         test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs = run_naive_hmm_on_p2_method_2(n_states=n_states, window=9, ss=3)
         for n_clusters in num_clusters_list:
@@ -963,6 +965,9 @@ def plot_validation_matrix():
             print(f'\nN={n_states}, K={n_clusters}: cluster_labels = {cluster_labels}, teams = {team_numbers}')
             print(f'N={n_states}, K={n_clusters}, sil. score = ', ss)
             arr[n_states, n_clusters] = ss
+            if ss > max_ss_score:
+                max_ss_score = ss
+                best_combo = (n_states, n_clusters)
 
 
 

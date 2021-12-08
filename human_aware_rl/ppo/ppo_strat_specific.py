@@ -60,6 +60,8 @@ def my_config():
 
     RUN_TYPE = "ppo"
 
+    STRATEGY_INDEX = 0
+
     # Reduce parameters to be able to run locally to test for simple bugs
     LOCAL_TESTING = False
 
@@ -164,14 +166,41 @@ def my_config():
     layout_name = None
     start_order_list = None
 
-    rew_shaping_params = {
-        "PLACEMENT_IN_POT_REW": 3,
-        "DISH_PICKUP_REWARD": 3,
-        "SOUP_PICKUP_REWARD": 5,
-        "DISH_DISP_DISTANCE_REW": 0,
-        "POT_DISTANCE_REW": 0,
-        "SOUP_DISTANCE_REW": 0,
+    STRATEGY_REWARD_PARAMS = {
+        'simple': {
+            0:  [2.70252993e-01, 1.96315895e-01, 7.52119554e-02, 3.21244143e-01, 9.92909390e-09, 1.32576967e-01, 4.39803668e-03],
+            1:  [7.87017954e-02, 1.67897174e-01, 1.13180689e-01, 5.51662015e-01, 9.02573457e-09, 8.61972170e-02, 2.36110054e-03],
+            2: [1.14521552e-01, 1.96694494e-01, 1.34228192e-01, 4.82998338e-01, 5.28267755e-09, 7.02746012e-02, 1.28281764e-03],
+            3: [1.23943402e-01, 2.70422208e-01, 4.88269705e-02, 4.50702552e-01, 2.21933352e-07, 9.76528287e-02, 8.45181651e-03],
+        },
+        'random1': {
+            0: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648],
+            1: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from 0, need to replace
+        },
+        'unident_s': {
+            0: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from 0, need to replace
+            1: [0.15212459, 0.31595109, 0.12872085, 0.19746945, 0.03356981, 0.16821472, 0.00394949],
+        },
+        "random0": {
+            0:  [0.11947069, 0.27646117, 0.1184835, 0.15699054, 0.05435423, 0.16982616, 0.10441369],
+            1: [0.14300781, 0.22740592, 0.1062791, 0.13988202, 0.1340991, 0.1547298, 0.09459625],
+        },
+        "random3": {
+            0: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from rand1: 0, need to replace
+            1: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from rand1: 0, need to replace
+            2: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from rand1: 0, need to replace
+            3: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866, 0.00308648], #copied from rand1: 0, need to replace
+        },
     }
+
+    # rew_shaping_params = {
+    #     "PLACEMENT_IN_POT_REW": 3,
+    #     "DISH_PICKUP_REWARD": 3,
+    #     "SOUP_PICKUP_REWARD": 5,
+    #     "DISH_DISP_DISTANCE_REW": 0,
+    #     "POT_DISTANCE_REW": 0,
+    #     "SOUP_DISTANCE_REW": 0,
+    # }
     # rew_shaping_params = {
     #     "PLACEMENT_IN_POT_REW": 0,
     #     "DISH_PICKUP_REWARD": 0,
@@ -180,6 +209,31 @@ def my_config():
     #     "POT_DISTANCE_REW": 0,
     #     "SOUP_DISTANCE_REW": 0,
     # }
+    # rew_shaping_params = {
+    #     "ONION_IN_EMPTY_POT_REWARD": 0,
+    #     "ONION_IN_PARTIAL_POT_REWARD": 0,
+    #     "DISH_PICKUP_REWARD": 0,
+    #     "SOUP_PICKUP_FROM_READY_POT_REWARD": 0,
+    #     "BOTH_POTS_FULL_REWARD": 0,
+    #     "SERVE_SOUP_REWARD": 0,
+    #     "SHARED_COUNTER_REWARD": 0,
+    # }
+    # print("STRATEGY_INDEX", STRATEGY_INDEX)
+    # STRATEGY_INDEX = int(STRATEGY_INDEX)
+    # print("layout_name", layout_name)
+    # print("test", STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX])
+    rew_shaping_params = {
+        "ONION_IN_EMPTY_POT_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][0],
+        "ONION_IN_PARTIAL_POT_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][1],
+        "DISH_PICKUP_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][2],
+        "SOUP_PICKUP_FROM_READY_POT_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][3],
+        "BOTH_POTS_FULL_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][4],
+        "SERVE_SOUP_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][5],
+        "SHARED_COUNTER_REWARD": STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX][6],
+    }
+    # for elem in STRATEGY_REWARD_PARAMS[layout_name][STRATEGY_INDEX]:
+    #     rew_shaping_params[]
+
     
     # Env params
     horizon = 400
@@ -197,6 +251,7 @@ def my_config():
     print("Grad updates per agent", GRAD_UPDATES_PER_AGENT)
 
     params = {
+        "STRATEGY_INDEX": STRATEGY_INDEX,
         "RUN_TYPE": RUN_TYPE,
         "SEEDS": SEEDS,
         "LOCAL_TESTING": LOCAL_TESTING,
@@ -287,33 +342,65 @@ def configure_other_agent(params, gym_env, mlp, mdp):
         #          'random3': 'carry1_finetune_random3_bc_test_seed5415'
         #      }
         # }
+        # initial_best_bc_model_paths = {
+        #     'train': {
+        #         'simple': 'simple_bc_train_seed3',
+        #         'random1': 'random1_bc_train_seed0',
+        #         'unident_s': 'aa_strat3_finetune_unident_s_bc_train_seed5415',
+        #         # 'random0': 'single_pot_finetune_random0_bc_test_seed5415',
+        #         'random0': 'dual_pot_finetune_random0_bc_test_seed5415',
+        #         # 'random0': 'single_pot_finetune_random0_bc_train_seed5415',
+        #         # 'random0': 'bc_train_fixed_strat_DP_DP_random0_bc_train_seed5415',
+        #         'random3': 'carry1_finetune_random3_bc_train_seed5415'
+        #     },
+        #     'test': {
+        #         'simple': 'simple_bc_test_seed2',
+        #         'random1': 'random1_bc_test_seed2',
+        #         'unident_s': 'aa_strat3_finetune_unident_s_bc_test_seed5415',
+        #
+        #         'random0': 'single_pot_finetune_random0_bc_test_seed5415',
+        #         # 'random0': 'bc_train_fixed_strat_SP_SP_random0_bc_train_seed5415',
+        #         'random3': 'carry1_finetune_random3_bc_test_seed5415'
+        #     }
+        # }
+
         best_bc_model_paths = {
             'train': {
-                'simple': 'simple_bc_train_seed3',
-                'random1': 'random1_bc_train_seed0',
-                'unident_s': 'aa_strat3_finetune_unident_s_bc_train_seed5415',
-                'random0': 'dual_pot_finetune_random0_bc_test_seed5415',
-                # 'random0': 'single_pot_finetune_random0_bc_train_seed5415',
-                # 'random0': 'bc_train_fixed_strat_DP_DP_random0_bc_train_seed5415',
-                'random3': 'carry1_finetune_random3_bc_train_seed5415'
+                'simple': {
+                    0: "simple_strat0_finetune_seed5415",
+                    1: "simple_strat1_finetune_seed5415",
+                    2: "simple_strat2_finetune_seed5415",
+                    3: "simple_strat3_finetune_seed5415",
+                },
+                'random1': {
+                    0: "random1_strat0_finetune_seed5415",
+                    1: "random1_strat1_finetune_seed5415",
+                },
+                'unident_s': {
+                    0: "unident_s_strat0_finetune_seed5415",
+                    1: "unident_s_strat1_finetune_seed5415",
+                },
+                "random0": {
+                    0: "random0_strat0_finetune_seed5415",
+                    1: "random0_strat1_finetune_seed5415",
+                },
+                "random3": {
+                    0: "random3_strat0_finetune_seed5415",
+                    1: "random3_strat1_finetune_seed5415",
+                    2: "random3_strat2_finetune_seed5415",
+                    3: "random3_strat3_finetune_seed5415",
+                },
             },
-            'test': {
-                'simple': 'simple_bc_test_seed2',
-                'random1': 'random1_bc_test_seed2',
-                'unident_s': 'aa_strat3_finetune_unident_s_bc_test_seed5415',
 
-                'random0': 'single_pot_finetune_random0_bc_test_seed5415',
-                # 'random0': 'bc_train_fixed_strat_SP_SP_random0_bc_train_seed5415',
-                'random3': 'carry1_finetune_random3_bc_test_seed5415'
-            }
         }
-        best_bc_model_paths = load_pickle(BEST_BC_MODELS_PATH) # uncomment to change
+
+        # best_bc_model_paths = load_pickle(BEST_BC_MODELS_PATH) # uncomment to change
         print('\n\n\n\nbest_bc_model_paths', best_bc_model_paths)
 
         if params["OTHER_AGENT_TYPE"] == "bc_train":
-            bc_model_path = best_bc_model_paths["train"][mdp.layout_name]
+            bc_model_path = best_bc_model_paths["train"][mdp.layout_name][params["STRATEGY_INDEX"]]
         elif params["OTHER_AGENT_TYPE"] == "bc_test":
-            bc_model_path = best_bc_model_paths["test"][mdp.layout_name]
+            bc_model_path = best_bc_model_paths["train"][mdp.layout_name][params["STRATEGY_INDEX"]]
         else:
             raise ValueError("Other agent type must be bc train or bc test")
 

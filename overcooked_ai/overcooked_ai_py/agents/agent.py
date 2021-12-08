@@ -43,6 +43,7 @@ class AgentGroup(object):
         select_actions = tuple(a.action(state) for a in self.agents)
         # self.prev_actions = select_actions
         # print("prev_actions", self.prev_actions)
+
         return select_actions
 
     def set_mdp(self, mdp):
@@ -84,6 +85,33 @@ class AgentPair(AgentGroup):
             return super().joint_action(state)
 
 
+class CausalAgentPair(AgentGroup):
+    """
+    AgentPair is the N=2 case of AgentGroup. Unlike AgentGroup,
+    it supports having both agents being the same instance of Agent.
+
+    NOTE: Allowing duplicate agents (using the same instance of an agent
+    for both fields can lead to problems if the agents have state / history)
+    """
+
+    def __init__(self, *agents, allow_duplicate_agents=False):
+        super().__init__(*agents, allow_duplicate_agents=allow_duplicate_agents)
+        assert self.n == 2
+        self.a0, self.a1 = self.agents
+
+        if type(self.a0) is CoupledPlanningAgent and type(self.a1) is CoupledPlanningAgent:
+            print(
+                "If the two planning agents have same params, consider using CoupledPlanningPair instead to reduce computation time by a factor of 2")
+
+    def joint_action(self, state):
+        select_actions = tuple(a.action(state, self.prev_actions) for a in self.agents)
+        # select_actions = tuple(a.action(state) for a in self.agents)
+        self.prev_actions = select_actions
+        # print("prev_actions", self.prev_actions)
+
+        return select_actions
+
+
 class CoupledPlanningPair(AgentPair):
     """
     Pair of identical coupled planning agents. Enables to search for optimal
@@ -115,7 +143,8 @@ class AgentFromPolicy(Agent):
         self.direct_policy = direct_policy
         self.history = []
         self.stochastic = stochastic
-        self.action_probs = action_probs
+        # self.action_probs = action_probs
+        self.action_probs = True
 
     def action(self, state):
         """

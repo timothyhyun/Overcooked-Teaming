@@ -330,7 +330,7 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
     prefix = '../../../data/ppo_runs/'
     ppo_bc_model_paths = {
         'bc_train': {
-            "random0": "2021_07_21-09_02_08_ppo_bc_train_random0_test1",
+            # "random0": "2021_07_21-09_02_08_ppo_bc_train_random0_test1",
             # "random0": "2021_11_22-13_23_37_ppo_bc_test_random0_test2_REPLICATE1",
             # "random0": "2021_07_28-16_53_15_single_strat_wft_ppo_bc_train_random0_test4",
             # "random0": "2021_07_28-16_50_14_dual_strat_nft_ppo_bc_train_random0_test3",
@@ -343,6 +343,7 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
             # "random0": "2021_11_17-10_28_05_h_proxy_SPstrat_6rew_weights_ppo_bc_train_random0_test1",
             # "random0": "2021_11_17-11_36_44_h_proxy_DPstrat_6rew_weights_ppo_bc_train_random0_test1",
             # "random0": "2021_11_17-11_36_04_h_proxy_DPstrat_7rew_weights_ppo_bc_train_random0_test1",
+            "random0": 'STRATEXP_TEST2_random0_s1_weights_ppo_bc_train',
         },
         'bc_test': {
             # "random0": "2021_11_22-13_23_37_ppo_bc_test_random0_test2_REPLICATE1",
@@ -362,7 +363,8 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
             # "random0": "2021_11_22-14_10_01_h_proxy_DPstrat_6rew_downweightbothpots_dropserve_fix_weights_ppo_bc_train_random0_test2",
 
             # "random0":"2021_11_29-14_29_58_h_proxy_DPstrat_6rew_HANDTUNED_weights_ppo_bc_train_random0_test4",
-            "random0": "2021_11_29-14_25_59_h_proxy_DPstrat_6rew_HANDTUNED_weights_ppo_bc_train_random0_test3",
+            # "random0": "2021_11_29-14_25_59_h_proxy_DPstrat_6rew_HANDTUNED_weights_ppo_bc_train_random0_test3",
+            "random0":'STRATEXP_TEST2_random0_s0_weights_ppo_bc_train',
         }
     }
 
@@ -370,11 +372,13 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
 
     set_global_seed(248)
 
-    ppo_ppo_performance = evaluate_two_ppo_models(ppo_bc_model_paths, best_bc_model_paths, num_rounds, seeds, best=True)
+    ppo_ppo_performance = evaluate_two_ppo_models(ppo_bc_model_paths, best_bc_model_paths, num_rounds, seeds, best=False)
     print('SINGLE vs. DUAL ppo_ppo_performance', ppo_ppo_performance)
     ppo_ppo_performance = prepare_nested_default_dict_for_pickle(ppo_ppo_performance)
     # save_pickle(ppo_bc_performance, PPO_DATA_DIR + "ppo_bc_models_performance")
     return ppo_ppo_performance
+
+
 
 def run_two_bc_agents():
     reset_tf()
@@ -388,8 +392,8 @@ def run_two_bc_agents():
         "bc_test": [9456, 1887, 5578, 5987, 516],
     }
     seeds = {
-        "bc_train": [5578],
-        "bc_test": [5578],
+        "bc_train": [9456],
+        "bc_test": [9456],
     }
 
     best_bc_model_paths = {
@@ -425,7 +429,7 @@ def run_two_bc_agents():
 #
 #     print('EVALUATING From evaluate_berk_ppo_bc_experiments.py')
 #     check_replicate_evaluate_all_ppo_bc_experiments()
-
+#
 if __name__ == "__main__":
     best_bc_model_paths = load_pickle("../data/bc_runs/best_bc_model_paths")
     print('best_bc_model_paths', best_bc_model_paths)

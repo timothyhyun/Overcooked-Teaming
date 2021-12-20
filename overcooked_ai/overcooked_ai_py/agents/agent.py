@@ -143,8 +143,8 @@ class AgentFromPolicy(Agent):
         self.direct_policy = direct_policy
         self.history = []
         self.stochastic = stochastic
-        # self.action_probs = action_probs
-        self.action_probs = True
+        self.action_probs = action_probs
+        # self.action_probs = True
 
     def action(self, state):
         """

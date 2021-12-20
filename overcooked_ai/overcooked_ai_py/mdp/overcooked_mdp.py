@@ -1295,7 +1295,7 @@ class OvercookedGridworld(object):
         # NUM_TOUCHES_PENALTY = -4
 
 
-        HANDOFF_TIME_REWARD = 1
+        HANDOFF_TIME_REWARD = 0
         HANDOFF_TIME_OVER_MEAN_PENALTY = 0
         FC_MEAN_LIMBO = 74
         FC_MEAN_TRANSFER = 63
@@ -1373,10 +1373,11 @@ class OvercookedGridworld(object):
                         self.item_tracking_dict[picked_item_uid]['past_players'].append(player_idx)
                         self.item_tracking_dict[picked_item_uid]['n_touches'] += 1
 
-                        if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
-                                and len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) < 3:
-                            if self.item_tracking_dict[picked_item_uid]['handoff_time'] <= self.mean_handoff_time:
-                                shaped_reward += HANDOFF_TIME_REWARD
+                        # if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
+                        #         and len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) < 3:
+                        #     if self.item_tracking_dict[picked_item_uid]['handoff_time'] <= self.mean_handoff_time:
+                        #         shaped_reward += HANDOFF_TIME_REWARD
+
                         # if len(np.unique(self.item_tracking_dict[picked_item_uid]['past_players'])) > 1 \
                         #         and self.item_tracking_dict[picked_item_uid]['handoff_time'] > self.mean_handoff_time:
                         #     if self.mean_handoff_time > 3:
@@ -1458,7 +1459,8 @@ class OvercookedGridworld(object):
                 if len(nearly_ready_pots) > dishes_already and len(dishes_on_counters) == 0:
                     shaped_reward += self.reward_shaping_params["DISH_PICKUP_REWARD"]
 
-                if (4, 1) in full_pots and (3, 0) in full_pots:
+                # if (4, 1) in full_pots and (3, 0) in full_pots:
+                if len(full_pots) > 1:
                     shaped_reward += self.reward_shaping_params["BOTH_POTS_FULL_REWARD"]
 
                 # If player picked up an dish from dispenser
@@ -1536,7 +1538,8 @@ class OvercookedGridworld(object):
                             full_pots = cooking_pots + ready_pots
 
                             #### IF both pots full
-                            if (4, 1) in full_pots and (3, 0) in full_pots:
+                            # if (4, 1) in full_pots and (3, 0) in full_pots:
+                            if len(full_pots) > 1:
                                 shaped_reward += self.reward_shaping_params["BOTH_POTS_FULL_REWARD"]
 
                             # Onion placed in pot is no longer active
@@ -1559,7 +1562,8 @@ class OvercookedGridworld(object):
                     # Action Type 9: Player delivered soup
                     new_state, delivery_rew = self.deliver_soup(new_state, player, obj)
                     sparse_reward += delivery_rew
-                    shaped_reward += self.reward_shaping_params["SERVE_SOUP_REWARD"]
+                    # sparse_reward += self.reward_shaping_params["SERVE_SOUP_REWARD"]
+                    # shaped_reward += self.reward_shaping_params["SERVE_SOUP_REWARD"]
 
                     # Dish served is no longer active
                     try:

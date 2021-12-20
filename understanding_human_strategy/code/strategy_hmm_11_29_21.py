@@ -2,7 +2,7 @@ from dependencies import *
 from hmm import supervised_HMM, unsupervised_HMM, HiddenMarkovModel
 from extract_features import *
 from sklearn.cluster import AgglomerativeClustering
-
+import pickle
 
 def track_player_actions(layout_params, old_trials, p1_data, p2_data, objects_data, p1_actions,
                          p2_actions, name, time_elapsed):
@@ -1422,8 +1422,8 @@ def strategy_identification(layout_name):
     layout_params = get_layout_params(layout_name)
     num_states_list = [2, 3, 4, 5, 6, 7]
     num_clusters_list = [2, 3, 4]
-    num_states_list = [5]
-    num_clusters_list = [2]
+    # num_states_list = [5]
+    # num_clusters_list = [2]
 
     arr = np.zeros((max(num_states_list)+3, max(num_states_list)+3))
 
@@ -1432,6 +1432,14 @@ def strategy_identification(layout_name):
     best_assignment = []
     for n_states in num_states_list:
         test_unsuper_hmm, hidden_seqs, team_numbers, team_num_to_seq_probs = run_naive_hmm_on_p2(layout_name, layout_params, n_states=n_states)
+
+        filename = f"test1_HMM_{layout_name}_nstates{n_states}.pkl"
+        with open(filename, 'wb') as outfile:  # Overwrites any existing file.
+            pickle.dump(test_unsuper_hmm, outfile, pickle.HIGHEST_PROTOCOL)
+
+
+
+
         for n_clusters in num_clusters_list:
             print('hidden_seqs', hidden_seqs)
             cluster_labels, cluster_centers, ss = cluster_hidden_states(hidden_seqs, n_clusters=n_clusters)
@@ -1443,6 +1451,10 @@ def strategy_identification(layout_name):
                 best_combo = (n_states, n_clusters)
                 best_assignment = cluster_labels
 
+    filename = f"test1_silhouette_score_arr_{layout_name}.pkl"
+    with open(filename, 'wb') as outfile:  # Overwrites any existing file.
+        pickle.dump(arr, outfile, pickle.HIGHEST_PROTOCOL)
+
     plt.imshow(arr, cmap='viridis')
     plt.colorbar()
     plt.title("Layout: "+layout_name)
@@ -1450,7 +1462,7 @@ def strategy_identification(layout_name):
     plt.xlabel("Number of Clusters")
     plt.xlim(num_clusters_list[0] - 0.5, num_clusters_list[-1] + 0.5)
     plt.ylim(num_states_list[0] - 0.5, num_states_list[-1] + 0.5)
-    plt.savefig('testing2_'+layout_name+'_ss_score_11_29_21.png')
+    plt.savefig('testing3_'+layout_name+'_ss_score_12_18_21.png')
     plt.close()
 
     print("best combo", best_combo)
@@ -1461,8 +1473,8 @@ def get_hmm(layout_name, n_states):
     layout_params = get_layout_params(layout_name)
     num_states_list = [2, 3, 4, 5, 6, 7]
     num_clusters_list = [2, 3, 4]
-    num_states_list = [5]
-    num_clusters_list = [2]
+    # num_states_list = [5]
+    # num_clusters_list = [2]
 
     arr = np.zeros((max(num_states_list) + 3, max(num_states_list) + 3))
 
@@ -1487,7 +1499,7 @@ if __name__ == '__main__':
 
 
     
-    strategy_identification("random0")
+    strategy_identification("cramped_room")
     # n_states = 6
     # test_unsuper_hmm, hidden_seqs = run_naive_hmm_on_p2(n_states)
     #

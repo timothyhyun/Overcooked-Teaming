@@ -84,7 +84,7 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
                                   display=False):
     # evaluate_ppo_and_bc_models_for_layout(layout, num_rounds, best_bc_model_paths, ppo_bc_model_paths, seeds=seeds, best=best)
     # assert len(seeds["bc_train"]) == len(seeds["bc_test"])
-    ppo_ppo_performance = defaultdict(lambda: defaultdict(list))
+    ppo_ppo_performance = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
     agent_bc_test, bc_params = get_bc_agent_from_saved(bc_model_paths['test'][layout])
     print('bc_params = ', bc_params)
@@ -99,6 +99,9 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
     original_num_games = max(int(num_rounds / 2), 1)
     for train_seed_idx in range(len(seeds["bc_train"])):
         for test_seed_idx in range(len(seeds["bc_test"])):
+            train_seed = seeds["bc_train"][train_seed_idx]
+            test_seed = seeds["bc_test"][test_seed_idx]
+
             agent_ppo_bc_train, ppo_config = get_ppo_agent(ppo_bc_train_path, seeds["bc_train"][train_seed_idx],
                                                            best=best)
             agent_ppo_bc_test, ppo_test_config = get_ppo_agent(ppo_bc_test_path, seeds["bc_test"][test_seed_idx],
@@ -108,23 +111,23 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
             # Check agent against itself
             ppo_and_ppo = evaluator.evaluate_agent_pair(AgentPair(agent_ppo_bc_train, agent_ppo_bc_train, allow_duplicate_agents=True), num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_ppo_performance[layout][f"{bc_train_model_name}+{bc_train_model_name}_MEAN"].append(avg_ppo_and_ppo)
-            ppo_ppo_performance[layout][f"{bc_train_model_name}+{bc_train_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"{bc_train_model_name}+{bc_train_model_name}_MEAN"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"{bc_train_model_name}+{bc_train_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
 
             ppo_and_ppo = evaluator.evaluate_agent_pair(
                 AgentPair(agent_ppo_bc_test, agent_ppo_bc_test, allow_duplicate_agents=True),
                 num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_ppo_performance[layout][f"{bc_test_model_name}+{bc_test_model_name}_MEAN"].append(avg_ppo_and_ppo)
-            ppo_ppo_performance[layout][f"{bc_test_model_name}+{bc_test_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"{bc_test_model_name}+{bc_test_model_name}_MEAN"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"{bc_test_model_name}+{bc_test_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
 
             # Play two agents against each other.
             ppo_and_ppo = evaluator.evaluate_agent_pair(
                 AgentPair(agent_ppo_bc_train, agent_ppo_bc_test, allow_duplicate_agents=False),
                 num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_ppo_performance[layout][f"0{bc_train_model_name}+1{bc_test_model_name}_MEAN"].append(avg_ppo_and_ppo)
-            ppo_ppo_performance[layout][f"0{bc_train_model_name}+1{bc_test_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"0{bc_train_model_name}+1{bc_test_model_name}_MEAN"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"0{bc_train_model_name}+1{bc_test_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
 
             # visualize_trial(ppo_and_ppo,
             #                 title=f"dp_ppo_vs_dp_ppo_train_test_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}",
@@ -135,8 +138,8 @@ def run_two_ppo_models_for_layout(layout, num_rounds, ppo_bc_model_paths, bc_mod
                 AgentPair(agent_ppo_bc_test, agent_ppo_bc_train, allow_duplicate_agents=False),
                 num_games=original_num_games, display=display)
             avg_ppo_and_ppo = np.mean(ppo_and_ppo['ep_returns'])
-            ppo_ppo_performance[layout][f"0{bc_test_model_name}+1{bc_train_model_name}_MEAN"].append(avg_ppo_and_ppo)
-            ppo_ppo_performance[layout][f"0{bc_test_model_name}+1{bc_train_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"0{bc_test_model_name}+1{bc_train_model_name}_MEAN"].append(avg_ppo_and_ppo)
+            ppo_ppo_performance[layout][f"({train_seed}, {test_seed})"][f"0{bc_test_model_name}+1{bc_train_model_name}_STD"].append(np.std(ppo_and_ppo['ep_returns']))
 
             # visualize_trial(ppo_and_ppo, title=f"dp_ppo_vs_dp_ppo_test_train_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}",
             #                 video_filename=f"dp_ppo_vs_dp_ppo_test_train_score_{avg_ppo_and_ppo}_trainseed{train_seed_idx}_testseed{test_seed_idx}")
@@ -324,13 +327,19 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
         'train': {
             # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
             "random3": "random3_strat0_finetune_seed5415",
-            # "simple": "simple_STRAT1_finetune3070_seed5415",
+            # "simple": "simple_strat0_finetune_seed5415",
+            # "random0": "random0_strat0_finetune_seed5415",
+            # "random1": "random1_strat0_finetune_seed5415",
+            # "unident_s": "unident_s_strat0_finetune_seed5415",
         },
         'test': {
             # "random0": "dual_pot_finetune_random0_bc_train_seed5415",
             "random3": "random3_strat0_finetune_seed5415",
-            # "simple": "simple_STRAT1_finetune3070_seed5415",
+            # "simple": "simple_strat0_finetune_seed5415",
             # "random0": "dual_pot_finetune_random0_bc_test_seed5415",
+            # "random0": "random0_strat1_finetune_seed5415",
+            # "random1": "random1_strat1_finetune_seed5415",
+            # "unident_s": "unident_s_strat0_finetune_seed5415",
         }
     }
 
@@ -352,7 +361,10 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
             # "random0": "2021_11_17-11_36_04_h_proxy_DPstrat_7rew_weights_ppo_bc_train_random0_test1",
             # "random0": 'STRATEXP_TEST2_random0_s1_weights_ppo_bc_train',
             "random3": "STRATEXP_TEST2_random3_s2_weights_ppo_bc_train",
-            # "simple":"STRATEXP_TEST2_simple_s0_weights_ppo_bc_train",
+            # "simple":"STRATEXP_TEST2_simple_s2_weights_ppo_bc_train",
+            # "random0": "STRATEXP_TEST2_random0_s0_weights_ppo_bc_train",
+            # "random1": "STRATEXP_TEST2_random1_s0_weights_ppo_bc_train",
+            # "unident_s": "STRATEXP_TEST2_unident_s0_weights_ppo_bc_train",
         },
         'bc_test': {
             # "random0": "2021_11_22-13_23_37_ppo_bc_test_random0_test2_REPLICATE1",
@@ -375,7 +387,10 @@ def run_two_ppo_agents(seeds, num_rounds = 20):
             # "random0": "2021_11_29-14_25_59_h_proxy_DPstrat_6rew_HANDTUNED_weights_ppo_bc_train_random0_test3",
             # "random0":'STRATEXP_TEST2_random0_s0_weights_ppo_bc_train',
             "random3": "STRATEXP_TEST2_random3_s3_weights_ppo_bc_train",
-            # "simple": "STRATEXP_TEST2_simple_s2_weights_ppo_bc_train",
+            # "simple": "STRATEXP_TEST2_simple_s3_weights_ppo_bc_train",
+            # "random0": "STRATEXP_TEST2_random0_s1_weights_ppo_bc_train",
+            # "random1": "STRATEXP_TEST2_random1_s1_weights_ppo_bc_train",
+            # "unident_s": "STRATEXP_TEST2_unident_s2_weights_ppo_bc_train",
         }
     }
 
@@ -449,20 +464,23 @@ if __name__ == "__main__":
     print('\n\n\n RUNNING TWO PPO AGENTS.................')
     # check_replicate_evaluate_all_ppo_bc_experiments(best_bc_model_paths)
 
-    for seed_val in [9456, 1887, 5578, 5987, 516]:
+    # for seed_val in [9456, 1887, 5578, 5987, 516]:
     # for seed_val in [5578, 516]:
-        print("SEED: ", seed_val)
-        seeds = {
-            "bc_train": [seed_val],
-            "bc_test": [seed_val],
-        }
-        ppo_results = run_two_ppo_agents(seeds)
-        layout_name = "random3"
-        data = ppo_results[layout_name]
-        # run_two_bc_agents()
-        print(data)
-        # for keyname in data.keys():
-        #     key_mean = keyname+"_MEAN"
-        #     key_std = keyname + "_STD"
-        #     print(f'key: {keyname}, mean reward = {data[key_mean][0]}, std = {data[key_std][0]}')
+    # print("SEED: ", seed_val)
+    seeds = {
+        "bc_train":[9456, 1887, 5578, 5987, 516],
+        "bc_test": [9456, 1887, 5578, 5987, 516],
+    }
+    ppo_results = run_two_ppo_agents(seeds)
+    layout_name = "random3"
+    data = ppo_results[layout_name]
+    # run_two_bc_agents()
+    print(data)
+    save_filename = f'eval_{layout_name}_s2_s3.pkl'
+    with open(save_filename, 'wb') as file:
+        pickle.dump(data, file)
+    # for keyname in data.keys():
+    #     key_mean = keyname+"_MEAN"
+    #     key_std = keyname + "_STD"
+    #     print(f'key: {keyname}, mean reward = {data[key_mean][0]}, std = {data[key_std][0]}')
 

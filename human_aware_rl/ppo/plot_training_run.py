@@ -532,6 +532,197 @@ def plot_ppo_run(name, sparse=False, limit=None, print_config=False, seeds=None,
     plt.close()
 
 
+def get_weight_for_serve(layout_name, strategy_number):
+    STRATEGY_REWARD_PARAMS = {
+        'simple': {
+            0: [2.70252993e-01, 1.96315895e-01, 7.52119554e-02, 3.21244143e-01, 9.92909390e-09, 1.32576967e-01],
+            1: [7.87017954e-02, 1.67897174e-01, 1.13180689e-01, 5.51662015e-01, 9.02573457e-09, 8.61972170e-02],
+            2: [1.14521552e-01, 1.96694494e-01, 1.34228192e-01, 4.82998338e-01, 5.28267755e-09, 7.02746012e-02],
+            3: [1.23943402e-01, 2.70422208e-01, 4.88269705e-02, 4.50702552e-01, 2.21933352e-07, 9.76528287e-02],
+        },
+        'random1': {
+            0: [0.26971481, 0.37027598, 0.10447312, 0.10448251, 0.0694081, 0.07847855],
+            1: [0.12336561, 0.29372795, 0.14980191, 0.17623721, 0.06873219, 0.18504866],
+        },
+        'unident': {
+            0: [0.18829796, 0.36893755, 0.15159763, 0.14966015, 0.03527472, 0.10499902],
+            1: [0.15212459, 0.31595109, 0.12872085, 0.19746945, 0.03356981, 0.16821472],
+        },
+        "random0": {
+            0: [0.11947069, 0.27646117, 0.1184835, 0.15699054, 0.05435423, 0.16982616],
+            1: [0.14300781, 0.22740592, 0.1062791, 0.13988202, 0.1340991, 0.1547298],
+        },
+        "random3": {
+            0: [0.38372211, 0.29566231, 0.15073883, 0.05588366, 0.00192108, 0.10201446],
+            1: [0.30387411, 0.41368073, 0.09275247, 0.11054466, 0.03021337, 0.03886827],
+            2: [0.23454106, 0.40847999, 0.14816318, 0.12144665, 0.02265959, 0.05814603],
+            3: [0.22187374, 0.38093024, 0.14346863, 0.08025317, 0.07614822, 0.09586659],
+        },
+    }
+    select_weights = STRATEGY_REWARD_PARAMS[layout_name][strategy_number]
+    scale = 3 / select_weights[0]
+    weight_for_serve = select_weights[5] * scale
+
+    # weight_for_serve = 5
+    print("weight_for_serve", weight_for_serve)
+
+    # true point value = N * W * (20/W)
+    # weight_for_serve = 20
+
+    return weight_for_serve
+
+def sparse_plot_ppo_run(name, sparse=False, limit=None, print_config=False, seeds=None, single=False):
+    from collections import defaultdict
+    seeds = [9456, 1887, 5578, 5987, 516]
+
+    layout_name = name.split("_")[2]
+    strategy_number = int(name.split("_")[3].split("s")[1])
+    weight_for_serve = get_weight_for_serve(layout_name, strategy_number)
+
+    train_infos, config = load_training_data(name, seeds)
+
+    if print_config:
+        print(config)
+
+    if limit is None:
+        limit = config["PPO_RUN_TOT_TIMESTEPS"]
+
+    num_datapoints = len(train_infos[0]['eprewmean'])
+
+    prop_data = limit / config["PPO_RUN_TOT_TIMESTEPS"]
+    ciel_data_idx = int(num_datapoints * prop_data)
+
+    datas = []
+    for seed_num, info in enumerate(train_infos):
+        info['xs'] = config["TOTAL_BATCH_SIZE"] * np.array(range(1, ciel_data_idx + 1))
+        if single:
+            plt.plot(info['xs'], info["ep_sparse_rew_mean"][:ciel_data_idx], alpha=1, label="Sparse{}".format(seed_num))
+        datas.append(np.array(info["ep_sparse_rew_mean"][:ciel_data_idx])/weight_for_serve)
+    if not single:
+        seaborn.tsplot(time=info['xs'], data=datas)
+    plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+
+    if single:
+        plt.legend()
+
+    plt.xlabel("Timestep")
+    plt.ylabel("Number of Orders Served in 60s")
+    plt.title("Number of Orders for Env: " + layout_name)
+    plt.savefig("training_imgs/sparse_training2_"+name+".png")
+    plt.close()
+
+def strategy_plot_ppo_run(sparse=False, limit=None, print_config=False, seeds=None, single=True):
+    from collections import defaultdict
+    # seeds = [9456, 1887, 5578, 5987, 516]
+    seeds = [516]
+
+
+
+    all_models = {
+        "random0": ['STRATEXP_TEST2_random0_s0_weights_ppo_bc_train',
+        'STRATEXP_TEST2_random0_s1_weights_ppo_bc_train',
+                    "2021_07_21-09_02_08_ppo_bc_train_random0_test1"],
+
+        "random1": ['STRATEXP_TEST2_random1_s0_weights_ppo_bc_train',
+        'STRATEXP_TEST2_random1_s1_weights_ppo_bc_train',
+                    "2021_08_15-02_55_36_ppo_bc_train_random1_REPLICATE1"],
+
+        "random3": ['STRATEXP_TEST2_random3_s0_weights_ppo_bc_train',
+        'STRATEXP_TEST2_random3_s1_weights_ppo_bc_train',
+        'STRATEXP_TEST2_random3_s2_weights_ppo_bc_train',
+        'STRATEXP_TEST2_random3_s3_weights_ppo_bc_train',
+                    "2021_12_17-15_59_55_ppo_bc_train_random3_REPLICATE1"],
+
+        "simple": ['STRATEXP_TEST2_simple_s0_weights_ppo_bc_train',
+        'STRATEXP_TEST2_simple_s1_weights_ppo_bc_train',
+        'STRATEXP_TEST2_simple_s2_weights_ppo_bc_train',
+        'STRATEXP_TEST2_simple_s3_weights_ppo_bc_train',
+                   "2021_07_31-12_51_51_ppo_bc_train_simple_REPLICATE1"],
+
+        "unident": [ 'STRATEXP_TEST2_unident_s0_weights_ppo_bc_train',
+        'STRATEXP_TEST2_unident_s1_weights_ppo_bc_train',
+                     "2021_08_03-11_45_12_ppo_bc_train_unident_s_REPLICATE1"],
+
+
+
+    }
+
+
+    for layout_name in all_models:
+        strategy_files = all_models[layout_name]
+        for name in strategy_files:
+            if "STRATEXP" not in name:
+                strategy_number = "baseline PPO_BC"
+                weight_for_serve = 20
+            else:
+                strategy_number = int(name.split("_")[3].split("s")[1])
+                weight_for_serve = get_weight_for_serve(layout_name, strategy_number)
+
+
+            # layout_name = name.split("_")[2]
+            # strategy_number = int(name.split("_")[3].split("s")[1])
+            # weight_for_serve = get_weight_for_serve(layout_name, strategy_number)
+            used_seeds = seeds
+            if "STRATEXP" not in name:
+                used_seeds = [9456]
+
+            train_infos, config = load_training_data(name, used_seeds)
+            batch_size = config["BATCH_SIZE"]
+            print(f"{layout_name} batch size = {batch_size}")
+
+            if print_config:
+                print(config)
+
+            if limit is None:
+                limit = config["PPO_RUN_TOT_TIMESTEPS"]
+
+            num_datapoints = len(train_infos[0]['eprewmean'])
+
+            prop_data = limit / config["PPO_RUN_TOT_TIMESTEPS"]
+            ciel_data_idx = int(num_datapoints * prop_data)
+            print("ciel_data_idx", ciel_data_idx)
+            if layout_name == "simple":
+                ciel_data_idx = 666
+
+
+            datas = []
+            for seed_num, info in enumerate(train_infos):
+                info['xs'] = config["TOTAL_BATCH_SIZE"] * np.array(range(1, ciel_data_idx + 1))
+                print("y data", len(info["ep_sparse_rew_mean"][:]))
+                if single:
+                    if "STRATEXP" not in name:
+                        plt.plot(info['xs'], np.array(info["ep_sparse_rew_mean"][:ciel_data_idx]) *20 / weight_for_serve,
+                                 alpha=1,
+                                 label="Baseline: PPO BC")
+                    else:
+                        plt.plot(info['xs'], np.array(info["ep_sparse_rew_mean"][:ciel_data_idx]) *20/ weight_for_serve, alpha=1,
+                                 label="Strategy: {}_seed{}".format(strategy_number, used_seeds[seed_num]))
+                    plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    # try:
+                    #     plt.plot(info['xs'], info["ep_sparse_rew_mean"][:ciel_data_idx], alpha=1,
+                    #              label="Strategy: {}_seed{}".format(strategy_number, seeds[seed_num]))
+                    #     plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    #     break
+                    # except:
+                    #     continue
+                datas.append(np.array(info["ep_sparse_rew_mean"][:ciel_data_idx]) / weight_for_serve)
+            if not single:
+                seaborn.tsplot(time=info['xs'], data=datas)
+                plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+
+
+            # if single:
+        plt.legend()
+
+
+        plt.xlabel("Timestep")
+        plt.ylabel("Number of Orders Served in 60s")
+        plt.title("Number of Orders for Each Strategy: "+layout_name)
+        plt.savefig("training_imgs/sparse_training4_"+layout_name+".png")
+        plt.close()
+
+
+
 def dense_plot_ppo_run(name, sparse=False, limit=None, print_config=False, seeds=None, single=False):
     from collections import defaultdict
     seeds = [9456]
@@ -568,30 +759,30 @@ def dense_plot_ppo_run(name, sparse=False, limit=None, print_config=False, seeds
     plt.close()
 
 if __name__ == "__main__":
-
-    all_models = [
-        'STRATEXP_TEST2_random0_s0_weights_ppo_bc_train',
-        'STRATEXP_TEST2_random0_s1_weights_ppo_bc_train',
-
-        'STRATEXP_TEST2_random1_s0_weights_ppo_bc_train',
-        'STRATEXP_TEST2_random1_s1_weights_ppo_bc_train',
-
-        'STRATEXP_TEST2_random3_s0_weights_ppo_bc_train',
-        'STRATEXP_TEST2_random3_s1_weights_ppo_bc_train',
-        'STRATEXP_TEST2_random3_s2_weights_ppo_bc_train',
-        'STRATEXP_TEST2_random3_s3_weights_ppo_bc_train',
-
-        'STRATEXP_TEST2_simple_s0_weights_ppo_bc_train',
-        'STRATEXP_TEST2_simple_s1_weights_ppo_bc_train',
-        'STRATEXP_TEST2_simple_s2_weights_ppo_bc_train',
-        'STRATEXP_TEST2_simple_s3_weights_ppo_bc_train',
-
-        'STRATEXP_TEST2_unident_s0_weights_ppo_bc_train',
-        'STRATEXP_TEST2_unident_s1_weights_ppo_bc_train',
-
-    ]
-    for name in all_models:
-        dense_plot_ppo_run(name)
+    strategy_plot_ppo_run()
+    # all_models = [
+    #     'STRATEXP_TEST2_random0_s0_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_random0_s1_weights_ppo_bc_train',
+    #
+    #     'STRATEXP_TEST2_random1_s0_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_random1_s1_weights_ppo_bc_train',
+    #
+    #     'STRATEXP_TEST2_random3_s0_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_random3_s1_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_random3_s2_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_random3_s3_weights_ppo_bc_train',
+    #
+    #     'STRATEXP_TEST2_simple_s0_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_simple_s1_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_simple_s2_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_simple_s3_weights_ppo_bc_train',
+    #
+    #     'STRATEXP_TEST2_unident_s0_weights_ppo_bc_train',
+    #     'STRATEXP_TEST2_unident_s1_weights_ppo_bc_train',
+    #
+    # ]
+    # for name in all_models:
+    #     sparse_plot_ppo_run(name)
 
 
 # @ex.automain

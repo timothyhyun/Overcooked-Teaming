@@ -171,17 +171,17 @@ def executionDelay (df):
   df["time_diff"] = df['time_elapsed'].diff()
   df = df[df["time_diff"]>0]
   df = df[df["time_diff"]<1]
-  rounds = df.groupby("round_num")
+  rounds = df.groupby("layout_name")
   totals = []
   scores = []
   atotals = []
   ascores = []
-  for i in range(5):
+  for i in df["layout_name"].unique():
     roundTotal = []
     roundScore = []
     t = rounds.get_group(i)
     temp = t.groupby("workerid_num")
-    hold = df[df["round_num"] == i]["workerid_num"].unique()
+    hold = df[df["layout_name"] == i]["workerid_num"].unique()
     for j in hold:
       res = temp.get_group(j)
       roundTotal.append(setActions(res))
@@ -190,8 +190,9 @@ def executionDelay (df):
       roundScore.append(max(res["score"]))
     totals.append(roundTotal)
     scores.append(roundScore)
+  return totals
 
-  roundNum = 4
+def plotExecution(scores, totals, roundNum):
   plt.scatter(scores[roundNum], totals[roundNum])
   plt.xlabel("Score")
   plt.ylabel("Functional Delay")

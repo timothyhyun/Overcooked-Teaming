@@ -92,7 +92,7 @@ def humanInteract (time, action, index):
 def fluencyMeasures (df):
   df["time_diff"] = df['time_elapsed'].diff()
   df = df[df["time_diff"]>0]
-  df = df[df["time_diff"]<1]
+  df = df[df["time_diff"]<3]
 
   df["human_idle"] = df.apply(lambda x: humanIdle(x['time_diff'], x['player_index'], x['state'], x['next_state']), axis=1)
   df["robot_idle"] = df.apply(lambda x: robotIdle(x['time_diff'], x['player_index'], x['state'], x["next_state"]), axis=1)
@@ -122,23 +122,32 @@ def fluencyMeasures (df):
   fluency1 = []
   fluency2 = []
   fluency3 = []
-  fluency4 = []
-  scores4 = []
-  times = df.groupby("round_num");
-  for i in range(5):
-    t = times.get_group(4)
+  
+  times = df.groupby("layout_name")
+  for i in df["layout_name"].unique():
+    t = times.get_group(i)
     temp = t.groupby("workerid_num")
-    hold = df[df["round_num"] == 4]["workerid_num"].unique()
+    hold = df[df["layout_name"] == i]["workerid_num"].unique()
+    t1 = []
+    t2 = []
+    t3 = []
     for j in hold:
       workTemp = temp.get_group(j)
       scores.append(workTemp["score"].max())
-      fluency1.append(workTemp["human_idle"].sum())
-      fluency2.append(workTemp["robot_idle"].sum())
-      fluency3.append(workTemp["concurrent_activity"].sum())
-      if i == 4:
-        scores4.append(workTemp["score"].max())
-        fluency4.append(workTemp["functional_delay"].sum())
+      t1.append(sum(list(workTemp["human_idle"])))
+      t2.append(sum(list(workTemp["robot_idle"])))
+      t3.append(sum(list(workTemp["concurrent_activity"])))
+    fluency1.append(t1)
+    fluency2.append(t2)
+    fluency3.append(t3)
 
+
+  return fluency1,fluency2,fluency3
+
+
+
+
+def plotFluency (fluency1, fluency2,fluency3,scores):
   plt.scatter(scores, fluency1)
   plt.xlabel("Score")
   plt.ylabel("Human Idle Time")
@@ -163,12 +172,3 @@ def fluencyMeasures (df):
   plt.savefig('fluency3.png')
   stats.pearsonr(scores, fluency3)
 
-  plt.scatter(scores4, fluency4)
-  plt.xlabel("Score")
-  plt.ylabel("Functional Delay")
-  plt.title("Functional Delay (Handoff Time):\n Forced Coordination", fontsize="20")
-
-  plt.savefig('fluency4.jpg')
-  stats.pearsonr(scores4, fluency4)
-
-  df.to_csv("hh1112data.csv")
